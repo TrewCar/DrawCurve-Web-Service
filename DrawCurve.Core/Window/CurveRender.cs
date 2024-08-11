@@ -9,8 +9,8 @@ namespace DrawCurve.Core.Window
 {
     public class CurveRender : Render
     {
-        protected List<Vertex> curve = new List<Vertex>();
-        protected List<LineCurve> _lines;
+        protected List<Vertex> curve = new();
+        protected List<LineCurve> _lines = new();
 
         public override List<ActionBase> active { get; set; } = new()
         {
@@ -18,6 +18,8 @@ namespace DrawCurve.Core.Window
             new FollowAction(),
             new SpeedAction(),
         };
+
+        public CurveRender() : base() { }
 
         public CurveRender(List<LineCurve> stylus) : base()
         {
@@ -88,7 +90,7 @@ namespace DrawCurve.Core.Window
             return array;
         }
 
-        public override RenderConfig GetRenderConfig()
+        public override RenderConfig GetDefaultRenderConfig()
         {
             var ActionsConfig = active.Select(x=>x.GetDefaultConfig()).ToList();
 
@@ -103,14 +105,12 @@ namespace DrawCurve.Core.Window
                     TagRender.Unfollow,
                     TagRender.Zoom,
                     TagRender.Speed,
-                    TagRender.Million
                 },
                 FPS = 144,
                 Time = 20,
                 SpeedRender = 1,
                 DeltaTime = TypeDeltaTime.Fixed,
-                Width = 1080,
-                Height = 1920,
+                VideoMode = new SFML.Window.VideoMode(1080, 1920),
 
                 ActionsConfig = active.Select(x => x.GetDefaultConfig()).ToList(),
 

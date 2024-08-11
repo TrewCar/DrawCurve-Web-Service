@@ -12,7 +12,6 @@ namespace DrawCurve.Core.Objects
     {
         public float Angle;
 
-
         private float radian;
 
         public float Length;

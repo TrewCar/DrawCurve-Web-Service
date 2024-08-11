@@ -23,7 +23,7 @@ namespace DrawCurve.Core.Window
         public virtual List<ActionBase> active { get; set; } = new List<ActionBase>();
 
         public Render()
-            => Init(GetRenderConfig());
+            => Init(GetDefaultRenderConfig());
         
 
         public Render(RenderConfig config)
@@ -34,7 +34,7 @@ namespace DrawCurve.Core.Window
             this.RenderConfig = config;
             this.SpeedRender = config.SpeedRender;
 
-            this.window = new RenderWindow(new SFML.Window.VideoMode(RenderConfig.Width, RenderConfig.Height), RenderConfig.Title);
+            this.window = new RenderWindow(RenderConfig.VideoMode, RenderConfig.Title);
             this.window.SetActive(false);
             this.window.SetFramerateLimit(RenderConfig.FPS);
 
@@ -60,13 +60,13 @@ namespace DrawCurve.Core.Window
             if (!window.IsOpen)
                 return false;
 
-            float deltaType = RenderConfig.DeltaTime == TypeDeltaTime.Fixed ? 1.0F / RenderConfig.FPS * SpeedRender : fpsCounter.DeltaTime * SpeedRender;
+            float deltaTime = RenderConfig.DeltaTime == TypeDeltaTime.Fixed ? 1.0F / RenderConfig.FPS * SpeedRender : fpsCounter.DeltaTime * SpeedRender;
 
-            this.TickAction?.Invoke(deltaType);
+            this.TickAction?.Invoke(deltaTime);
 
             window.DispatchEvents();
 
-            var val = TickRender(deltaType);
+            var val = TickRender(deltaTime);
             window.Display();
             return val;
         }
@@ -76,6 +76,6 @@ namespace DrawCurve.Core.Window
         /// <returns></returns>
         public abstract bool TickRender(float deltaTime);
 
-        public abstract RenderConfig GetRenderConfig();
+        public abstract RenderConfig GetDefaultRenderConfig();
     }
 }

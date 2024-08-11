@@ -1,5 +1,6 @@
 ﻿using DrawCurve.Tags;
 using SFML.Graphics;
+using SFML.Window;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
@@ -18,9 +19,7 @@ namespace DrawCurve.Core.Config
 
         public TypeDeltaTime DeltaTime;
 
-        public uint Width;
-        public uint Height;
-
+        public VideoMode VideoMode;
 
         public List<ActionConfig> ActionsConfig;
         public Dictionary<string, Color> Colors;
