@@ -5,7 +5,7 @@ using SFML.Graphics;
 
 namespace DrawCurve.Core.Window
 {
-    public abstract class Render
+    public abstract class Render : IDisposable
     {
         public RenderWindow window { get; set; }
 
@@ -36,7 +36,8 @@ namespace DrawCurve.Core.Window
 
             this.window = new RenderWindow(RenderConfig.VideoMode, RenderConfig.Title);
             this.window.SetActive(false);
-            this.window.SetFramerateLimit(RenderConfig.FPS);
+
+            //this.window.SetFramerateLimit(RenderConfig.FPS);
 
             this.active.ForEach(X => X.SetConfig(RenderConfig));
         }
@@ -77,5 +78,12 @@ namespace DrawCurve.Core.Window
         public abstract bool TickRender(float deltaTime);
 
         public abstract RenderConfig GetDefaultRenderConfig();
+
+        public void Dispose()
+        {
+            window.Dispose();
+            window = null;
+            
+        }
     }
 }
