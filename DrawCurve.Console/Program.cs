@@ -4,6 +4,7 @@ using DrawCurve.Core.Window;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SFML.Graphics;
+using System.Reflection;
 
 internal class Program
 {
@@ -32,7 +33,27 @@ internal class Program
             new LineCurve(100, 90, -MathF.PI/15),
         };
 
-        CurveRender render = new CurveRender(renderConfig, obj);
+        MenedgerSaveRender render = new MenedgerSaveRender(renderConfig, obj);
         render.Start();
+
+    }
+}
+
+public class MenedgerSaveRender : CurveRender
+{
+    public MenedgerSaveRender(RenderConfig config, List<ObjectRender> Objects) : base(config, Objects)
+    {
+
+    }
+    public override bool TickRender(float deltaTime)
+    {
+        var res = base.TickRender(deltaTime);
+
+        if (RenderConfig.Time * RenderConfig.FPS < CountFrame)
+            return false;
+
+        window.Texture.CopyToImage().SaveToFile(Path.Combine("TEST", $"{new Guid().ToString()}frame_{CountFrame:D5}.png"));
+
+        return res;
     }
 }

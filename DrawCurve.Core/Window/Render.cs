@@ -9,7 +9,7 @@ namespace DrawCurve.Core.Window
 {
     public abstract class Render : IDisposable
     {
-        public RenderWindow window { get; set; }
+        public RenderTexture window { get; set; }
 
         protected List<ObjectRender> objects = new();
 
@@ -42,7 +42,9 @@ namespace DrawCurve.Core.Window
             this.RenderConfig = config;
             this.SpeedRender = config.SpeedRender;
 
-            this.window = new RenderWindow(new VideoMode(RenderConfig.Width, RenderConfig.Height), RenderConfig.Title);
+            //this.window = new RenderWindow(new VideoMode(RenderConfig.Width, RenderConfig.Height), RenderConfig.Title);
+            this.window = new RenderTexture(RenderConfig.Width, RenderConfig.Height);
+
             this.window.SetActive(false);
 
             //this.window.SetFramerateLimit(RenderConfig.FPS);
@@ -53,11 +55,13 @@ namespace DrawCurve.Core.Window
         {
             while (Tick())
             {
-                CountFrame++;
                 fpsCounter.Update();
             }
         }
         private bool ConterWindowRenderActive = false;
+
+        public bool Close = false;
+
         public bool Tick()
         {
             if (!ConterWindowRenderActive)
@@ -66,17 +70,18 @@ namespace DrawCurve.Core.Window
                 ConterWindowRenderActive = true;
             }
 
-            if (!window.IsOpen)
+            if (Close)
                 return false;
 
             float deltaTime = RenderConfig.DeltaTime == TypeDeltaTime.Fixed ? 1.0F / RenderConfig.FPS * SpeedRender : fpsCounter.DeltaTime * SpeedRender;
 
             this.TickAction?.Invoke(deltaTime);
 
-            window.DispatchEvents();
+            //window.DispatchEvents();
 
             var val = TickRender(deltaTime);
             window.Display();
+            CountFrame++;
             return val;
         }
         /// <summary>
