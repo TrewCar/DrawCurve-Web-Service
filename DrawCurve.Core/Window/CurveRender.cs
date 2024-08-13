@@ -10,7 +10,7 @@ namespace DrawCurve.Core.Window
     public class CurveRender : Render
     {
         protected List<Vertex> curve = new();
-        protected List<LineCurve> _lines = new();
+
 
         public override List<ActionBase> active { get; set; } = new()
         {
@@ -21,23 +21,17 @@ namespace DrawCurve.Core.Window
 
         public CurveRender() : base() { }
 
-        public CurveRender(List<LineCurve> stylus) : base()
+        public CurveRender(RenderConfig config) : base(config)
         {
-            this._lines = stylus;
-            InitUpdateSylus();
-        }
-
-        public CurveRender(RenderConfig config, List<LineCurve> stylus) : base(config)
-        {
-            this._lines = stylus;
             InitUpdateSylus();
         }
 
         private void InitUpdateSylus()
         {
-            foreach (var item in _lines)
+            foreach (var item in objects)
             {
-                this.TickAction += item.Update;
+                if (item is LineCurve line)
+                    this.TickAction += item.Update;
             }
         }
         
@@ -71,15 +65,18 @@ namespace DrawCurve.Core.Window
 
         private Vertex[] CalcLines(Vector2f pos)
         {
-            Vertex[] array = new Vertex[_lines.Count + 1];
+            Vertex[] array = new Vertex[objects.Count + 1];
             array[0] = new Vertex(pos, RenderConfig.Colors["stylus"]);
 
             Vector2f vec = pos;
 
-            for (int i = 0; i < _lines.Count; i++)
+            for (int i = 0; i < objects.Count; i++)
             {
-                vec = _lines[i].GetPoint(vec);
-                array[i + 1] = new Vertex(vec, RenderConfig.Colors["stylus"]);
+                if (objects[i] is LineCurve line)
+                {
+                    vec = line.GetPoint(vec);
+                    array[i + 1] = new Vertex(vec, RenderConfig.Colors["stylus"]);
+                }
             }
             return array;
         }
@@ -119,10 +116,12 @@ namespace DrawCurve.Core.Window
 
                 Colors = new()
                 {
-                    {"background", Color.Black },
-                    {"stylus", Color.Red},
-                    {"curve", Color.White},
+                    { "background", Color.Black },
+                    { "stylus", Color.Red },
+                    { "curve", Color.White },
                 },
+
+                Objects = new List<ObjectRender>()
             };
         }
     }

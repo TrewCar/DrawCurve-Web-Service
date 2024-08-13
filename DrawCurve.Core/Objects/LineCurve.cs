@@ -3,16 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace DrawCurve.Core.Objects
 {
-    public class LineCurve
+    public class LineCurve : ObjectRender
     {
         public float Angle;
 
-        private float radian;
+        public float radian;
 
         public float Length;
         /// <summary>
@@ -32,17 +33,18 @@ namespace DrawCurve.Core.Objects
             this.RPS = RPS;
         }
 
-        public LineCurve(double Lenght, double Angle, double RPS)
+        public LineCurve(double Lenght, double Ranidan, double RPS)
         {
-            radian = (float)Angle;
+            radian = (float)Ranidan;
 
 
             Length = (float)Lenght;
             this.RPS = (float)(RPS * 360.0f * Math.PI / 180d);
         }
 
+        public LineCurve() { }
 
-        public void Update(float deltaTime)
+        public override void Update(float deltaTime)
         {
             radian += RPS * deltaTime;
         }

@@ -1,6 +1,7 @@
 ﻿using DrawCurve.Core.Actions;
 using DrawCurve.Core.Config;
 using DrawCurve.Core.Helpers;
+using DrawCurve.Core.Objects;
 using SFML.Graphics;
 
 namespace DrawCurve.Core.Window
@@ -8,6 +9,8 @@ namespace DrawCurve.Core.Window
     public abstract class Render : IDisposable
     {
         public RenderWindow window { get; set; }
+
+        protected List<ObjectRender> objects = new();
 
         protected delegate void UpdateAction(float deltaTime);
         protected UpdateAction TickAction;
@@ -31,6 +34,10 @@ namespace DrawCurve.Core.Window
         
         private void Init(RenderConfig config)
         {
+            this.objects = config.Objects;
+
+            if (this.objects == null) this.objects = new List<ObjectRender>();
+
             this.RenderConfig = config;
             this.SpeedRender = config.SpeedRender;
 
@@ -82,8 +89,7 @@ namespace DrawCurve.Core.Window
         public void Dispose()
         {
             window.Dispose();
-            window = null;
-            
+            window = null; 
         }
     }
 }

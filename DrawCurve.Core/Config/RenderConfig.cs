@@ -1,8 +1,8 @@
-﻿using DrawCurve.Tags;
+﻿using DrawCurve.Core.Objects;
+using DrawCurve.Tags;
 using SFML.Graphics;
 using SFML.Window;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 
 namespace DrawCurve.Core.Config
 {
@@ -23,8 +23,10 @@ namespace DrawCurve.Core.Config
 
         public List<ActionConfig> ActionsConfig;
         public Dictionary<string, Color> Colors;
+
+        public List<ObjectRender> Objects;
     }
-   
+
     public enum TypeDeltaTime
     {
         [EnumMember(Value = "FIXED")]
