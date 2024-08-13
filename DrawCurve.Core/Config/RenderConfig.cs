@@ -1,32 +1,33 @@
 ﻿using DrawCurve.Core.Objects;
 using DrawCurve.Tags;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SFML.Graphics;
 using SFML.Window;
 using System.Runtime.Serialization;
 
 namespace DrawCurve.Core.Config
 {
-    public struct RenderConfig
+    public class RenderConfig
     {
-        public string Title;
+        public string Title { get; set; }
 
-        public List<TagRender> Tags;
+        public List<TagRender> Tags { get; set; }
 
-        public uint FPS;
-        public float Time;
+        public uint FPS { get; set; }
+        public float Time { get; set; }
 
-        public float SpeedRender;
+        public float SpeedRender { get; set; }
 
-        public TypeDeltaTime DeltaTime;
+        public TypeDeltaTime DeltaTime { get; set; }
 
-        public VideoMode VideoMode;
+        public uint Width { get; set; }
+        public uint Height { get; set; }
 
-        public List<ActionConfig> ActionsConfig;
-        public Dictionary<string, Color> Colors;
-
-        public List<ObjectRender> Objects;
+        public List<ActionConfig> ActionsConfig { get; set; }
+        public Dictionary<string, Color> Colors { get; set; }
     }
-
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum TypeDeltaTime
     {
         [EnumMember(Value = "FIXED")]

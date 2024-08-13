@@ -21,7 +21,7 @@ namespace DrawCurve.Core.Window
 
         public CurveRender() : base() { }
 
-        public CurveRender(RenderConfig config) : base(config)
+        public CurveRender(RenderConfig config, List<ObjectRender> Objects) : base(config, Objects)
         {
             InitUpdateSylus();
         }
@@ -110,7 +110,8 @@ namespace DrawCurve.Core.Window
                 Time = 20,
                 SpeedRender = 1,
                 DeltaTime = TypeDeltaTime.Fixed,
-                VideoMode = new SFML.Window.VideoMode(1080, 1920),
+                Width = 1080,
+                Height = 1920,
 
                 ActionsConfig = active.Select(x => x.GetDefaultConfig()).ToList(),
 
@@ -120,8 +121,6 @@ namespace DrawCurve.Core.Window
                     { "stylus", Color.Red },
                     { "curve", Color.White },
                 },
-
-                Objects = new List<ObjectRender>()
             };
         }
     }

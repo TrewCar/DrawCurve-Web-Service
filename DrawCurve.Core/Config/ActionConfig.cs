@@ -14,17 +14,17 @@ namespace DrawCurve.Core.Config
             this.Name = Name;
             this.Description = Description;
         }
-        public readonly string Key;
+        public string Key { get; set; }
 
-        public readonly string Name;
-        public readonly string Description;
+        public string Name { get; set; }
+        public string Description;
 
-        public float Step;
+        public float Step { get; set; }
 
-        public float Start;
-        public float End;
+        public float Start { get; set; }
+        public float End { get; set; }
 
-        public float MaxValue;
-        public float MinValue;
+        public float MaxValue { get; set; }
+        public float MinValue { get; set; }
     }
 }

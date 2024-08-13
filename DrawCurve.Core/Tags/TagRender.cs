@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Newtonsoft.Json.Converters;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 
 namespace DrawCurve.Tags
 {
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum TagRender
     {
         [EnumMember(Value = "MILLION")]

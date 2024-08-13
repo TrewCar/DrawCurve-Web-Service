@@ -1,0 +1,6 @@
+@DrawCurve.Web.Server_HostAddress = http://localhost:5232
+
+GET {{DrawCurve.Web.Server_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

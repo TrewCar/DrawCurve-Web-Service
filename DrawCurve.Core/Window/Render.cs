@@ -3,6 +3,7 @@ using DrawCurve.Core.Config;
 using DrawCurve.Core.Helpers;
 using DrawCurve.Core.Objects;
 using SFML.Graphics;
+using SFML.Window;
 
 namespace DrawCurve.Core.Window
 {
@@ -26,22 +27,22 @@ namespace DrawCurve.Core.Window
         public virtual List<ActionBase> active { get; set; } = new List<ActionBase>();
 
         public Render()
-            => Init(GetDefaultRenderConfig());
+            => Init(GetDefaultRenderConfig(), new List<ObjectRender>());
         
 
-        public Render(RenderConfig config)
-            => Init(config);
+        public Render(RenderConfig config, List<ObjectRender> Objects)
+            => Init(config, Objects);
         
-        private void Init(RenderConfig config)
+        private void Init(RenderConfig config, List<ObjectRender> Objects)
         {
-            this.objects = config.Objects;
+            this.objects = Objects;
 
             if (this.objects == null) this.objects = new List<ObjectRender>();
 
             this.RenderConfig = config;
             this.SpeedRender = config.SpeedRender;
 
-            this.window = new RenderWindow(RenderConfig.VideoMode, RenderConfig.Title);
+            this.window = new RenderWindow(new VideoMode(RenderConfig.Width, RenderConfig.Height), RenderConfig.Title);
             this.window.SetActive(false);
 
             //this.window.SetFramerateLimit(RenderConfig.FPS);
