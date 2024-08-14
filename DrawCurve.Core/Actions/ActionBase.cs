@@ -21,7 +21,5 @@ namespace DrawCurve.Core.Actions
             }
         }
         public abstract ActionConfig GetDefaultConfig();
-
-        
     }
 }

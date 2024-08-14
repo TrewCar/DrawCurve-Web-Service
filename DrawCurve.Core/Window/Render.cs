@@ -9,7 +9,11 @@ namespace DrawCurve.Core.Window
 {
     public abstract class Render : IDisposable
     {
+#if DEBUG
+        public RenderWindow window { get; set; }
+#else
         public RenderTexture window { get; set; }
+#endif
 
         protected List<ObjectRender> objects = new();
 
@@ -27,27 +31,32 @@ namespace DrawCurve.Core.Window
         public virtual List<ActionBase> active { get; set; } = new List<ActionBase>();
 
         public Render()
-            => Init(GetDefaultRenderConfig(), new List<ObjectRender>());
-        
+        {
+            this.RenderConfig = GetDefaultRenderConfig();
+            this.objects = new List<ObjectRender>();
+        }
+
 
         public Render(RenderConfig config, List<ObjectRender> Objects)
-            => Init(config, Objects);
-        
-        private void Init(RenderConfig config, List<ObjectRender> Objects)
         {
-            this.objects = Objects;
-
-            if (this.objects == null) this.objects = new List<ObjectRender>();
-
             this.RenderConfig = config;
-            this.SpeedRender = config.SpeedRender;
+            this.objects = Objects;
+        }
 
-            //this.window = new RenderWindow(new VideoMode(RenderConfig.Width, RenderConfig.Height), RenderConfig.Title);
+        public virtual void Init()
+        {
+            this.SpeedRender = RenderConfig.SpeedRender;
+
+#if DEBUG
+            this.window = new RenderWindow(new VideoMode(RenderConfig.Width, RenderConfig.Height), RenderConfig.Title);
+#else
             this.window = new RenderTexture(RenderConfig.Width, RenderConfig.Height);
+#endif
 
             this.window.SetActive(false);
-
-            //this.window.SetFramerateLimit(RenderConfig.FPS);
+#if DEBUG
+            this.window.SetFramerateLimit(RenderConfig.FPS);
+#endif
 
             this.active.ForEach(X => X.SetConfig(RenderConfig));
         }
@@ -76,8 +85,9 @@ namespace DrawCurve.Core.Window
             float deltaTime = RenderConfig.DeltaTime == TypeDeltaTime.Fixed ? 1.0F / RenderConfig.FPS * SpeedRender : fpsCounter.DeltaTime * SpeedRender;
 
             this.TickAction?.Invoke(deltaTime);
-
-            //window.DispatchEvents();
+#if !DEBUG
+            window.DispatchEvents();
+#endif
 
             var val = TickRender(deltaTime);
             window.Display();
@@ -95,7 +105,7 @@ namespace DrawCurve.Core.Window
         public void Dispose()
         {
             window.Dispose();
-            window = null; 
+            window = null;
         }
     }
 }

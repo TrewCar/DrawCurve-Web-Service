@@ -1,7 +1,7 @@
 ﻿using DrawCurve.Core.Actions;
 using DrawCurve.Core.Config;
 using DrawCurve.Core.Objects;
-using DrawCurve.Tags;
+using DrawCurve.Core.Tags;
 using SFML.Graphics;
 using SFML.System;
 
@@ -23,11 +23,11 @@ namespace DrawCurve.Core.Window
 
         public CurveRender(RenderConfig config, List<ObjectRender> Objects) : base(config, Objects)
         {
-            InitUpdateSylus();
         }
 
-        private void InitUpdateSylus()
+        public override void Init()
         {
+            base.Init();
             foreach (var item in objects)
             {
                 if (item is LineCurve line)

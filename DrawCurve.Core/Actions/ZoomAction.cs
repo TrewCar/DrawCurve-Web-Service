@@ -1,7 +1,7 @@
 ﻿using DrawCurve.Core.Config;
 using DrawCurve.Core.Helpers;
 using DrawCurve.Core.Window;
-using DrawCurve.Tags;
+using DrawCurve.Core.Tags;
 using SFML.Graphics;
 using SFML.System;
 
@@ -57,8 +57,12 @@ namespace DrawCurve.Core.Actions
 
         public override ActionConfig GetDefaultConfig()
         {
-            return new ActionConfig("ZoomAction", "Приближение", "Приближение к N точке")
+            return new ActionConfig()
             {
+                Key = "ZoomAction",
+                Name = "Приближение",
+                Description = "Приближение к N точке",
+
                 Step = 0.3f,
 
                 Start = 0.2f,

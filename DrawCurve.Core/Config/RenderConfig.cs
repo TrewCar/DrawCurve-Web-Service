@@ -1,5 +1,5 @@
 ﻿using DrawCurve.Core.Objects;
-using DrawCurve.Tags;
+using DrawCurve.Core.Tags;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SFML.Graphics;
@@ -10,29 +10,27 @@ namespace DrawCurve.Core.Config
 {
     public class RenderConfig
     {
-        public string Title { get; set; }
+        public string Title;
 
-        public List<TagRender> Tags { get; set; }
+        public List<TagRender> Tags;
 
-        public uint FPS { get; set; }
-        public float Time { get; set; }
+        public uint FPS;
+        public float Time;
 
-        public float SpeedRender { get; set; }
+        public float SpeedRender;
 
-        public TypeDeltaTime DeltaTime { get; set; }
+        public TypeDeltaTime DeltaTime;
 
-        public uint Width { get; set; }
-        public uint Height { get; set; }
+        public uint Width;
+        public uint Height;
 
-        public List<ActionConfig> ActionsConfig { get; set; }
-        public Dictionary<string, Color> Colors { get; set; }
+        public List<ActionConfig> ActionsConfig;
+        public Dictionary<string, Color> Colors;
     }
-    [JsonConverter(typeof(StringEnumConverter))]
+
     public enum TypeDeltaTime
     {
-        [EnumMember(Value = "FIXED")]
         Fixed = 0,
-        [EnumMember(Value = "DYMANIC")]
         Dynamic = 1,
     }
 }

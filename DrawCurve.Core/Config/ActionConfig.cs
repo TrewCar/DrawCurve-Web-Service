@@ -8,23 +8,17 @@ namespace DrawCurve.Core.Config
 {
     public struct ActionConfig
     {
-        public ActionConfig(string Key, string Name, string Description) 
-        { 
-            this.Key = Key;
-            this.Name = Name;
-            this.Description = Description;
-        }
-        public string Key { get; set; }
+        public string Key;
 
-        public string Name { get; set; }
+        public string Name;
         public string Description;
 
-        public float Step { get; set; }
+        public float Step;
 
-        public float Start { get; set; }
-        public float End { get; set; }
+        public float Start;
+        public float End;
 
-        public float MaxValue { get; set; }
-        public float MinValue { get; set; }
+        public float MaxValue;
+        public float MinValue;
     }
 }

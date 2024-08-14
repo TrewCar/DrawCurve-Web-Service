@@ -1,7 +1,7 @@
 ﻿using DrawCurve.Core.Config;
 using DrawCurve.Core.Helpers;
 using DrawCurve.Core.Window;
-using DrawCurve.Tags;
+using DrawCurve.Core.Tags;
 using SFML.Graphics;
 using SFML.System;
 
@@ -42,8 +42,12 @@ namespace DrawCurve.Core.Actions
 
         public override ActionConfig GetDefaultConfig()
         {
-            return new ActionConfig("SpeedAction", "Замедление", "Замедление рендера")
+            return new ActionConfig()
             {
+                Key = "SpeedAction",
+                Name = "Замедление",
+                Description = "Замедление рендера",
+
                 Step = 0.1f,
 
                 Start = 0.2f,

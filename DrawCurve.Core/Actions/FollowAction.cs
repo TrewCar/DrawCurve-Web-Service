@@ -1,7 +1,7 @@
 ﻿using DrawCurve.Core.Config;
 using DrawCurve.Core.Helpers;
 using DrawCurve.Core.Window;
-using DrawCurve.Tags;
+using DrawCurve.Core.Tags;
 using SFML.Graphics;
 using SFML.System;
 
@@ -70,8 +70,12 @@ namespace DrawCurve.Core.Actions
 
         public override ActionConfig GetDefaultConfig()
         {
-            return new ActionConfig("FollowAction", "Слежение за обьектом", "Центрирование массива точек относительно N точки")
+            return new ActionConfig()
             {
+                Key = "FollowAction",
+                Name = "Слежение за обьектом",
+                Description = "Центрирование массива точек относительно N точки",
+
                 Step = 0.3f,
 
                 Start = 0.1f,
