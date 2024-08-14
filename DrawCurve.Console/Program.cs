@@ -27,6 +27,9 @@ internal class Program
 
         renderConfig.DeltaTime = TypeDeltaTime.Fixed;
 
+        renderConfig.Width = 1000;
+        renderConfig.Height = 1000;
+
         var obj = new List<ObjectRender>
         {
             new LineCurve(100, 90, 2*MathF.PI),

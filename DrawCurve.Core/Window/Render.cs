@@ -49,14 +49,13 @@ namespace DrawCurve.Core.Window
 
 #if DEBUG
             this.window = new RenderWindow(new VideoMode(RenderConfig.Width, RenderConfig.Height), RenderConfig.Title);
+            this.window.SetFramerateLimit(RenderConfig.FPS);
+            this.window.Closed += (sender, e) => window.Close();
 #else
             this.window = new RenderTexture(RenderConfig.Width, RenderConfig.Height);
 #endif
 
             this.window.SetActive(false);
-#if DEBUG
-            this.window.SetFramerateLimit(RenderConfig.FPS);
-#endif
 
             this.active.ForEach(X => X.SetConfig(RenderConfig));
         }
@@ -85,7 +84,7 @@ namespace DrawCurve.Core.Window
             float deltaTime = RenderConfig.DeltaTime == TypeDeltaTime.Fixed ? 1.0F / RenderConfig.FPS * SpeedRender : fpsCounter.DeltaTime * SpeedRender;
 
             this.TickAction?.Invoke(deltaTime);
-#if !DEBUG
+#if DEBUG
             window.DispatchEvents();
 #endif
 
