@@ -13,7 +13,7 @@ namespace DrawCurve.Core.Objects
     {
         public float Angle;
 
-        public float radian;
+        public float Radian;
 
         public float Length;
         /// <summary>
@@ -24,36 +24,27 @@ namespace DrawCurve.Core.Objects
         /// <param name="Lenght">Длина отрезка</param>
         /// <param name="Angle">Стартовый угл</param>
         /// <param name="RPS">Скорость врашения в радианах в секунду</param>
-        public LineCurve(float Lenght, float Angle = 0, float RPS = 3)
+        public LineCurve(float Lenght, float Angle, float RPS)
         {
-            radian = Angle * MathF.PI / 180f;
+            Radian = Angle * MathF.PI / 180f;
 
             Length = Lenght;
             this.Angle = Angle;
             this.RPS = RPS;
         }
 
-        public LineCurve(double Lenght, double Ranidan, double RPS)
-        {
-            radian = (float)Ranidan;
-
-
-            Length = (float)Lenght;
-            this.RPS = (float)(RPS * 360.0f * Math.PI / 180d);
-        }
-
         public LineCurve() { }
 
         public override void Update(float deltaTime)
         {
-            radian += RPS * deltaTime;
+            Radian += RPS * deltaTime;
         }
 
         public Vector2f GetPoint(Vector2f pos)
         {
             return new Vector2f(
-                Length * MathF.Cos(radian) + pos.X,
-                Length * MathF.Sin(radian) + pos.Y
+                Length * MathF.Cos(Radian) + pos.X,
+                Length * MathF.Sin(Radian) + pos.Y
                 );
         }
     }

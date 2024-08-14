@@ -61,10 +61,7 @@ namespace DrawCurve.Core.Window
         }
         public void Start()
         {
-            while (Tick())
-            {
-                fpsCounter.Update();
-            }
+            while (Tick()){ }
         }
         private bool ConterWindowRenderActive = false;
 
@@ -72,16 +69,26 @@ namespace DrawCurve.Core.Window
 
         public bool Tick()
         {
+            fpsCounter.Update();
             if (!ConterWindowRenderActive)
             {
                 this.window.SetActive(true);
                 ConterWindowRenderActive = true;
             }
-
+#if DEBUG
+            if (Close || !window.IsOpen)
+            {
+                Close = true;
+                return false;
+            }
+#else
             if (Close)
                 return false;
+#endif
 
-            float deltaTime = RenderConfig.DeltaTime == TypeDeltaTime.Fixed ? 1.0F / RenderConfig.FPS * SpeedRender : fpsCounter.DeltaTime * SpeedRender;
+            float deltaTime = RenderConfig.DeltaTime == TypeDeltaTime.Fixed ? 
+                1.0F / RenderConfig.FPS * SpeedRender : 
+                fpsCounter.DeltaTime * SpeedRender;
 
             this.TickAction?.Invoke(deltaTime);
 #if DEBUG

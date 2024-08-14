@@ -1,4 +1,4 @@
-﻿namespace DrawCurve.Domen.Models
+﻿namespace DrawCurve.Domen.Models.Core
 {
     public class Color
     {

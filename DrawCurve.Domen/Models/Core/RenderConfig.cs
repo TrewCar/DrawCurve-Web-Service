@@ -1,6 +1,6 @@
-﻿using DrawCurve.Domen.Models.Enums;
+﻿using DrawCurve.Domen.Models.Core.Enums;
 
-namespace DrawCurve.Domen.Models
+namespace DrawCurve.Domen.Models.Core
 {
     public class RenderConfig
     {

@@ -2,7 +2,7 @@
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace DrawCurve.Domen.Models.Enums
+namespace DrawCurve.Domen.Models.Core.Enums
 {
     [JsonConverter(typeof(StringEnumConverter))]
     public enum TagRender

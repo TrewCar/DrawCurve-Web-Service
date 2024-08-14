@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawCurve.Domen", "DrawCurv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawCurve.Domen.DTO", "DrawCurve.Domen.DTO\DrawCurve.Domen.DTO.csproj", "{F5C1FDC9-34D2-41F9-A4F8-F26FFDBB0969}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawCurve.Core.Menedger", "DrawCurve.Core.Menedger\DrawCurve.Core.Menedger.csproj", "{ED740820-4D58-4BAB-BF6C-C20109FC8B95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{F5C1FDC9-34D2-41F9-A4F8-F26FFDBB0969}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F5C1FDC9-34D2-41F9-A4F8-F26FFDBB0969}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F5C1FDC9-34D2-41F9-A4F8-F26FFDBB0969}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED740820-4D58-4BAB-BF6C-C20109FC8B95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED740820-4D58-4BAB-BF6C-C20109FC8B95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED740820-4D58-4BAB-BF6C-C20109FC8B95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED740820-4D58-4BAB-BF6C-C20109FC8B95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

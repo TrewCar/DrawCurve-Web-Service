@@ -1,5 +1,5 @@
 ﻿using ColorCore = SFML.Graphics.Color;
-using ColorModel = DrawCurve.Domen.Models.Color;
+using ColorModel = DrawCurve.Domen.Models.Core.Color;
 
 namespace DrawCurve.Domen.DTO.Models
 {

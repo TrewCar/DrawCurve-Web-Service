@@ -1,12 +1,10 @@
 ﻿using DrawCurve.Core.Config;
+using DrawCurve.Core.Menedger;
 using DrawCurve.Core.Objects;
 using DrawCurve.Core.Window;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
+using DrawCurve.Domen.DTO.Models.Objects;
 using SFML.Graphics;
-using SFML.Window;
-using System.Reflection;
-using DrawCurve.Domen.DTO.Models;
+using System.Text.Json;
 internal class Program
 {
     private static void Main(string[] args)
@@ -14,7 +12,7 @@ internal class Program
         Console.WriteLine("Hello, World!");
 
         var renderConfig2 = new CurveRender();
-        var renderConfig = renderConfig2.GetDefaultRenderConfig() ;
+        var renderConfig = renderConfig2.GetDefaultRenderConfig();
 
 
 
@@ -24,6 +22,7 @@ internal class Program
         renderConfig.Tags.Remove(DrawCurve.Core.Tags.TagRender.Speed);
 
         renderConfig.FPS = 5000;
+        renderConfig.Time = 10;
 
         renderConfig.DeltaTime = TypeDeltaTime.Fixed;
 
@@ -36,33 +35,30 @@ internal class Program
             new LineCurve(100, 90, -MathF.PI/15),
         };
 
-        MenedgerSaveRender render = new MenedgerSaveRender(renderConfig, obj);
-        render.Init();
-        render.Start();
+        var objModel = obj.Select(x => x.Transfer()).ToList();
 
-    }
-}
+        // Сериализация:
+        string json = JsonSerializer.Serialize(objModel, new JsonSerializerOptions { WriteIndented = true });
+        Console.WriteLine(json);
 
-public class MenedgerSaveRender : CurveRender
-{
-    public MenedgerSaveRender(RenderConfig config, List<ObjectRender> Objects) : base(config, Objects)
-    {
+        // Десериализация:
+        var deserializedObjects = JsonSerializer.Deserialize<List<DrawCurve.Domen.Models.Core.Objects.ObjectRender>>(json);
 
-    }
-    public override bool TickRender(float deltaTime)
-    {
-        var res = base.TickRender(deltaTime);
+        CurveRender render = new CurveRender(renderConfig, deserializedObjects.Select(x => x.Transfer()).ToList());
 
+        MenedgerRender menedger = new(render);
 
-#if DEBUG
+        menedger.OnSendStatusRender += (status) =>
+        {
+            Console.WriteLine($"FPS: {status.FPS} \t CountFrame: {status.CountFPS} \t MaxFrameCount: {status.MaxCountFPS}");
+        };
 
-#else
-        if (RenderConfig.Time * RenderConfig.FPS < CountFrame)
-            return false;
-        window.Texture.CopyToImage().SaveToFile(Path.Combine("TEST", $"{new Guid().ToString()}frame_{CountFrame:D5}.png"));
-#endif
+        menedger.OnEndProccess += () =>
+        {
+            Console.WriteLine("END PROCCESS");
+        };
 
-
-        return res;
+        menedger.Init();
+        menedger.Start();
     }
 }

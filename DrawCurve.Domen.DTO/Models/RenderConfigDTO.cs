@@ -1,11 +1,11 @@
 ﻿using ColorCore = SFML.Graphics.Color;
-using ColorModel = DrawCurve.Domen.Models.Color;
+using ColorModel = DrawCurve.Domen.Models.Core.Color;
 using DeltaTimeCore = DrawCurve.Core.Config.TypeDeltaTime;
-using DeltaTimeModel = DrawCurve.Domen.Models.Enums.TypeDeltaTime;
+using DeltaTimeModel = DrawCurve.Domen.Models.Core.Enums.TypeDeltaTime;
 using RenderConfigCore = DrawCurve.Core.Config.RenderConfig;
-using RenderConfigModel = DrawCurve.Domen.Models.RenderConfig;
+using RenderConfigModel = DrawCurve.Domen.Models.Core.RenderConfig;
 using TagRenderCore = DrawCurve.Core.Tags.TagRender;
-using TagRenderModel = DrawCurve.Domen.Models.Enums.TagRender;
+using TagRenderModel = DrawCurve.Domen.Models.Core.Enums.TagRender;
 
 namespace DrawCurve.Domen.DTO.Models
 {

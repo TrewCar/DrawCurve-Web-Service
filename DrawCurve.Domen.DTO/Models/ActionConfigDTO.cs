@@ -1,5 +1,5 @@
 ﻿using ActionConfigCore = DrawCurve.Core.Config.ActionConfig;
-using ActionConfigModel = DrawCurve.Domen.Models.ActionConfig;
+using ActionConfigModel = DrawCurve.Domen.Models.Core.ActionConfig;
 
 namespace DrawCurve.Domen.DTO.Models
 {
@@ -30,6 +30,5 @@ namespace DrawCurve.Domen.DTO.Models
                 Start = cnf.Start,
                 End = cnf.End,
             };
-
     }
 }
