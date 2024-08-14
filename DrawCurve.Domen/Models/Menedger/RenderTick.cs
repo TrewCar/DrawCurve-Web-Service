@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DrawCurve.Core.Menedger.Models
+namespace DrawCurve.Domen.Core.Menedger.Models
 {
     public class RenderTick
     {

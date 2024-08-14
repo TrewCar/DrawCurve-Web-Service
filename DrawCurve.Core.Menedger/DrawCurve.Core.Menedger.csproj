@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DrawCurve.Core\DrawCurve.Core.csproj" />
+    <ProjectReference Include="..\DrawCurve.Domen\DrawCurve.Domen.csproj" />
   </ItemGroup>
 
 </Project>

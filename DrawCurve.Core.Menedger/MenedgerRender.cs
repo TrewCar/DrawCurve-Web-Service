@@ -1,5 +1,5 @@
-﻿using DrawCurve.Core.Menedger.Models;
-using DrawCurve.Core.Window;
+﻿using DrawCurve.Core.Window;
+using DrawCurve.Domen.Core.Menedger.Models;
 
 namespace DrawCurve.Core.Menedger
 {
