@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace DrawCurve.Domen.Models.Core.Enums
 {
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TagRender
     {
         [EnumMember(Value = "MILLION")]
