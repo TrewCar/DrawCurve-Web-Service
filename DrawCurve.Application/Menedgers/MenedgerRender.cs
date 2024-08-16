@@ -1,7 +1,6 @@
 ﻿using DrawCurve.Core.Window;
-using DrawCurve.Domen.Core.Menedger.Models;
 
-namespace DrawCurve.Core.Menedger
+namespace DrawCurve.Application.Menedgers
 {
     public class MenedgerRender
     {
@@ -13,9 +12,9 @@ namespace DrawCurve.Core.Menedger
 
         public MenedgerRender()
         {
-            this.Renders = new();
-            this.threads = new();
-            this.KeyTreathByEnd = new();
+            Renders = new();
+            threads = new();
+            KeyTreathByEnd = new();
             _threadKeyTreathByEnd = new Thread(CheckEnd);
         }
 

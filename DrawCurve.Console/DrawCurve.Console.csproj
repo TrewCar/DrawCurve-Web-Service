@@ -12,7 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DrawCurve.Core.Menedger\DrawCurve.Core.Menedger.csproj" />
     <ProjectReference Include="..\DrawCurve.Core\DrawCurve.Core.csproj" />
     <ProjectReference Include="..\DrawCurve.Domen.DTO\DrawCurve.Domen.DTO.csproj" />
     <ProjectReference Include="..\DrawCurve.Domen\DrawCurve.Domen.csproj" />
