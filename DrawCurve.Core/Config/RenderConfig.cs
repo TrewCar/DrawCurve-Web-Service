@@ -17,20 +17,28 @@ namespace DrawCurve.Core.Config
         public uint FPS;
         public float Time;
 
-        public float SpeedRender;
+        private int indexSmooth;
+        public int IndexSmooth { 
+            get => indexSmooth; 
+            set 
+            {
+                if (value <= 0)
+                {
+                    indexSmooth = 1;
+                    return;
+                }
+                indexSmooth = value; 
+            } 
+        }
 
-        public TypeDeltaTime DeltaTime;
+        public float SpeedRender;
 
         public uint Width;
         public uint Height;
 
         public List<ActionConfig> ActionsConfig;
         public Dictionary<string, Color> Colors;
-    }
 
-    public enum TypeDeltaTime
-    {
-        Fixed = 0,
-        Dynamic = 1,
+
     }
 }

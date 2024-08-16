@@ -21,10 +21,10 @@ internal class Program
         renderConfig.Tags.Remove(DrawCurve.Core.Tags.TagRender.Zoom);
         renderConfig.Tags.Remove(DrawCurve.Core.Tags.TagRender.Speed);
 
-        renderConfig.FPS = 5000;
-        renderConfig.Time = 10;
+        renderConfig.FPS = 200;
+        renderConfig.Time = 2;
 
-        renderConfig.DeltaTime = TypeDeltaTime.Fixed;
+        renderConfig.IndexSmooth = 20;
 
         renderConfig.Width = 1000;
         renderConfig.Height = 1000;
@@ -46,19 +46,11 @@ internal class Program
 
         CurveRender render = new CurveRender(renderConfig, deserializedObjects.Select(x => x.Transfer()).ToList());
 
-        MenedgerRender menedger = new(render);
+        MenedgerRender menedger = new();
+        menedger.Add(render);
+        Thread.Sleep(2001);
 
-        menedger.OnSendStatusRender += (status) =>
-        {
-            Console.WriteLine($"FPS: {status.FPS} \t CountFrame: {status.CountFPS} \t MaxFrameCount: {status.MaxCountFPS}");
-        };
-
-        menedger.OnEndProccess += () =>
-        {
-            Console.WriteLine("END PROCCESS");
-        };
-
-        menedger.Init();
-        menedger.Start();
+        CurveRender render2 = new CurveRender(renderConfig, obj);
+        menedger.Add(render2);
     }
 }

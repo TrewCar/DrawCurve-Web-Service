@@ -107,8 +107,10 @@ namespace DrawCurve.Core.Window
                 },
                 FPS = 144,
                 Time = 20,
+
+                IndexSmooth = 1,
+                 
                 SpeedRender = 1,
-                DeltaTime = TypeDeltaTime.Fixed,
                 Width = 1080,
                 Height = 1920,
 

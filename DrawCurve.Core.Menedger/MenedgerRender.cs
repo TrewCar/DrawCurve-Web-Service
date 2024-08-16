@@ -5,46 +5,82 @@ namespace DrawCurve.Core.Menedger
 {
     public class MenedgerRender
     {
-        public Render render;
+        public Dictionary<string, Render> Renders { get; private set; }
+        private Dictionary<string, Thread> threads;
 
-        public delegate void SendStatusRender(RenderTick status);
-        public SendStatusRender OnSendStatusRender;
+        private List<string> KeyTreathByEnd;
+        private Thread _threadKeyTreathByEnd;
 
-        public delegate void SendEndProccess();
-        public SendEndProccess OnEndProccess;
-
-        public MenedgerRender(Render render)
+        public MenedgerRender()
         {
-            this.render = render;
+            this.Renders = new();
+            this.threads = new();
+            this.KeyTreathByEnd = new();
+            _threadKeyTreathByEnd = new Thread(CheckEnd);
         }
-        public void Init()
+
+        public string Add(Render render)
         {
-            this.render.Init();
-        }
-        public void Start()
-        {
-            while (!this.render.Close)
+            render.OnCompliteRender += OnCompliteRender;
+            render.OnDoneFrame += OnDoneFrame;
+            Renders.Add(render.KEY, render);
+
+            var thread = new Thread(() =>
             {
-                this.render.Tick();
-                if (this.render.RenderConfig.FPS * this.render.RenderConfig.Time <= this.render.CountFrame){
-                    this.render.Close = true;
-                }
-                //var image = this.render.window.Capture();
-                var status = new RenderTick()
-                {
-                    FPS = (float)this.render.fpsCounter.FPS,
-                    CountFPS = this.render.CountFrame,
-                    MaxCountFPS = this.render.RenderConfig.FPS * this.render.RenderConfig.Time,
-                    Status = TypeStatus.ProccessRenderFrame,
-                };
-                this.OnSendStatusRender?.Invoke(status);
-            }
-            this.OnEndProccess?.Invoke();
+                render.Init();
+                render.window.SetActive(true);
+                render.Start();
+                render.window.SetActive(false);
+                render.Dispose();
+            });
+            thread.UnsafeStart();
+            //thread.Start();
+
+            threads.Add(render.KEY, thread);
+
+            return render.KEY;
         }
-        public void Dispose()
+
+        protected void OnDoneFrame(string key)
         {
-            this.render.Close = true;
-            this.render.Dispose();
+            if (!Renders.ContainsKey(key))
+                return;
+            Console.WriteLine(key);
+        }
+
+        protected void OnCompliteRender(string key)
+        {
+            if (!threads.ContainsKey(key))
+                return;
+            Console.WriteLine("END " + key);
+
+            KeyTreathByEnd.Add(key);
+        }
+        /// <summary>
+        /// Условный костыль, позволяющий закрыть поток рендера вне его потока
+        /// </summary>
+        private void CheckEnd()
+        {
+            while (true)
+            {
+                List<string> keysRemve = new();
+                for (int i = 0; i < KeyTreathByEnd.Count; i++)
+                {
+                    string KEY = KeyTreathByEnd[i];
+                    keysRemve.Add(KEY);
+
+
+                    var thread = threads[KEY];
+                    var render = Renders[KEY];
+
+                    thread.Join();
+                    //render.Dispose();
+                    Renders.Remove(KEY);
+                    threads.Remove(KEY);
+                }
+                keysRemve.ForEach(key => KeyTreathByEnd.Remove(key));
+            }
         }
     }
+
 }

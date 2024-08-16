@@ -13,7 +13,20 @@ namespace DrawCurve.Domen.Models.Core
 
         public float SpeedRender { get; set; }
 
-        public TypeDeltaTime DeltaTime { get; set; }
+        private int indexSmooth;
+        public int IndexSmooth
+        {
+            get => indexSmooth;
+            set
+            {
+                if (value <= 0)
+                {
+                    indexSmooth = 1;
+                    return;
+                }
+                indexSmooth = value;
+            }
+        }
 
         public uint Width { get; set; }
         public uint Height { get; set; }

@@ -3,22 +3,27 @@ using DrawCurve.Core.Config;
 using DrawCurve.Core.Helpers;
 using DrawCurve.Core.Objects;
 using SFML.Graphics;
-using SFML.Window;
 
 namespace DrawCurve.Core.Window
 {
-    public abstract class Render : IDisposable
+    public abstract class Render: IDisposable
     {
-#if DEBUG
-        public RenderWindow window { get; set; }
-#else
+        public readonly string KEY = Guid.NewGuid().ToString();
+
         public RenderTexture window { get; set; }
-#endif
 
         protected List<ObjectRender> objects = new();
 
         protected delegate void UpdateAction(float deltaTime);
         protected UpdateAction TickAction;
+
+        public delegate void DoneFrame(string key);
+        public DoneFrame OnDoneFrame;
+
+        public delegate void CommpliteRender(string key);
+        public CommpliteRender OnCompliteRender;
+
+
         public int CountFrame { get; private set; } = 0;
         public float SpeedRender = 1f;
 
@@ -27,6 +32,11 @@ namespace DrawCurve.Core.Window
         public FPSCounter fpsCounter = new FPSCounter();
 
         public Color background = Color.Black;
+
+        public bool Close = false;
+
+        private int frameSmooth;
+
 
         public virtual List<ActionBase> active { get; set; } = new List<ActionBase>();
 
@@ -47,59 +57,38 @@ namespace DrawCurve.Core.Window
         {
             this.SpeedRender = RenderConfig.SpeedRender;
 
-#if DEBUG
-            this.window = new RenderWindow(new VideoMode(RenderConfig.Width, RenderConfig.Height), RenderConfig.Title);
-            this.window.SetFramerateLimit(RenderConfig.FPS);
-            this.window.Closed += (sender, e) => window.Close();
-#else
             this.window = new RenderTexture(RenderConfig.Width, RenderConfig.Height);
-#endif
-
-            this.window.SetActive(false);
 
             this.active.ForEach(X => X.SetConfig(RenderConfig));
+
+            this.frameSmooth = RenderConfig.IndexSmooth;
         }
         public void Start()
         {
-            while (Tick()){ }
-        }
-        private bool ConterWindowRenderActive = false;
-
-        public bool Close = false;
-
-        public bool Tick()
-        {
-            fpsCounter.Update();
-            if (!ConterWindowRenderActive)
+            while (this.RenderConfig.FPS * this.RenderConfig.Time >= this.CountFrame && !Close)
             {
-                this.window.SetActive(true);
-                ConterWindowRenderActive = true;
+                fpsCounter.Update();
+
+                float deltaTime = (1.0F / RenderConfig.FPS * SpeedRender) / RenderConfig.IndexSmooth;
+
+                this.TickAction?.Invoke(deltaTime);
+
+                var val = TickRender(deltaTime);
+                window.Display();
+
+                if (frameSmooth == RenderConfig.IndexSmooth)
+                {
+                    frameSmooth = 0;
+                    CountFrame++;
+                    OnDoneFrame?.Invoke(KEY);
+                }
+
+                frameSmooth++;
+
             }
-#if DEBUG
-            if (Close || !window.IsOpen)
-            {
-                Close = true;
-                return false;
-            }
-#else
-            if (Close)
-                return false;
-#endif
-
-            float deltaTime = RenderConfig.DeltaTime == TypeDeltaTime.Fixed ? 
-                1.0F / RenderConfig.FPS * SpeedRender : 
-                fpsCounter.DeltaTime * SpeedRender;
-
-            this.TickAction?.Invoke(deltaTime);
-#if DEBUG
-            window.DispatchEvents();
-#endif
-
-            var val = TickRender(deltaTime);
-            window.Display();
-            CountFrame++;
-            return val;
+            OnCompliteRender?.Invoke(KEY);
         }
+
         /// <summary>
         /// Рисуйте сударь
         /// </summary>
@@ -111,7 +100,6 @@ namespace DrawCurve.Core.Window
         public void Dispose()
         {
             window.Dispose();
-            window = null;
         }
     }
 }

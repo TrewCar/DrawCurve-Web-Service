@@ -1,7 +1,5 @@
 ﻿using ColorCore = SFML.Graphics.Color;
 using ColorModel = DrawCurve.Domen.Models.Core.Color;
-using DeltaTimeCore = DrawCurve.Core.Config.TypeDeltaTime;
-using DeltaTimeModel = DrawCurve.Domen.Models.Core.Enums.TypeDeltaTime;
 using RenderConfigCore = DrawCurve.Core.Config.RenderConfig;
 using RenderConfigModel = DrawCurve.Domen.Models.Core.RenderConfig;
 using TagRenderCore = DrawCurve.Core.Tags.TagRender;
@@ -23,7 +21,7 @@ namespace DrawCurve.Domen.DTO.Models
                 Time = 20,
                 SpeedRender = 1,
 
-                DeltaTime = cnf.DeltaTime.DataTransfer<DeltaTimeModel, DeltaTimeCore>(),
+                IndexSmooth = cnf.IndexSmooth,
 
                 Width = 1080,
                 Height = 1920,
@@ -47,7 +45,7 @@ namespace DrawCurve.Domen.DTO.Models
                 Time = 20,
                 SpeedRender = 1,
 
-                DeltaTime = cnf.DeltaTime.DataTransfer<DeltaTimeCore, DeltaTimeModel>(),
+                IndexSmooth = cnf.IndexSmooth,
 
                 Width = 1080,
                 Height = 1920,
