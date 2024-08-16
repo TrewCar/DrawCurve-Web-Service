@@ -1,5 +1,4 @@
-﻿using DrawCurve.Core.Config;
-using DrawCurve.Core.Menedger;
+﻿using DrawCurve.Application.Menedgers;
 using DrawCurve.Core.Objects;
 using DrawCurve.Core.Window;
 using DrawCurve.Domen.DTO.Models.Objects;
