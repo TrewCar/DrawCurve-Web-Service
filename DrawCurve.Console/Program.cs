@@ -10,10 +10,15 @@ internal class Program
     {
         Console.WriteLine("Hello, World!");
 
+        for (int i = 0; i < 1; i++)
+        {
+            InitCreate();
+        }
+    }
+    private static void InitCreate()
+    {
         var renderConfig2 = new CurveRender();
         var renderConfig = renderConfig2.GetDefaultRenderConfig();
-
-
 
         renderConfig.Colors["background"] = new Color(0, 0, 0, 3);
         renderConfig.Tags.Remove(DrawCurve.Core.Tags.TagRender.Follow);
@@ -23,7 +28,7 @@ internal class Program
         renderConfig.FPS = 200;
         renderConfig.Time = 2;
 
-        renderConfig.IndexSmooth = 20;
+        renderConfig.IndexSmooth = 50;
 
         renderConfig.Width = 1000;
         renderConfig.Height = 1000;
@@ -34,22 +39,19 @@ internal class Program
             new LineCurve(100, 90, -MathF.PI/15),
         };
 
-        var objModel = obj.Select(x => x.Transfer()).ToList();
+        //var objModel = obj.Select(x => x.Transfer()).ToList();
 
-        // Сериализация:
-        string json = JsonSerializer.Serialize(objModel, new JsonSerializerOptions { WriteIndented = true });
-        Console.WriteLine(json);
+        //// Сериализация:
+        //string json = JsonSerializer.Serialize(objModel, new JsonSerializerOptions { WriteIndented = true });
+        //Console.WriteLine(json);
 
-        // Десериализация:
-        var deserializedObjects = JsonSerializer.Deserialize<List<DrawCurve.Domen.Models.Core.Objects.ObjectRender>>(json);
+        //// Десериализация:
+        //var deserializedObjects = JsonSerializer.Deserialize<List<DrawCurve.Domen.Models.Core.Objects.ObjectRender>>(json);
 
-        CurveRender render = new CurveRender(renderConfig, deserializedObjects.Select(x => x.Transfer()).ToList());
+        CurveRender render = new CurveRender(renderConfig, obj);
+
 
         MenedgerRender menedger = new();
         menedger.Add(render);
-        Thread.Sleep(2001);
-
-        CurveRender render2 = new CurveRender(renderConfig, obj);
-        menedger.Add(render2);
     }
 }

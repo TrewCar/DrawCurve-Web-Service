@@ -1,4 +1,5 @@
 ﻿using DrawCurve.Core.Window;
+using System.Reflection;
 
 namespace DrawCurve.Application.Menedgers
 {
@@ -16,6 +17,8 @@ namespace DrawCurve.Application.Menedgers
             threads = new();
             KeyTreathByEnd = new();
             _threadKeyTreathByEnd = new Thread(CheckEnd);
+            _threadKeyTreathByEnd.Start();
+            Directory.CreateDirectory("test");
         }
 
         public string Add(Render render)
@@ -23,17 +26,17 @@ namespace DrawCurve.Application.Menedgers
             render.OnCompliteRender += OnCompliteRender;
             render.OnDoneFrame += OnDoneFrame;
             Renders.Add(render.KEY, render);
-
+            Directory.CreateDirectory(Path.Combine("test", render.KEY));
             var thread = new Thread(() =>
             {
                 render.Init();
-                render.window.SetActive(true);
+                //render.window.SetActive(true);
                 render.Start();
-                render.window.SetActive(false);
+                //render.window.SetActive(false);
                 render.Dispose();
             });
-            thread.UnsafeStart();
-            //thread.Start();
+            //thread.UnsafeStart();
+            thread.Start();
 
             threads.Add(render.KEY, thread);
 
@@ -44,7 +47,11 @@ namespace DrawCurve.Application.Menedgers
         {
             if (!Renders.ContainsKey(key))
                 return;
-            Console.WriteLine(key);
+
+            Renders[key].window.Texture.CopyToImage()
+                .SaveToFile(Path.Combine("test", Renders[key].KEY, Renders[key].KEY + "_" + Renders[key].CountFrame + ".png"));
+
+            Console.WriteLine(key + " - " + Renders[key].CountFrame);
         }
 
         protected void OnCompliteRender(string key)
@@ -62,8 +69,9 @@ namespace DrawCurve.Application.Menedgers
         {
             while (true)
             {
+                var tempList = KeyTreathByEnd.ToList();
                 List<string> keysRemve = new();
-                for (int i = 0; i < KeyTreathByEnd.Count; i++)
+                for (int i = 0; i < tempList.Count; i++)
                 {
                     string KEY = KeyTreathByEnd[i];
                     keysRemve.Add(KEY);
@@ -77,7 +85,11 @@ namespace DrawCurve.Application.Menedgers
                     Renders.Remove(KEY);
                     threads.Remove(KEY);
                 }
-                keysRemve.ForEach(key => KeyTreathByEnd.Remove(key));
+                foreach (var key in keysRemve)
+                {
+                    KeyTreathByEnd.Remove(key);
+                }
+                //Thread.Sleep(1000);
             }
         }
     }
