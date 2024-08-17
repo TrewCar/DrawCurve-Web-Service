@@ -8,6 +8,7 @@ namespace DrawCurve.Domen.Core.Menedger.Models
 {
     public class RenderTick
     {
+        public int IdRender {  get; set; }
         public float FPS { get; set; }
         public float CountFPS { get; set; }
         public float MaxCountFPS { get; set; }

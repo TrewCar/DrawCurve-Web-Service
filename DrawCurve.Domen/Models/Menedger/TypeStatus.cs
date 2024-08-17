@@ -4,7 +4,7 @@ using System.Text.Json.Serialization;
 
 namespace DrawCurve.Domen.Core.Menedger.Models
 {
-    [JsonConverter(typeof(StringEnumConverter))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TypeStatus
     {
         [EnumMember(Value = "PROCCESS_RENDER_FRAME")]

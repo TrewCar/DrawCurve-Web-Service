@@ -9,21 +9,23 @@ using System.Threading.Tasks;
 
 namespace DrawCurve.Domen.Models
 {
-    public class VideoInfo
+    [Table("UserLogin")]
+    public class UserLogin
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID {  get; set; }
         [ForeignKey(nameof(User))]
-        public int AuthorId {  get; set; }
-        [ForeignKey(nameof(RenderInfo))]
-        public int RenderCnfId { get; set; }
-        public string Name {  get; set; }
-        public string Description { get; set; }
-        public int Time {  get; set; }
+        public int UserId { get; set; }
+
+        [Required]
+        public string Login { get; set; }
+
+        [Required]
+        public string Email { get; set; }
+
+        [Required]
+        public string Password { get; set; }
 
         // Навигационное свойство
         public User User { get; set; }
-        public RenderInfo RenderInfo { get; set; }
     }
 }

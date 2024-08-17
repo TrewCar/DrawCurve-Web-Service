@@ -8,7 +8,7 @@ namespace DrawCurve.Core.Window
 {
     public abstract class Render: IDisposable
     {
-        public readonly string KEY = Guid.NewGuid().ToString();
+        public string KEY { get; set; } = Guid.NewGuid().ToString();
 
         public RenderTexture window { get; set; }
 
@@ -63,6 +63,7 @@ namespace DrawCurve.Core.Window
 
             this.frameSmooth = RenderConfig.IndexSmooth;
         }
+
         public void Start()
         {
             while (this.RenderConfig.FPS * this.RenderConfig.Time >= this.CountFrame && !Close)

@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DrawCurve.Domen.Models
 {
+    [Table("User")]
     public class User
     {
-        public string Id { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id {  get; set; }
+        [Required]
         public string Name { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
+        public Role Role { get; set; }
+        public DateTime DateCreate { get; set; }
     }
 }

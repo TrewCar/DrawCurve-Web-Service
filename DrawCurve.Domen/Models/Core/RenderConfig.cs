@@ -1,4 +1,7 @@
 ﻿using DrawCurve.Domen.Models.Core.Enums;
+using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Windows.Markup;
 
 namespace DrawCurve.Domen.Models.Core
 {
@@ -32,6 +35,8 @@ namespace DrawCurve.Domen.Models.Core
         public uint Height { get; set; }
 
         public List<ActionConfig> ActionsConfig { get; set; }
+
         public Dictionary<string, Color> Colors { get; set; }
     }
+
 }
