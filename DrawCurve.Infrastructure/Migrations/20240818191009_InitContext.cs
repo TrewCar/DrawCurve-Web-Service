@@ -20,7 +20,7 @@ namespace DrawCurve.Infrastructure.Migrations
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Role = table.Column<int>(type: "integer", nullable: false),
-                    DateCreate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    DateCreate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,17 +31,18 @@ namespace DrawCurve.Infrastructure.Migrations
                 name: "RenderInfo",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "integer", nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    KEY = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
                     AuthorId = table.Column<int>(type: "integer", nullable: false),
+                    Type = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     Objects = table.Column<string>(type: "text", nullable: false),
                     RenderConfig = table.Column<string>(type: "text", nullable: false),
-                    DateCreate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    DateCreate = table.Column<DateTime>(type: "timestamp without time zone", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RenderInfo", x => x.Id);
+                    table.PrimaryKey("PK_RenderInfo", x => x.KEY);
                     table.ForeignKey(
                         name: "FK_RenderInfo_User_AuthorId",
                         column: x => x.AuthorId,
@@ -77,7 +78,7 @@ namespace DrawCurve.Infrastructure.Migrations
                     ID = table.Column<int>(type: "integer", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     AuthorId = table.Column<int>(type: "integer", nullable: false),
-                    RenderCnfId = table.Column<int>(type: "integer", nullable: false),
+                    RenderCnfId = table.Column<string>(type: "text", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: false),
                     Time = table.Column<int>(type: "integer", nullable: false)
@@ -89,7 +90,7 @@ namespace DrawCurve.Infrastructure.Migrations
                         name: "FK_VideoInfo_RenderInfo_RenderCnfId",
                         column: x => x.RenderCnfId,
                         principalTable: "RenderInfo",
-                        principalColumn: "Id",
+                        principalColumn: "KEY",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_VideoInfo_User_AuthorId",

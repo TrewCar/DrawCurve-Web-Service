@@ -12,14 +12,17 @@ namespace DrawCurve.Application
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
-
             services.AddDbContext<DrawCurveDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
             );
             services.AddScoped<ILoginService, LoginService>();
+            services.AddScoped<IRenderQueue, RenderService>();
+            services.AddScoped<IRenderService, RenderService>();
 
             services.AddSingleton<MenedgerConfig>();
             services.AddSingleton<MenedgerRender>();
+
+            services.AddHostedService<MenedgerRenderHostedService>();
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);

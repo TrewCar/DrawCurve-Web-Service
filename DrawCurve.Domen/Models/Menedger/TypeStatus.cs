@@ -7,15 +7,11 @@ namespace DrawCurve.Domen.Core.Menedger.Models
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum TypeStatus
     {
-        [EnumMember(Value = "PROCCESS_RENDER_FRAME")]
-        ProccessRenderFrame,
-        [EnumMember(Value = "PROCCESS_CONCAT_FRAME")]
-        ProccessConcatFrame,
-        [EnumMember(Value = "PROCCESS_CONCAT_AUDIO")]
-        ProccessConcatAudio,
-        [EnumMember(Value = "PROCCESS_END")]
-        ProccessEnd,
-        [EnumMember(Value = "PROCCESS_ERROR")]
-        Error
+        [EnumMember(Value = "PROCCESS_RENDER_FRAME")] ProccessRenderFrame = 0,
+        [EnumMember(Value = "PROCCESS_CONCAT_FRAME")] ProccessConcatFrame = 1,
+        [EnumMember(Value = "PROCCESS_CONCAT_AUDIO")] ProccessConcatAudio = 2,
+        [EnumMember(Value = "PROCCESS_END")]          ProccessEnd         = 3,
+        [EnumMember(Value = "PROCCESS_ERROR")]        Error               = 4,
+        [EnumMember(Value = "PROCCESS_IN_QUEUE")]     ProccessInQueue     = 5,
     }
 }

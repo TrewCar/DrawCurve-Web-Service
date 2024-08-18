@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DrawCurve.Infrastructure.Migrations
 {
     [DbContext(typeof(DrawCurveDbContext))]
-    [Migration("20240817185300_InitContext")]
+    [Migration("20240818191009_InitContext")]
     partial class InitContext
     {
         /// <inheritdoc />
@@ -27,17 +27,18 @@ namespace DrawCurve.Infrastructure.Migrations
 
             modelBuilder.Entity("DrawCurve.Domen.Models.RenderInfo", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+                    b.Property<string>("KEY")
+                        .HasColumnType("text");
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("DateCreate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("ObjectsJSON")
                         .IsRequired()
@@ -52,7 +53,10 @@ namespace DrawCurve.Infrastructure.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.HasKey("Id");
+                    b.Property<int>("Type")
+                        .HasColumnType("integer");
+
+                    b.HasKey("KEY");
 
                     b.HasIndex("AuthorId");
 
@@ -68,7 +72,7 @@ namespace DrawCurve.Infrastructure.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime>("DateCreate")
-                        .HasColumnType("timestamp with time zone");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -123,8 +127,9 @@ namespace DrawCurve.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("RenderCnfId")
-                        .HasColumnType("integer");
+                    b.Property<string>("RenderCnfId")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<int>("Time")
                         .HasColumnType("integer");

@@ -51,7 +51,7 @@ internal class Program
         CurveRender render = new CurveRender(renderConfig, obj);
 
 
-        MenedgerRender menedger = new();
-        menedger.Add(render);
+        //MenedgerRender menedger = new();
+        //menedger.Add(render);
     }
 }

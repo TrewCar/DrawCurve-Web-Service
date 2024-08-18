@@ -53,7 +53,7 @@ namespace DrawCurve.Application.Services
 
                     transaction.Commit();
 
-                    return "Регистрация прошла успешно";
+                    return "";
                 }
                 catch
                 {

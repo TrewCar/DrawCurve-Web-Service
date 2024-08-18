@@ -17,7 +17,7 @@ namespace DrawCurve.Domen.Models
         [ForeignKey(nameof(User))]
         public int AuthorId {  get; set; }
         [ForeignKey(nameof(RenderInfo))]
-        public int RenderCnfId { get; set; }
+        public string RenderCnfId { get; set; }
         public string Name {  get; set; }
         public string Description { get; set; }
         public int Time {  get; set; }

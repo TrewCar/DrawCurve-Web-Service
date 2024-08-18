@@ -28,7 +28,7 @@ namespace DrawCurve.Core.Window
         public override void Init()
         {
             base.Init();
-            foreach (var item in objects)
+            foreach (var item in Objects)
             {
                 if (item is LineCurve line)
                     this.TickAction += item.Update;
@@ -64,14 +64,14 @@ namespace DrawCurve.Core.Window
 
         private Vertex[] CalcLines(Vector2f pos)
         {
-            Vertex[] array = new Vertex[objects.Count + 1];
+            Vertex[] array = new Vertex[Objects.Count + 1];
             array[0] = new Vertex(pos, RenderConfig.Colors["stylus"]);
 
             Vector2f vec = pos;
 
-            for (int i = 0; i < objects.Count; i++)
+            for (int i = 0; i < Objects.Count; i++)
             {
-                if (objects[i] is LineCurve line)
+                if (Objects[i] is LineCurve line)
                 {
                     vec = line.GetPoint(vec);
                     array[i + 1] = new Vertex(vec, RenderConfig.Colors["stylus"]);

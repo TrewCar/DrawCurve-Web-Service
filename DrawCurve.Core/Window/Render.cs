@@ -12,7 +12,7 @@ namespace DrawCurve.Core.Window
 
         public RenderTexture window { get; set; }
 
-        protected List<ObjectRender> objects = new();
+        public List<ObjectRender> Objects = new();
 
         protected delegate void UpdateAction(float deltaTime);
         protected UpdateAction TickAction;
@@ -43,14 +43,14 @@ namespace DrawCurve.Core.Window
         public Render()
         {
             this.RenderConfig = GetDefaultRenderConfig();
-            this.objects = new List<ObjectRender>();
+            this.Objects = new List<ObjectRender>();
         }
 
 
         public Render(RenderConfig config, List<ObjectRender> Objects)
         {
             this.RenderConfig = config;
-            this.objects = Objects;
+            this.Objects = Objects;
         }
 
         public virtual void Init()

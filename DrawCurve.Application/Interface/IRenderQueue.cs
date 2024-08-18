@@ -1,6 +1,12 @@
-﻿namespace DrawCurve.Application.Interface
+﻿using DrawCurve.Domen.Core.Menedger.Models;
+using DrawCurve.Domen.Models;
+
+namespace DrawCurve.Application.Interface
 {
-    internal interface IRenderQueue
+    public interface IRenderQueue
     {
+        public List<RenderInfo> GetQueue();
+        public List<RenderInfo> GetBroken();
+        public void UpdateState(RenderInfo render, TypeStatus status);
     }
 }
