@@ -1,6 +1,7 @@
 ﻿using DrawCurve.Application.Menedgers;
 using DrawCurve.Core.Objects;
 using DrawCurve.Core.Window;
+using DrawCurve.Domen.DTO.Models;
 using DrawCurve.Domen.DTO.Models.Objects;
 using SFML.Graphics;
 using System.Text.Json;
@@ -26,7 +27,7 @@ internal class Program
         renderConfig.Tags.Remove(DrawCurve.Core.Tags.TagRender.Speed);
 
         renderConfig.FPS = 200;
-        renderConfig.Time = 2;
+        renderConfig.Time = 100;
 
         renderConfig.IndexSmooth = 50;
 
@@ -39,11 +40,16 @@ internal class Program
             new LineCurve(100, 90, -MathF.PI/15),
         };
 
-        //var objModel = obj.Select(x => x.Transfer()).ToList();
+        var objModel = obj.Select(x => x.Transfer()).ToList();
 
         //// Сериализация:
-        //string json = JsonSerializer.Serialize(objModel, new JsonSerializerOptions { WriteIndented = true });
-        //Console.WriteLine(json);
+        string json = JsonSerializer.Serialize(objModel, new JsonSerializerOptions { WriteIndented = true });
+        Console.WriteLine(json);
+
+        Console.WriteLine();
+
+        json = JsonSerializer.Serialize(renderConfig.Transfer(), new JsonSerializerOptions { WriteIndented = true });
+        Console.WriteLine(json);
 
         //// Десериализация:
         //var deserializedObjects = JsonSerializer.Deserialize<List<DrawCurve.Domen.Models.Core.Objects.ObjectRender>>(json);
@@ -52,6 +58,6 @@ internal class Program
 
 
         //MenedgerRender menedger = new();
-        //menedger.Add(render);
+        //menedger.Add(1, render);
     }
 }

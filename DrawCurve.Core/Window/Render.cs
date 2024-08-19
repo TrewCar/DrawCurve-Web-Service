@@ -8,7 +8,7 @@ namespace DrawCurve.Core.Window
 {
     public abstract class Render: IDisposable
     {
-        public string KEY { get; set; } = Guid.NewGuid().ToString();
+        public string KEY { get; set; }
 
         public RenderTexture window { get; set; }
 
@@ -24,7 +24,7 @@ namespace DrawCurve.Core.Window
         public CommpliteRender OnCompliteRender;
 
 
-        public int CountFrame { get; private set; } = 0;
+        public int CountFrame { get; set; } = 0;
         public float SpeedRender = 1f;
 
         public RenderConfig RenderConfig { get; private set; }

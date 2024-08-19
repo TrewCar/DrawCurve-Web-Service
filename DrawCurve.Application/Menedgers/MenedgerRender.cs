@@ -1,21 +1,20 @@
 ﻿using DrawCurve.Application.Interface;
-using DrawCurve.Application.Services;
 using DrawCurve.Core.Window;
 using DrawCurve.Domen.Core.Menedger.Models;
 using DrawCurve.Domen.DTO.Models;
 using DrawCurve.Domen.DTO.Models.Objects;
 using DrawCurve.Domen.Models;
+using DrawCurve.Domen.Models.Core.Objects;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SFML.Graphics;
-using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
+using System.Text.Json;
 
 namespace DrawCurve.Application.Menedgers
 {
     public class MenedgerRender
     {
-        public static readonly string PathToSaveFrame = Path.Combine("DateVideo", "Frames");
+        public static readonly string PathToSaveFrame = Path.Combine(Directory.GetParent(Environment.ProcessPath).FullName, "DateVideo", "Frames");
         public Dictionary<string, (int Author, Render Render)> Renders { get; private set; }
         private Dictionary<string, Thread> threads;
 
@@ -59,28 +58,11 @@ namespace DrawCurve.Application.Menedgers
             {
                 render.Init();
                 string path = Path.Combine(PathToSaveFrame, render.KEY);
-                if (Directory.Exists(path))
-                {
-                    var files = Directory.GetFiles(path, "*.png");
-                    if (files.Length > 10 && File.Exists(Path.Combine(PathToSaveFrame, render.KEY, "NOW_STATE.json")))
-                    {
-                        Texture texture = new Texture(files.Last());
-                        render.window.Texture.Swap(texture);
-                    }
-                    else
-                    {
-                        Directory.Delete(path, true);
-                        Directory.CreateDirectory(path);
-                    }
-                }
-                else
-                {
-                    Directory.CreateDirectory(path);
-                }
-
-                //render.window.SetActive(true);
+                Directory.Delete(path, true);
+                Directory.CreateDirectory(path);
+                render.window.SetActive(true);
                 render.Start();
-                //render.window.SetActive(false);
+                render.window.SetActive(false);
                 render.Dispose();
             });
             //thread.UnsafeStart();
@@ -91,25 +73,20 @@ namespace DrawCurve.Application.Menedgers
             return render.KEY;
         }
 
-        protected void OnDoneFrame(string key)
+        protected async void OnDoneFrame(string key)
         {
             if (!Renders.ContainsKey(key))
                 return;
+            var render = Renders[key].Render;
 
-            Renders[key].Render.window.Texture.CopyToImage()
-                .SaveToFile(Path.Combine(PathToSaveFrame, Renders[key].Render.KEY, "frame_" + Renders[key].Render.CountFrame + ".png"));
+            var image = render.window.Texture.CopyToImage();
+            var path = Path.Combine(PathToSaveFrame, key, $"frame_{render.CountFrame:D6}.png");
 
-            // Сохраняем текущие состояние 
-            var json = JsonConvert.SerializeObject(
-                Renders[key].Render.Objects.Select(x => x.Transfer()),
-                Formatting.Indented,
-                new JsonSerializerSettings() { TypeNameHandling = TypeNameHandling.All });
+            await Task.Run(() => image.SaveToFile(path));
 
-            File.Delete(Path.Combine(PathToSaveFrame, Renders[key].Render.KEY, "NOW_STATE.json"));
-            File.WriteAllText(Path.Combine(PathToSaveFrame, Renders[key].Render.KEY, "NOW_STATE.json"), json);
-
-            Console.WriteLine(key + " - " + Renders[key].Render.CountFrame);
+            Console.WriteLine(key + " - " + render.CountFrame);
         }
+
 
         protected void OnCompliteRender(string key)
         {
@@ -145,9 +122,15 @@ namespace DrawCurve.Application.Menedgers
                 foreach (var key in keysRemve)
                 {
                     KeyTreathByEnd.Remove(key);
+
+                    using var scope = _serviceProvider.CreateScope();
+                    var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
+                    var renderInfo = queue.GetRender(key);
+
+                    queue.UpdateState(renderInfo, TypeStatus.ProccessConcatFrame);
                 }
 
-                if(Renders.Count < 10)
+                if (Renders.Count < 10)
                 {
                     using var scope = _serviceProvider.CreateScope();
                     var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
@@ -169,10 +152,12 @@ namespace DrawCurve.Application.Menedgers
         {
             if (render.Type == RenderType.RenderCurve)
             {
-                return new CurveRender(
+                var t = new CurveRender(
                     render.RenderConfig.Transfer(),
                     render.Objects.Select(x => x.Transfer()).ToList()
                 );
+                t.KEY = render.KEY;
+                return t;
             }
             else
             {
