@@ -10,6 +10,7 @@ namespace DrawCurve.Application.Interface
     public interface IRenderService
     {
         public RenderInfo? GetRender(string Key);
+        public List<RenderInfo> GetRenderList(User user);
         public void Queue(RenderInfo queue);
     }
 }

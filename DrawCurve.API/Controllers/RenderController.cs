@@ -20,10 +20,38 @@ namespace DrawCurve.API.Controllers
             this.Queue = queue;
         }
 
-        [HttpPost]
-        [Route("{RenderType}/{RenderName}")]
-        public string StartRender(RenderType type, string RenderName, ResponceRenderInfo render)
+        [HttpGet]
+        [Route("get/all/self")]
+        public List<RenderInfo> GetRender()
         {
+            if(Session.GetUserSession() != null)
+                return Queue.GetRenderList(Session.GetUserSession());
+
+            this.Response.StatusCode = 401;
+            return new List<RenderInfo>();
+        }
+
+        [HttpGet]
+        [Route("get/{RenderKey}")]
+        public RenderInfo GetRender(string RenderKey)
+        {
+            if (Session.GetUserSession() != null)
+                return Queue.GetRender(RenderKey);
+
+            this.Response.StatusCode = 401;
+            return new RenderInfo();
+        }
+
+        [HttpPost]
+        [Route("generate/{RenderType}")]
+        public string StartRender(RenderType type, ResponceRenderInfo render)
+        {
+            if (Session.GetUserSession() == null)
+            {
+                this.Response.StatusCode = 401;
+                return "Not faund session";
+            }
+
             string key = Guid.NewGuid().ToString();
             RenderInfo info = new RenderInfo()
             {
@@ -31,7 +59,7 @@ namespace DrawCurve.API.Controllers
                 AuthorId = this.Session.GetUserSession().Id,
                 Type = type,
                 Status = TypeStatus.ProccessInQueue,
-                Name = RenderName,
+                Name = render.Name,
                 Objects = render.obejcts,
                 RenderConfig = render.config,
                 DateCreate = DateTime.Now
@@ -39,13 +67,6 @@ namespace DrawCurve.API.Controllers
             Queue.Queue(info);
 
             return key;
-        }
-
-        [HttpGet]
-        [Route("{RenderKey}")]
-        public RenderInfo GetRender(string RenderKey)
-        {
-            return Queue.GetRender(RenderKey);
         }
     }
 }
