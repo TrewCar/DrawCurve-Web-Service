@@ -21,6 +21,7 @@ namespace DrawCurve.Application
 
             services.AddSingleton<MenedgerConfig>();
             services.AddSingleton<MenedgerRender>();
+            services.AddSingleton<MenedgerConcatFrame>();
 
             services.AddHostedService<MenedgerRenderHostedService>();
 

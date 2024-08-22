@@ -44,7 +44,7 @@ namespace DrawCurve.API.Controllers
 
         [HttpPost]
         [Route("generate/{RenderType}")]
-        public string StartRender(RenderType type, ResponceRenderInfo render)
+        public string StartRender(RenderType RenderType, ResponceRenderInfo render)
         {
             if (Session.GetUserSession() == null)
             {
@@ -57,7 +57,7 @@ namespace DrawCurve.API.Controllers
             {
                 KEY = key,
                 AuthorId = this.Session.GetUserSession().Id,
-                Type = type,
+                Type = RenderType,
                 Status = TypeStatus.ProccessInQueue,
                 Name = render.Name,
                 Objects = render.obejcts,

@@ -10,10 +10,12 @@ namespace DrawCurve.Application.Menedgers
     public class MenedgerRenderHostedService : IHostedService
     {
         private readonly MenedgerRender _menedgerRender;
+        private readonly MenedgerConcatFrame _menedgerConcatFrame;
 
-        public MenedgerRenderHostedService(MenedgerRender menedgerRender)
+        public MenedgerRenderHostedService(MenedgerRender menedgerRender, MenedgerConcatFrame menedgerConcatFrame)
         {
             _menedgerRender = menedgerRender;
+            _menedgerConcatFrame = menedgerConcatFrame;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

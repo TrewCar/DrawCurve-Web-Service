@@ -1,4 +1,5 @@
 ﻿using DrawCurve.Application.Interface;
+using DrawCurve.Application.Utils;
 using DrawCurve.Core.Window;
 using DrawCurve.Domen.Core.Menedger.Models;
 using DrawCurve.Domen.DTO.Models;
@@ -14,7 +15,7 @@ namespace DrawCurve.Application.Menedgers
 {
     public class MenedgerRender
     {
-        public static readonly string PathToSaveFrame = Path.Combine(Directory.GetParent(Environment.ProcessPath).FullName, "DateVideo", "Frames");
+        public static string PathToSaveFrame { get; set; } = Path.Combine(Directory.GetParent(Environment.ProcessPath).FullName, "DataVideo", "Frames");
         public Dictionary<string, (int Author, Render Render)> Renders { get; private set; }
         private Dictionary<string, Thread> threads;
 
@@ -34,7 +35,7 @@ namespace DrawCurve.Application.Menedgers
             using var scope = _serviceProvider.CreateScope();
             var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
 
-            var renders = queue.GetBroken();
+            var renders = queue.GetQueue(TypeStatus.ProccessRenderFrame);
             foreach (var item in renders)
             {
                 Render render = this.InitRender(item);
@@ -45,7 +46,6 @@ namespace DrawCurve.Application.Menedgers
             }
             _threadKeyTreathByEnd = new Thread(CheckEnd);
             _threadKeyTreathByEnd.Start();
-            Directory.CreateDirectory("test");
         }
 
         public string Add(int AuthorId, Render render)
@@ -53,11 +53,11 @@ namespace DrawCurve.Application.Menedgers
             render.OnCompliteRender += OnCompliteRender;
             render.OnDoneFrame += OnDoneFrame;
             Renders.Add(render.KEY, (AuthorId, render));
-            Directory.CreateDirectory(Path.Combine(PathToSaveFrame, render.KEY));
+            Directory.CreateDirectory(DirectoryHelper.GetPathToSaveFrame(render.KEY));
             var thread = new Thread(() =>
             {
                 render.Init();
-                string path = Path.Combine(PathToSaveFrame, render.KEY);
+                string path = DirectoryHelper.GetPathToSaveFrame(render.KEY);
                 Directory.Delete(path, true);
                 Directory.CreateDirectory(path);
                 render.window.SetActive(true);
@@ -80,7 +80,7 @@ namespace DrawCurve.Application.Menedgers
             var render = Renders[key].Render;
 
             var image = render.window.Texture.CopyToImage();
-            var path = Path.Combine(PathToSaveFrame, key, $"frame_{render.CountFrame:D6}.png");
+            var path = Path.Combine(DirectoryHelper.GetPathToSaveFrame(key), $"frame_{render.CountFrame:D6}.png");
 
             await Task.Run(() => image.SaveToFile(path));
 
@@ -127,7 +127,7 @@ namespace DrawCurve.Application.Menedgers
                     var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
                     var renderInfo = queue.GetRender(key);
 
-                    queue.UpdateState(renderInfo, TypeStatus.ProccessConcatFrame);
+                    queue.UpdateState(renderInfo, TypeStatus.ProccessRenderFrameEnd);
                 }
 
                 if (Renders.Count < 10)
@@ -135,7 +135,7 @@ namespace DrawCurve.Application.Menedgers
                     using var scope = _serviceProvider.CreateScope();
                     var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
 
-                    var items = queue.GetQueue();
+                    var items = queue.GetQueue(TypeStatus.ProccessInQueue);
 
                     for (int i = 0; i < items.Count - Renders.Count; i++)
                     {

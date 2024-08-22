@@ -33,17 +33,10 @@ namespace DrawCurve.Application.Services
             context.SaveChanges();
         }
 
-        public List<RenderInfo> GetBroken()
+        public List<RenderInfo> GetQueue(TypeStatus status)
         {
             return context.RenderInfo
-                .Where(x => x.Status == TypeStatus.ProccessRenderFrame)
-                .ToList();
-        }
-
-        public List<RenderInfo> GetQueue()
-        {
-            return context.RenderInfo
-                .Where(x => x.Status == TypeStatus.ProccessInQueue)
+                .Where(x => x.Status == status)
                 .OrderByDescending(x => x.DateCreate)
                 .Take(10)
                 .ToList();

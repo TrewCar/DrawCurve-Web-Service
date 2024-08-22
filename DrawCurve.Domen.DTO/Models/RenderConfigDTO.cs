@@ -18,13 +18,13 @@ namespace DrawCurve.Domen.DTO.Models
                 ).ToList(),
 
                 FPS = cnf.FPS,
-                Time = 20,
+                Time = cnf.Time,
                 SpeedRender = 1,
 
                 IndexSmooth = cnf.IndexSmooth,
 
-                Width = 1080,
-                Height = 1920,
+                Width = cnf.Width,
+                Height = cnf.Height,
 
                 ActionsConfig = cnf.ActionsConfig.Select(x => x.Transfer()).ToList(),
 
@@ -42,13 +42,13 @@ namespace DrawCurve.Domen.DTO.Models
                 ).ToList(),
 
                 FPS = cnf.FPS,
-                Time = 20,
+                Time = cnf.Time,
                 SpeedRender = 1,
 
                 IndexSmooth = cnf.IndexSmooth,
 
-                Width = 1080,
-                Height = 1920,
+                Width = cnf.Width,
+                Height = cnf.Height,
 
                 ActionsConfig = cnf.ActionsConfig.Select(x => x.Transfer()).ToList(),
 

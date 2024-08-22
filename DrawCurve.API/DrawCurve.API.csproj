@@ -25,4 +25,8 @@
     <ProjectReference Include="..\DrawCurve.Application\DrawCurve.Application.csproj" />
   </ItemGroup>
 
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="mkdir &quot;$(ProjectDir)$(OutDir)Utils&quot;&#xD;&#xA;xcopy /y &quot;$(ProjectDir)Utils&quot;  &quot;$(ProjectDir)$(OutDir)Utils&quot; /E /H /C /I&#xD;&#xA;powershell Expand-Archive -Path &quot;$(ProjectDir)Utils\ffmpeg.zip&quot; -DestinationPath &quot;$(ProjectDir)$(OutDir)Utils&quot;" />
+  </Target>
+
 </Project>
