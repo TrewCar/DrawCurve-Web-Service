@@ -55,8 +55,8 @@ internal class Program
         //var deserializedObjects = JsonSerializer.Deserialize<List<DrawCurve.Domen.Models.Core.Objects.ObjectRender>>(json);
 
         CurveRender render = new CurveRender(renderConfig, obj);
-
-
+        render.Init();
+        render.Start();
         //MenedgerRender menedger = new();
         //menedger.Add(1, render);
     }

@@ -7,7 +7,6 @@ using DrawCurve.Domen.DTO.Models.Objects;
 using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Core.Objects;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using SFML.Graphics;
 using System.Text.Json;
 
@@ -17,20 +16,15 @@ namespace DrawCurve.Application.Menedgers
     {
         public static string PathToSaveFrame { get; set; } = Path.Combine(Directory.GetParent(Environment.ProcessPath).FullName, "DataVideo", "Frames");
         public Dictionary<string, (int Author, Render Render)> Renders { get; private set; }
-        private Dictionary<string, Thread> threads;
-
-        private List<string> KeyTreathByEnd;
-        private Thread _threadKeyTreathByEnd;
+        private List<string> KeyRenderByEnd;
 
         private IServiceProvider _serviceProvider;
 
         public MenedgerRender(IServiceProvider serviceProvider)
         {
             Renders = new();
-            threads = new();
-            KeyTreathByEnd = new();
-
-            this._serviceProvider = serviceProvider;
+            KeyRenderByEnd = new();
+            _serviceProvider = serviceProvider;
 
             using var scope = _serviceProvider.CreateScope();
             var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
@@ -38,14 +32,12 @@ namespace DrawCurve.Application.Menedgers
             var renders = queue.GetQueue(TypeStatus.ProccessRenderFrame);
             foreach (var item in renders)
             {
-                Render render = this.InitRender(item);
-
+                Render render = InitRender(item);
                 render.KEY = item.KEY;
-
-                this.Add(item.AuthorId, render);
+                Add(item.AuthorId, render);
             }
-            _threadKeyTreathByEnd = new Thread(CheckEnd);
-            _threadKeyTreathByEnd.Start();
+
+            _ = Task.Run(CheckEndAsync);
         }
 
         public string Add(int AuthorId, Render render)
@@ -53,22 +45,26 @@ namespace DrawCurve.Application.Menedgers
             render.OnCompliteRender += OnCompliteRender;
             render.OnDoneFrame += OnDoneFrame;
             Renders.Add(render.KEY, (AuthorId, render));
+
             Directory.CreateDirectory(DirectoryHelper.GetPathToSaveFrame(render.KEY));
-            var thread = new Thread(() =>
+
+            _ = Task.Run(async () =>
             {
                 render.Init();
+                render.window.SetActive(false);
+
                 string path = DirectoryHelper.GetPathToSaveFrame(render.KEY);
-                Directory.Delete(path, true);
+                if (Directory.Exists(path))
+                {
+                    Directory.Delete(path, true);
+                }
+
                 Directory.CreateDirectory(path);
                 render.window.SetActive(true);
                 render.Start();
                 render.window.SetActive(false);
                 render.Dispose();
             });
-            //thread.UnsafeStart();
-            thread.Start();
-
-            threads.Add(render.KEY, thread);
 
             return render.KEY;
         }
@@ -77,74 +73,62 @@ namespace DrawCurve.Application.Menedgers
         {
             if (!Renders.ContainsKey(key))
                 return;
-            var render = Renders[key].Render;
 
-            var image = render.window.Texture.CopyToImage();
+            var render = Renders[key].Render;
+            var image = render.window.Capture();
             var path = Path.Combine(DirectoryHelper.GetPathToSaveFrame(key), $"frame_{render.CountFrame:D6}.png");
 
             await Task.Run(() => image.SaveToFile(path));
 
-            Console.WriteLine(key + " - " + render.CountFrame);
+            Console.WriteLine($"{key} - {render.CountFrame}");
         }
-
 
         protected void OnCompliteRender(string key)
         {
-            if (!threads.ContainsKey(key))
+            if (!Renders.ContainsKey(key))
                 return;
-            Console.WriteLine("END " + key);
 
-            KeyTreathByEnd.Add(key);
+            Console.WriteLine("END " + key);
+            KeyRenderByEnd.Add(key);
         }
-        /// <summary>
-        /// Условный костыль, позволяющий закрыть поток рендера вне его потока
-        /// </summary>
-        private void CheckEnd()
+
+        private async Task CheckEndAsync()
         {
             while (true)
             {
-                var tempList = KeyTreathByEnd.ToList();
-                List<string> keysRemve = new();
-                for (int i = 0; i < tempList.Count; i++)
+                var tempList = KeyRenderByEnd.ToList();
+                List<string> keysToRemove = new();
+
+                foreach (var key in tempList)
                 {
-                    string KEY = KeyTreathByEnd[i];
-                    keysRemve.Add(KEY);
+                    keysToRemove.Add(key);
+                    var render = Renders[key];
 
-
-                    var thread = threads[KEY];
-                    var render = Renders[KEY];
-
-                    thread.Join();
-                    //render.Dispose();
-                    Renders.Remove(KEY);
-                    threads.Remove(KEY);
-                }
-                foreach (var key in keysRemve)
-                {
-                    KeyTreathByEnd.Remove(key);
+                    // No need to call thread.Join(), the task should have already completed
+                    Renders.Remove(key);
 
                     using var scope = _serviceProvider.CreateScope();
                     var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
                     var renderInfo = queue.GetRender(key);
-
                     queue.UpdateState(renderInfo, TypeStatus.ProccessRenderFrameEnd);
                 }
 
-                if (Renders.Count < 10)
+                foreach (var key in keysToRemove)
                 {
+                    KeyRenderByEnd.Remove(key);
+
                     using var scope = _serviceProvider.CreateScope();
                     var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
-
                     var items = queue.GetQueue(TypeStatus.ProccessInQueue);
 
                     for (int i = 0; i < items.Count - Renders.Count; i++)
                     {
                         queue.UpdateState(items[i], TypeStatus.ProccessRenderFrame);
-                        this.Add(items[i].AuthorId, this.InitRender(items[i]));
+                        Add(items[i].AuthorId, InitRender(items[i]));
                     }
                 }
 
-                Thread.Sleep(1000 * 60); // wait 1 minutes to next
+                await Task.Delay(TimeSpan.FromMinutes(1)); // wait 1 minute to next iteration
             }
         }
 
@@ -161,7 +145,7 @@ namespace DrawCurve.Application.Menedgers
             }
             else
             {
-                throw new NotImplementedException($"Type {render.Type} is not implementad in {this.GetType().FullName}");
+                throw new NotImplementedException($"Type {render.Type} is not implemented in {this.GetType().FullName}");
             }
         }
     }

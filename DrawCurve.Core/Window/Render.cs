@@ -10,7 +10,7 @@ namespace DrawCurve.Core.Window
     {
         public string KEY { get; set; }
 
-        public RenderTexture window { get; set; }
+        public RenderWindow window { get; set; }
 
         public List<ObjectRender> Objects = new();
 
@@ -57,11 +57,13 @@ namespace DrawCurve.Core.Window
         {
             this.SpeedRender = RenderConfig.SpeedRender;
 
-            this.window = new RenderTexture(RenderConfig.Width, RenderConfig.Height);
+            this.window = new RenderWindow(new SFML.Window.VideoMode(RenderConfig.Width, RenderConfig.Height), KEY);
 
             this.active.ForEach(X => X.SetConfig(RenderConfig));
 
             this.frameSmooth = RenderConfig.IndexSmooth;
+
+            this.window.SetVisible(true);
         }
 
         public void Start()
@@ -69,7 +71,7 @@ namespace DrawCurve.Core.Window
             while (this.RenderConfig.FPS * this.RenderConfig.Time >= this.CountFrame && !Close)
             {
                 fpsCounter.Update();
-
+                
                 float deltaTime = (1.0F / RenderConfig.FPS * SpeedRender) / RenderConfig.IndexSmooth;
 
                 this.TickAction?.Invoke(deltaTime);
@@ -87,6 +89,7 @@ namespace DrawCurve.Core.Window
                 frameSmooth++;
 
             }
+            window.Close();
             OnCompliteRender?.Invoke(KEY);
         }
 

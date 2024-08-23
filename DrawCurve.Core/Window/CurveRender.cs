@@ -40,6 +40,7 @@ namespace DrawCurve.Core.Window
         {
             var background = new RectangleShape(new Vector2f(window.Size.X, window.Size.Y));
             background.FillColor = RenderConfig.Colors["background"];
+
             window.Draw(background);
 
             var vecs = CalcLines(new Vector2f(window.Size.X / 2, window.Size.Y / 2));
