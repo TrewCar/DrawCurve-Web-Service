@@ -10,6 +10,8 @@ namespace DrawCurve.Application.Utils
     {
         public static readonly string PathToProccessFolder = Directory.GetParent(Environment.ProcessPath).FullName;
 
+        public static readonly string PathToLogs = Path.Combine(PathToProccessFolder, "logs");
+
         public static string GetPathToSaveFrame(string key) => Path.Combine(PathToProccessFolder, "DataVideo", "Frames", key);
 
         public static string GetPathToSaveVideo(string key) => Path.Combine(PathToProccessFolder, "DataVideo", "Video", key);
