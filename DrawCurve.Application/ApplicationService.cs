@@ -1,5 +1,6 @@
 ﻿using DrawCurve.Application.Interface;
 using DrawCurve.Application.Menedgers;
+using DrawCurve.Application.Menedgers.Renders;
 using DrawCurve.Application.Services;
 using DrawCurve.Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +21,8 @@ namespace DrawCurve.Application
             services.AddScoped<IRenderService, RenderService>();
 
             services.AddSingleton<MenedgerConfig>();
-            services.AddSingleton<MenedgerRender>();
+
+            services.AddSingleton<MenedgerGenerateFrames>();
             services.AddSingleton<MenedgerConcatFrame>();
 
             services.AddHostedService<MenedgerRenderHostedService>();

@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using DrawCurve.Application.Menedgers.Renders;
+using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,13 @@ namespace DrawCurve.Application.Menedgers
 {
     public class MenedgerRenderHostedService : IHostedService
     {
-        private readonly MenedgerRender _menedgerRender;
-        private readonly MenedgerConcatFrame _menedgerConcatFrame;
+        private readonly MenedgerGenerateFrames _menedgerRender;
+        private readonly MenedgerConcatFrame _menedgerConcatFrames;
 
-        public MenedgerRenderHostedService(MenedgerRender menedgerRender, MenedgerConcatFrame menedgerConcatFrame)
+        public MenedgerRenderHostedService(MenedgerGenerateFrames menedgerRender, MenedgerConcatFrame menedgerConcatFrame)
         {
             _menedgerRender = menedgerRender;
-            _menedgerConcatFrame = menedgerConcatFrame;
+            _menedgerConcatFrames = menedgerConcatFrame;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
