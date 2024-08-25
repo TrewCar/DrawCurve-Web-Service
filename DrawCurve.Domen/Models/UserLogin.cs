@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection.Metadata;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace DrawCurve.Domen.Models
@@ -26,6 +27,7 @@ namespace DrawCurve.Domen.Models
         public string Password { get; set; }
 
         // Навигационное свойство
+        [JsonIgnore]
         public User User { get; set; }
     }
 }

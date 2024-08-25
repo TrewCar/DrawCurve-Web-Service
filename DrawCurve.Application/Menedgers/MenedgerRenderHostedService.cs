@@ -12,11 +12,13 @@ namespace DrawCurve.Application.Menedgers
     {
         private readonly MenedgerGenerateFrames _menedgerRender;
         private readonly MenedgerConcatFrame _menedgerConcatFrames;
+        private readonly MenedgerVideoConcatAudio _menedgerVideoConcatAudio;
 
-        public MenedgerRenderHostedService(MenedgerGenerateFrames menedgerRender, MenedgerConcatFrame menedgerConcatFrame)
+        public MenedgerRenderHostedService(MenedgerGenerateFrames menedgerRender, MenedgerConcatFrame menedgerConcatFrame, MenedgerVideoConcatAudio menedgerVideoConcatAudio)
         {
             _menedgerRender = menedgerRender;
             _menedgerConcatFrames = menedgerConcatFrame;
+            _menedgerVideoConcatAudio = menedgerVideoConcatAudio;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

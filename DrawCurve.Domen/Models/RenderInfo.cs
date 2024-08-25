@@ -4,6 +4,7 @@ using DrawCurve.Domen.Models.Core.Objects;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace DrawCurve.Domen.Models
 {
@@ -20,6 +21,7 @@ namespace DrawCurve.Domen.Models
         public RenderType Type { get; set; }
         public TypeStatus Status { get; set; }
 
+        [JsonIgnore]
         [Column("Objects")]
         public string ObjectsJSON
         {
@@ -34,6 +36,7 @@ namespace DrawCurve.Domen.Models
             }
         }
 
+        [JsonIgnore]
         [Column("RenderConfig")]
         public string RenderConfigJSON
         {

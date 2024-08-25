@@ -24,6 +24,7 @@ namespace DrawCurve.Application
 
             services.AddSingleton<MenedgerGenerateFrames>();
             services.AddSingleton<MenedgerConcatFrame>();
+            services.AddSingleton<MenedgerVideoConcatAudio>();
 
             services.AddHostedService<MenedgerRenderHostedService>();
 

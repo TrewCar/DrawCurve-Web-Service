@@ -39,7 +39,7 @@ namespace DrawCurve.Application.Menedgers.Renders
                     paternFrames: "frame_%06d.png",
                     pathToFrames: pathToFrame,
                     pathOutVideo: path,
-                    fileName: _key);
+                    outNameFile: _key);
 
                 KeyRenderByEnd.Add(Key);
             });

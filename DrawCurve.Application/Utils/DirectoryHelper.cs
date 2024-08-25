@@ -15,5 +15,7 @@ namespace DrawCurve.Application.Utils
         public static string GetPathToSaveVideo(string key) => Path.Combine(PathToProccessFolder, "DataVideo", "Video", key);
 
         public static string GetPathToSaveResult(string key) => Path.Combine(PathToProccessFolder, "DataVideo", "Result", key);
+
+        public static string PathToAudio() => Path.Combine(PathToProccessFolder, "Data", "Audio");
     }
 }

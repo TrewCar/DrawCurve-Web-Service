@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace DrawCurve.Domen.Models
 {
@@ -8,6 +9,7 @@ namespace DrawCurve.Domen.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [JsonIgnore]
         public int Id {  get; set; }
         [Required]
         public string Name { get; set; }
