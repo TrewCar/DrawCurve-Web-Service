@@ -2,14 +2,15 @@
 using DrawCurve.Application.Utils;
 using DrawCurve.Domen.Core.Menedger.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System.Net.NetworkInformation;
 
 namespace DrawCurve.Application.Menedgers.Renders
 {
     public class MenedgerConcatFrame : MenedgerRender<string>
     {
-        public MenedgerConcatFrame(IServiceProvider serviceProvider)
-            : base(serviceProvider,
+        public MenedgerConcatFrame(IServiceProvider serviceProvider, ILogger<MenedgerConcatFrame> logger)
+            : base(serviceProvider, logger,
                   search: TypeStatus.ProccessRenderFrameEnd,
                   proccess: TypeStatus.ProccessConcatFrame,
                   end: TypeStatus.ProccessConcatFrameEnd)

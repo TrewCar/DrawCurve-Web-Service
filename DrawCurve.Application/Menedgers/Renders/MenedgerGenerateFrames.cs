@@ -7,6 +7,7 @@ using DrawCurve.Domen.DTO.Models.Objects;
 using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Core.Objects;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using SFML.Graphics;
 using System.Text.Json;
 
@@ -14,8 +15,8 @@ namespace DrawCurve.Application.Menedgers.Renders
 {
     public class MenedgerGenerateFrames : MenedgerRender<Render>
     {
-        public MenedgerGenerateFrames(IServiceProvider serviceProvider)
-            : base(serviceProvider,
+        public MenedgerGenerateFrames(IServiceProvider serviceProvider, ILogger<MenedgerGenerateFrames> logger)
+            : base(serviceProvider, logger,
                   search: TypeStatus.ProccessInQueue,
                   proccess: TypeStatus.ProccessRenderFrame,
                   end: TypeStatus.ProccessRenderFrameEnd)
@@ -68,7 +69,7 @@ namespace DrawCurve.Application.Menedgers.Renders
 
             await Task.Run(() => image.SaveToFile(path));
 
-            Console.WriteLine($"{key} - {render.CountFrame}");
+            //Console.WriteLine($"{key} - {render.CountFrame}");
         }
 
         protected void OnCompliteRender(string key)

@@ -1,12 +1,13 @@
 ﻿using DrawCurve.Application.Utils;
 using DrawCurve.Domen.Core.Menedger.Models;
+using Microsoft.Extensions.Logging;
 
 namespace DrawCurve.Application.Menedgers.Renders
 {
     public class MenedgerVideoConcatAudio : MenedgerRender<string>
     {
-        public MenedgerVideoConcatAudio(IServiceProvider serviceProvider)
-            : base(serviceProvider,
+        public MenedgerVideoConcatAudio(IServiceProvider serviceProvider, ILogger<MenedgerVideoConcatAudio> logger)
+            : base(serviceProvider, logger,
                   search: TypeStatus.ProccessConcatFrameEnd,
                   proccess: TypeStatus.ProccessConcatAudio,
                   end: TypeStatus.ProccessEnd)

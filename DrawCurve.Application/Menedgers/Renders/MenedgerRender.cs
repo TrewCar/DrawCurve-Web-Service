@@ -2,6 +2,7 @@
 using DrawCurve.Core.Window;
 using DrawCurve.Domen.Core.Menedger.Models;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace DrawCurve.Application.Menedgers.Renders
 {
@@ -11,13 +12,16 @@ namespace DrawCurve.Application.Menedgers.Renders
         protected TypeStatus proccess;
         protected TypeStatus end;
         protected IServiceProvider _serviceProvider;
+        protected ILogger _logger;
 
         public Dictionary<string, (int Author, TValDictionary Value)> Renders { get; protected set; } = new();
         protected List<string> KeyRenderByEnd = new();
 
-        public MenedgerRender(IServiceProvider serviceProvider, TypeStatus search, TypeStatus proccess, TypeStatus end)
+        public MenedgerRender(IServiceProvider serviceProvider, ILogger logger, 
+            TypeStatus search, TypeStatus proccess, TypeStatus end)
         {
-            _serviceProvider = serviceProvider;
+            this._serviceProvider = serviceProvider;
+            this._logger = logger;
 
             this.search = search;
             this.proccess = proccess;
@@ -29,6 +33,7 @@ namespace DrawCurve.Application.Menedgers.Renders
             var renders = queue.GetQueue(proccess);
             foreach (var item in renders)
             {
+                _logger.LogInformation($"Add break proccess - {item.KEY}");
                 Add(item.AuthorId, item.KEY);
             }
 
@@ -39,12 +44,14 @@ namespace DrawCurve.Application.Menedgers.Renders
         {
             while (true)
             {
+                _logger.LogInformation("Start search queue");
                 using var scope = _serviceProvider.CreateScope();
                 var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
                 var tempList = KeyRenderByEnd.ToList();
 
                 foreach (var key in tempList)
                 {
+                    _logger.LogInformation($"END - {key}");
                     var render = Renders[key];
 
                     // No need to call thread.Join(), the task should have already completed
@@ -61,6 +68,7 @@ namespace DrawCurve.Application.Menedgers.Renders
 
                     for (int i = 0; i < items.Count - Renders.Count; i++)
                     {
+                        _logger.LogInformation($"START - {items[i].KEY}");
                         queue.UpdateState(items[i], proccess);
                         Add(items[i].AuthorId, items[i].KEY);
                     }
