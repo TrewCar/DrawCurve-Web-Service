@@ -26,10 +26,7 @@ namespace DrawCurve.Application.Menedgers.Renders
         {
             _ = Task.Run(async () =>
             {
-                using var scope = _serviceProvider.CreateScope();
-                var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
-
-                var render = InitRender(queue.GetRender(key));
+                var render = InitRender(key);
 
                 render.KEY = key;
 
@@ -83,8 +80,12 @@ namespace DrawCurve.Application.Menedgers.Renders
 
 
 
-        private Render InitRender(RenderInfo render)
+        private Render InitRender(string key)
         {
+            using var scope = _serviceProvider.CreateScope();
+            var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
+            RenderInfo render = queue.GetRender(key);
+
             if (render.Type == RenderType.RenderCurve)
             {
                 var t = new CurveRender(

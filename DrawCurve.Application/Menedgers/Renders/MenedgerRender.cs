@@ -13,15 +13,17 @@ namespace DrawCurve.Application.Menedgers.Renders
         protected TypeStatus end;
         protected IServiceProvider _serviceProvider;
         protected ILogger _logger;
+        protected ISendTickRender _resiveMsg;
 
         public Dictionary<string, (int Author, TValDictionary Value)> Renders { get; protected set; } = new();
         protected List<string> KeyRenderByEnd = new();
 
-        public MenedgerRender(IServiceProvider serviceProvider, ILogger logger, 
+        public MenedgerRender(IServiceProvider serviceProvider, ILogger logger,
             TypeStatus search, TypeStatus proccess, TypeStatus end)
         {
             this._serviceProvider = serviceProvider;
             this._logger = logger;
+            //this._resiveMsg = serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ISendTickRender>();
 
             this.search = search;
             this.proccess = proccess;
@@ -76,6 +78,11 @@ namespace DrawCurve.Application.Menedgers.Renders
 
                 await Task.Delay(TimeSpan.FromMinutes(1)); // wait 1 minute to next iteration
             }
+        }
+
+        public void SendTick(RenderTick tick)
+        {
+
         }
     }
 }

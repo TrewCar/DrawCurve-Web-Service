@@ -1,6 +1,8 @@
-﻿using DrawCurve.API.Menedgers;
+﻿using DrawCurve.API.Hubs;
+using DrawCurve.API.Menedgers;
 using DrawCurve.Application;
 using DrawCurve.Application.Logger;
+using Microsoft.OpenApi.Models;
 namespace DrawCurve.API
 {
     public class Startup
@@ -18,7 +20,15 @@ namespace DrawCurve.API
             services.AddControllers();
 
             services.AddEndpointsApiExplorer();
-            services.AddSwaggerGen();
+            services.AddSignalR();
+
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Some API v1", Version = "v1" });
+                // here some other configurations maybe...
+                options.AddSignalRSwaggerGen();
+            });
+
 
             services.AddSession(options =>
             {
@@ -55,6 +65,7 @@ namespace DrawCurve.API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers(); // Настройка маршрутизации контроллеров
+                endpoints.MapHub<SendRenderTickHub>("/tickrender");
             });
         }
     }
