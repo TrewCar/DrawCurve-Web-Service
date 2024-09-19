@@ -1,6 +1,6 @@
-﻿using DrawCurve.Domen.Core.Menedger.Models;
-using DrawCurve.Domen.Models.Core;
+﻿using DrawCurve.Domen.Models.Core;
 using DrawCurve.Domen.Models.Core.Objects;
+using DrawCurve.Domen.Models.Menedger;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;

@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrawCurve.Application", "Dr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrawCurve.API", "DrawCurve.API\DrawCurve.API.csproj", "{97C62B6F-EB19-4B29-970E-9B41CEB365B1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DrawCurve.Infrastructure", "DrawCurve.Infrastructure\DrawCurve.Infrastructure.csproj", "{887876E9-3044-4783-85DB-BE710A08B00A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrawCurve.Infrastructure", "DrawCurve.Infrastructure\DrawCurve.Infrastructure.csproj", "{887876E9-3044-4783-85DB-BE710A08B00A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DrawCurve.Client", "DrawCurve.Client\DrawCurve.Client.csproj", "{D240B76B-F5F8-4A2A-B0AB-B2E32954C4FE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{887876E9-3044-4783-85DB-BE710A08B00A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{887876E9-3044-4783-85DB-BE710A08B00A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{887876E9-3044-4783-85DB-BE710A08B00A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D240B76B-F5F8-4A2A-B0AB-B2E32954C4FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D240B76B-F5F8-4A2A-B0AB-B2E32954C4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D240B76B-F5F8-4A2A-B0AB-B2E32954C4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D240B76B-F5F8-4A2A-B0AB-B2E32954C4FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

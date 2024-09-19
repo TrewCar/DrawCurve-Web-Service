@@ -1,4 +1,4 @@
-﻿namespace DrawCurve.Domen.Core.Menedger.Models
+﻿namespace DrawCurve.Domen.Models.Menedger
 {
     public class RenderTick
     {
