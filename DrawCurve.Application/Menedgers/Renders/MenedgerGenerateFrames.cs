@@ -1,11 +1,11 @@
 ﻿using DrawCurve.Application.Interface;
 using DrawCurve.Application.Utils;
 using DrawCurve.Core.Window;
-using DrawCurve.Domen.Core.Menedger.Models;
 using DrawCurve.Domen.DTO.Models;
 using DrawCurve.Domen.DTO.Models.Objects;
 using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Core.Objects;
+using DrawCurve.Domen.Models.Menedger;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFML.Graphics;

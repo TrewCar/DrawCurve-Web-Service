@@ -1,6 +1,6 @@
 ﻿using DrawCurve.Application.Interface;
-using DrawCurve.Domen.Core.Menedger.Models;
 using DrawCurve.Domen.Models;
+using DrawCurve.Domen.Models.Menedger;
 using DrawCurve.Infrastructure;
 using System;
 using System.Collections.Generic;

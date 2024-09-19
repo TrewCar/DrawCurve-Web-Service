@@ -1,4 +1,4 @@
-﻿using DrawCurve.Domen.Core.Menedger.Models;
+﻿using DrawCurve.Domen.Models.Menedger;
 using System;
 using System.Collections.Generic;
 using System.Linq;

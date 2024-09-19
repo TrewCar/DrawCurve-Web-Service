@@ -1,6 +1,6 @@
 ﻿using DrawCurve.Application.Interface;
 using DrawCurve.Core.Window;
-using DrawCurve.Domen.Core.Menedger.Models;
+using DrawCurve.Domen.Models.Menedger;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 

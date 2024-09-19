@@ -1,5 +1,5 @@
-﻿using DrawCurve.Domen.Core.Menedger.Models;
-using DrawCurve.Domen.Models;
+﻿using DrawCurve.Domen.Models;
+using DrawCurve.Domen.Models.Menedger;
 
 namespace DrawCurve.Application.Interface
 {

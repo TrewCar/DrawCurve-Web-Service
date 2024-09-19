@@ -1,0 +1,26 @@
+﻿@page "/userinfo"
+@using DrawCurve.Client.Service
+@using DrawCurve.Domen.Models
+@inject UserService UserService
+
+<h3>User Info</h3>
+
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <p>Name: @user.Name</p>
+    <p>Role: @user.Role</p>
+    <p>Date Created: @user.DateCreate</p>
+}
+
+@code {
+    private User user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserService.GetUserInfoAsync();
+    }
+}

@@ -1,8 +1,11 @@
-﻿using DrawCurve.API.Hubs;
+﻿
 using DrawCurve.API.Menedgers;
 using DrawCurve.Application;
 using DrawCurve.Application.Logger;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Text;
 namespace DrawCurve.API
 {
     public class Startup
@@ -37,13 +40,29 @@ namespace DrawCurve.API
                 options.Cookie.IsEssential = true; // Куки сессий обязательны
             });
 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                });
+
             services.AddDistributedMemoryCache();
 
             services.AddHttpContextAccessor();
 
-            services.AddScoped<MenedgerSession>();
+            services.AddScoped<JwtManager>();
 
             services.AddApplicationServices(Configuration);
+
         }
 
         // Метод для настройки HTTP-пайплайна
@@ -56,16 +75,18 @@ namespace DrawCurve.API
             }
             app.UseSession();
 
+            app.UseCors(p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+
             app.UseHttpsRedirection();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            app.UseAuthentication(); // Включение аутентификации
+            app.UseAuthorization();  // Включение авторизации
 
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers(); // Настройка маршрутизации контроллеров
-                endpoints.MapHub<SendRenderTickHub>("/tickrender");
             });
         }
     }

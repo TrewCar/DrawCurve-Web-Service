@@ -1,5 +1,5 @@
 ﻿using DrawCurve.Application.Utils;
-using DrawCurve.Domen.Core.Menedger.Models;
+using DrawCurve.Domen.Models.Menedger;
 using Microsoft.Extensions.Logging;
 
 namespace DrawCurve.Application.Menedgers.Renders

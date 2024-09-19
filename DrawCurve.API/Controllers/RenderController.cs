@@ -1,9 +1,10 @@
 ﻿using DrawCurve.API.Controllers.Responces;
 using DrawCurve.API.Menedgers;
 using DrawCurve.Application.Interface;
-using DrawCurve.Domen.Core.Menedger.Models;
 using DrawCurve.Domen.Models;
+using DrawCurve.Domen.Models.Menedger;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace DrawCurve.API.Controllers
 {
@@ -11,10 +12,10 @@ namespace DrawCurve.API.Controllers
     [ApiController]
     public class RenderController : ControllerBase
     {
-        private MenedgerSession Session { get; set; }
+        private JwtManager Session { get; set; }
         private IRenderService Queue { get; set; }
 
-        public RenderController(IRenderService queue, MenedgerSession session)
+        public RenderController(IRenderService queue, JwtManager session)
         {
             this.Session = session;
             this.Queue = queue;
@@ -24,8 +25,9 @@ namespace DrawCurve.API.Controllers
         [Route("get/all/self")]
         public List<RenderInfo> GetRender()
         {
-            if(Session.GetUserSession() != null)
-                return Queue.GetRenderList(Session.GetUserSession());
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (Session.GetUserSession(token) != null)
+                return Queue.GetRenderList(Session.GetUserSession(token));
 
             this.Response.StatusCode = 401;
             return new List<RenderInfo>();
@@ -35,7 +37,8 @@ namespace DrawCurve.API.Controllers
         [Route("get/{RenderKey}")]
         public RenderInfo GetRender(string RenderKey)
         {
-            if (Session.GetUserSession() != null)
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (Session.GetUserSession(token) != null)
                 return Queue.GetRender(RenderKey);
 
             this.Response.StatusCode = 401;
@@ -46,7 +49,8 @@ namespace DrawCurve.API.Controllers
         [Route("generate/{RenderType}")]
         public string StartRender(RenderType RenderType, ResponceRenderInfo render)
         {
-            if (Session.GetUserSession() == null)
+            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            if (Session.GetUserSession(token) == null)
             {
                 this.Response.StatusCode = 401;
                 return "Not faund session";
@@ -56,7 +60,7 @@ namespace DrawCurve.API.Controllers
             RenderInfo info = new RenderInfo()
             {
                 KEY = key,
-                AuthorId = this.Session.GetUserSession().Id,
+                AuthorId = this.Session.GetUserSession(token).Id,
                 Type = RenderType,
                 Status = TypeStatus.ProccessInQueue,
                 Name = render.Name,

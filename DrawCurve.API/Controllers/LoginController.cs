@@ -1,9 +1,12 @@
 ﻿using DrawCurve.API.Controllers.Responces;
-using DrawCurve.API.Menedgers;
 using DrawCurve.Application.Interface;
-using DrawCurve.Application.Services;
 using DrawCurve.Domen.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace DrawCurve.API.Controllers
 {
@@ -12,70 +15,91 @@ namespace DrawCurve.API.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ILoginService loginService;
-        private readonly MenedgerSession menedgerSession;
+        private readonly IConfiguration configuration;
 
-        public LoginController(ILoginService loginService, MenedgerSession sessionManager)
+        public LoginController(ILoginService loginService, IConfiguration configuration)
         {
             this.loginService = loginService;
-            this.menedgerSession = sessionManager;
+            this.configuration = configuration;
         }
 
         [HttpPost]
         [Route("Login")]
-        public IActionResult Login(string username, string password)
+        public IActionResult Login(UserResource res)
         {
-            var user = loginService.Login(username, password);
+            var user = loginService.Login(res.Login, res.Password);
 
             if (user != null)
             {
-                menedgerSession.ClearUserSession();
-                menedgerSession.SetUserSession(user);
-
-                return Ok(new { Message = "Login successful" });
+                var token = GenerateJwtToken(user);
+                return Ok(new { Token = token });
             }
 
             return BadRequest(new { Message = "Invalid username or password" });
+        }
+
+        private string GenerateJwtToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString()),
+                    new Claim(ClaimTypes.Role, user.Role.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddHours(1),
+                Issuer = configuration["Jwt:Issuer"],
+                Audience = configuration["Jwt:Issuer"],
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
 
         [HttpPost]
         [Route("Logout")]
         public IActionResult Logout()
         {
-            // Удаляем информацию о сессии
-            menedgerSession.ClearUserSession();
+            // С удалением сессии можно больше не заниматься, т.к. мы теперь используем JWT
             return Ok(new { Message = "Logout successful" });
         }
 
         [HttpPost]
         [Route("Registration")]
-        public IActionResult Registration(ResponceRegistration userResponce)
+        public IActionResult Registration(ResponceRegistration userResponse)
         {
             User user = new User()
             {
-                Name = userResponce.Name,
+                Name = userResponse.Name,
                 Role = Role.User,
                 DateCreate = DateTime.Now,
             };
 
             UserLogin userLogin = new UserLogin()
             {
-                Login = userResponce.Login,
-                Email = userResponce.Email,
-                Password = userResponce.Password,
+                Login = userResponse.Login,
+                Email = userResponse.Email,
+                Password = userResponse.Password,
             };
 
-            var res = loginService.RegIn(ref user ,userLogin);
+            var res = loginService.RegIn(ref user, userLogin);
 
             if (string.IsNullOrEmpty(res))
             {
-                menedgerSession.ClearUserSession();
-                menedgerSession.SetUserSession(user);
-
-                return Ok(new { Message = "Регистрация успешна" });
+                // Регистрация успешна, возвращаем сообщение
+                return Ok(new { Message = "Registration successful" });
             }
 
             return BadRequest(new { Message = res });
         }
     }
 
+    public class UserResource
+    {
+        public string Login { get; set; }
+        public string Password { get; set; }
+    }
 }

@@ -1,0 +1,25 @@
+﻿@page "/login"
+@using DrawCurve.Client.Service
+@using DrawCurve.Domen.Models
+@inject AuthService AuthService
+
+<h3>Login</h3>
+
+<EditForm Model="@loginModel" OnValidSubmit="HandleLogin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <InputText id="username" @bind-Value="loginModel.Login" placeholder="Username" />
+    <InputText id="password" @bind-Value="loginModel.Password" placeholder="Password" type="password" />
+    <button type="submit">Login</button>
+</EditForm>
+
+@code {
+    private UserResurce loginModel = new();
+
+    private async Task HandleLogin()
+    {
+        var response = await AuthService.LoginAsync(loginModel);
+        // Обработка ответа
+    }
+}
