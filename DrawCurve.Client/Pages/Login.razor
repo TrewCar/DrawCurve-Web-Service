@@ -1,7 +1,9 @@
 ﻿@page "/login"
 @using DrawCurve.Client.Service
 @using DrawCurve.Domen.Models
+@inject NavigationManager Navigation
 @inject AuthService AuthService
+@inject IJSRuntime JsRuntime
 
 <h3>Login</h3>
 
@@ -15,11 +17,20 @@
 </EditForm>
 
 @code {
-    private UserResurce loginModel = new();
+    private UserResource loginModel = new();
 
     private async Task HandleLogin()
     {
-        var response = await AuthService.LoginAsync(loginModel);
+        try
+        {
+            var response = await AuthService.LoginAsync(loginModel);
+            Navigation.NavigateTo("/userinfo");
+        }
+        catch
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Incorect login or password"); // Alert
+            loginModel.Password = "";
+        }
         // Обработка ответа
     }
 }

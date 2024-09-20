@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject AuthService authService
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -7,13 +8,29 @@
     <main>
         <div class="top-row px-4">
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+            
+            <AuthorizeView>
+                <NotAuthorized>
+                    <NavLink class="top-row px-4" href="Login">
+                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Login
+                    </NavLink>
+                </NotAuthorized>
+                <Authorized>
+                    <button @onclick="logOut">Log Out</button>
+                </Authorized>
+            </AuthorizeView>
+
         </div>
-        <NavLink class="top-row px-4" href="Login">
-            <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Login
-        </NavLink>
+
 
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+@code {
+    private void logOut()
+    {
+        authService.LogoutAsync();
+    }
+}
