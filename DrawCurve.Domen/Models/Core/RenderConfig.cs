@@ -11,9 +11,7 @@ namespace DrawCurve.Domen.Models.Core
         public string Title { get; set; }
 
         public List<TagRender> Tags { get; set; }
-        [MinLength(1)]
         public int FPS { get; set; }
-        [MinLength(1)]
         public float Time { get; set; }
 
         public float SpeedRender { get; set; }
@@ -32,9 +30,7 @@ namespace DrawCurve.Domen.Models.Core
                 indexSmooth = value;
             }
         }
-        [MinLength(100)]
         public int Width { get; set; }
-        [MinLength(100)]
         public int Height { get; set; }
 
         public List<ActionConfig> ActionsConfig { get; set; }

@@ -60,7 +60,7 @@ namespace DrawCurve.Client.Service
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
-                return null; // Обрабатываем ошибку
+                return ""; // Обрабатываем ошибку
             }
 
             return await response.Content.ReadAsStringAsync();
@@ -97,5 +97,6 @@ namespace DrawCurve.Client.Service
 
             return await response.Content.ReadFromJsonAsync<List<ObjectRender>>();
         }
+    
     }
 }

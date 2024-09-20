@@ -8,10 +8,10 @@ namespace DrawCurve.Domen.DTO.Models
         public static ColorCore Transfer(this ColorModel cnf)
             => new ColorCore()
             {
-                R = cnf.R,
-                G = cnf.G,
-                B = cnf.B,
-                A = cnf.A,
+                R = (byte)cnf.R,
+                G = (byte)cnf.G,
+                B = (byte)cnf.B,
+                A = (byte)cnf.A,
             };
         public static ColorModel Transfer(this ColorCore cnf)
             => new ColorModel()

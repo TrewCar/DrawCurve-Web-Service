@@ -64,7 +64,7 @@ namespace DrawCurve.Application.Menedgers.Renders
             var image = render.window.Capture();
             var path = Path.Combine(DirectoryHelper.GetPathToSaveFrame(key), $"frame_{render.CountFrame:D6}.png");
 
-            await Task.Run(() => image.SaveToFile(path));
+            image.SaveToFile(path);
 
             //Console.WriteLine($"{key} - {render.CountFrame}");
         }
