@@ -10,16 +10,24 @@
 else
 {
     <div class="render-info">
-        <p><strong>Name:</strong> @renderInfo.Name</p>
-        <p><strong>Type:</strong> @renderInfo.Type</p>
-        <p><strong>Status:</strong> @renderInfo.Status</p>
-        <p><strong>Date Created:</strong> @renderInfo.DateCreate.ToString("yyyy-MM-dd HH:mm:ss")</p>
+        <div class="render-info-header">
+            <p><strong>Name:</strong> @renderInfo.Name</p>
+            <p><strong>Type:</strong> @renderInfo.Type</p>
+            <p><strong>Status:</strong> @renderInfo.Status</p>
+            <p><strong>Date Created:</strong> @renderInfo.DateCreate.ToString("yyyy-MM-dd HH:mm:ss")</p>
+        </div>
 
-        <h4>Render Configuration (JSON)</h4>
-        <pre>@FormatJson(renderInfo.RenderConfigJSON)</pre>
+        <div class="render-info-content">
+            <div class="render-info-column">
+                <h4>Render Configuration (JSON)</h4>
+                <pre>@FormatJson(renderInfo.RenderConfigJSON)</pre>
+            </div>
 
-        <h4>Objects (JSON)</h4>
-        <pre>@FormatJson(renderInfo.ObjectsJSON)</pre>
+            <div class="render-info-column">
+                <h4>Objects (JSON)</h4>
+                <pre>@FormatJson(renderInfo.ObjectsJSON)</pre>
+            </div>
+        </div>
     </div>
 }
 

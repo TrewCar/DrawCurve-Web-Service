@@ -101,3 +101,58 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+/* Добавьте это в ваш файл CSS или внутри <style> в компоненте */
+.render-info {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+}
+
+.render-info-header {
+    margin-bottom: 20px;
+}
+
+    .render-info-header p {
+        margin: 5px 0;
+        font-size: 16px;
+    }
+
+.render-info-content {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between;
+}
+
+.render-info-column {
+    flex: 1;
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: auto;
+}
+
+    .render-info-column h4 {
+        margin-bottom: 10px;
+        font-size: 18px;
+        text-align: center;
+        background-color: #e0e0e0;
+        padding: 10px;
+        border-radius: 6px;
+    }
+
+pre {
+    white-space: pre-wrap; /* Чтобы текст переносился внутри блока */
+    word-wrap: break-word; /* Перенос длинных строк */
+    background-color: #f1f1f1;
+    padding: 15px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    max-height: 400px; /* Ограничение высоты блока */
+    overflow-y: auto; /* Полоса прокрутки для длинных JSON */
+}
