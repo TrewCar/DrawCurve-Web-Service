@@ -19,7 +19,10 @@ namespace DrawCurve.Application.Services
         }
         public List<RenderInfo> GetRenderList(User user)
         {
-            return this.context.RenderInfo.Where(x => x.AuthorId == user.Id).ToList();
+            return this.context.RenderInfo
+                .Where(x => x.AuthorId == user.Id)
+                .OrderByDescending(x => x.DateCreate)
+                .ToList();
         }
         public RenderInfo? GetRender(string Key)
         {

@@ -1,0 +1,73 @@
+﻿@page "/render/list"
+@using DrawCurve.Domen.Models
+@inject NavigationManager Navigation
+@inject RenderService renderService
+
+<PageTitle>RenderList</PageTitle>
+
+@if (renders == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <button @onclick="Refresh">Refresh</button>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Status</th>
+                <th>Date Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (RenderInfo render in renders)
+            {
+                <tr>
+                    <td>@render.Name</td>
+                    <td>@render.Type</td>
+                    <td>@render.Status</td>
+                    <td>@render.DateCreate</td>
+                    <td>
+                        <button @onclick="() => NavigateToInfo(render.KEY)">Show Info</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private List<RenderInfo>? renders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadRendersAsync();
+    }
+
+    private async Task LoadRendersAsync()
+    {
+        try
+        {
+            renders = await renderService.GetRenderList();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Ошибка при загрузке данных: {ex.Message}");
+        }
+    }
+
+    protected async Task Refresh()
+    {
+        renders = null;
+        await LoadRendersAsync();
+    }
+
+    private void NavigateToInfo(string key)
+    {
+        Navigation.NavigateTo($"/render/info/{key}");
+    }
+}
