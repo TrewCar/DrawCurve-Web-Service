@@ -2,26 +2,24 @@
 @using DrawCurve.Domen.Models.Core
 @using DrawCurve.Domen.Models.Core.Enums
 @using DrawCurve.Domen.Models.Core.Objects
-@using static DrawCurve.Client.Service.RenderService
+@inject RenderService renderService
 
 @code {
     private ResponceRenderInfoCurve renderInfo = new ResponceRenderInfoCurve
         {
             Name = "Example",
-            config = new RenderConfig
-            {
-                Title = "Sample Config",
-                FPS = 60,
-                Time = 120.0f,
-                SpeedRender = 1.0f,
-                Width = 1920,
-                Height = 1080,
-                Tags = new List<TagRender>(),
-                ActionsConfig = new List<ActionConfig>(),
-                Colors = new Dictionary<string, Color>()
-            },
-            obejcts = new List<LineCurve>()
+            config = new(),
+            obejcts = new List<ObjectRender>()
         };
+
+    private bool wait = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        renderInfo.config = await renderService.GetDefaultData(RenderType.RenderCurve);
+        renderInfo.obejcts = await renderService.GetDefaultObjects(RenderType.RenderCurve);
+        wait = false;
+    }
 
     private void AddLineCurve()
     {
@@ -41,7 +39,7 @@
     public class ResponceRenderInfoCurve
     {
         public string Name { get; set; }
-        public List<LineCurve> obejcts { get; set; }
+        public List<ObjectRender> obejcts { get; set; }
         public RenderConfig config { get; set; }
     }
 }
@@ -49,7 +47,10 @@
 <EditForm Model="renderInfo" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
-
+    @if (wait)
+    {
+        <p><em>Loading default config</em></p>
+    }
     <h3>Render Info</h3>
 
     <div>
@@ -86,16 +87,19 @@
     <h3>Objects</h3>
     @foreach (var obj in renderInfo.obejcts)
     {
-        <div>
-            <h4>Line Curve</h4>
-            <label>Angle: </label>
-            <InputNumber @bind-Value="obj.Angle" />
-            <label>Length: </label>
-            <InputNumber @bind-Value="obj.Length" />
-            <label>RPS: </label>
-            <InputNumber @bind-Value="obj.RPS" />
-            <button type="button" @onclick="() => RemoveObject(obj)">Remove LineCurve</button>
-        </div>
+        @if (obj is LineCurve objj)
+        {
+            <div>
+                <h4>Line Curve</h4>
+                <label>Angle: </label>
+                <InputNumber @bind-Value="objj.Angle" />
+                    <label>Length: </label>
+                <InputNumber @bind-Value="objj.Length" />
+                    <label>RPS: </label>
+                <InputNumber @bind-Value="objj.RPS" />
+                <button type="button" @onclick="() => RemoveObject(objj)">Remove LineCurve</button>
+            </div>
+        }
     }
 
     <div>

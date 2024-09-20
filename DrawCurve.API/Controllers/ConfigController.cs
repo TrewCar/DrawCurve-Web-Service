@@ -1,4 +1,5 @@
 ﻿using DrawCurve.Application.Menedgers;
+using DrawCurve.Domen.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
@@ -18,12 +19,6 @@ namespace DrawCurve.API.Controllers
             this.config = config;
         }
 
-        [HttpGet]
-        [Route("List")]
-        public IEnumerable<string> GetInfoRenders()
-        {
-            return config.GetInfoRenders();
-        }
 
         [HttpGet]
         [Route("Template")]
@@ -34,35 +29,35 @@ namespace DrawCurve.API.Controllers
 
         [HttpGet]
         [Route("{RenderName}/Default")]
-        public Domen.Models.Core.RenderConfig GetConfig(string RenderName)
+        public Domen.Models.Core.RenderConfig GetConfig(RenderType RenderName)
         {
             return config.GetDefaultConfig(RenderName);
         }
 
         [HttpGet]
         [Route("{RenderName}/Objects")]
-        public IEnumerable<Domen.Models.Core.Objects.ObjectRender> GetConfigObjects(string RenderName)
+        public IEnumerable<Domen.Models.Core.Objects.ObjectRender> GetConfigObjects(RenderType RenderName)
         {
             return config.GetConfigObjects(RenderName);
         }
 
         [HttpGet]
         [Route("{RenderName}/Colors")]
-        public Dictionary<string, Domen.Models.Core.Color> GetConfigColor(string RenderName)
+        public Dictionary<string, Domen.Models.Core.Color> GetConfigColor(RenderType RenderName)
         {
             return config.GetConfigColor(RenderName);
         }
 
         [HttpGet]
         [Route("{RenderName}/Actions")]
-        public IEnumerable<Domen.Models.Core.ActionConfig> GetConfigActions(string RenderName)
+        public IEnumerable<Domen.Models.Core.ActionConfig> GetConfigActions(RenderType RenderName)
         {
             return config.GetConfigActions(RenderName);
         }
 
         [HttpGet]
         [Route("{RenderName}/Tags")]
-        public IEnumerable<Domen.Models.Core.Enums.TagRender> GetConfigTags(string RenderName)
+        public IEnumerable<Domen.Models.Core.Enums.TagRender> GetConfigTags(RenderType RenderName)
         {
             return config.GetConfigTags(RenderName);
         }

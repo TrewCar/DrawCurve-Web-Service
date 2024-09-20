@@ -75,7 +75,27 @@ namespace DrawCurve.Client.Service
 
         public async Task<RenderConfig> GetDefaultData(RenderType type)
         {
+            await AddAuthorizationHeaderAsync();
+            var response = await _httpClient.GetAsync($"api/Config/{type}/Default");
 
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception();
+            }
+
+            return await response.Content.ReadFromJsonAsync<RenderConfig>();
+        }
+        public async Task<List<ObjectRender>> GetDefaultObjects(RenderType type)
+        {
+            await AddAuthorizationHeaderAsync();
+            var response = await _httpClient.GetAsync($"api/Config/{type}/Objects");
+
+            if (response.StatusCode != System.Net.HttpStatusCode.OK)
+            {
+                throw new Exception();
+            }
+
+            return await response.Content.ReadFromJsonAsync<List<ObjectRender>>();
         }
     }
 }
