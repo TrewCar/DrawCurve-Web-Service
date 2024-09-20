@@ -1,5 +1,6 @@
 ﻿using DrawCurve.Domen.Models.Core.Enums;
 using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Windows.Markup;
 
@@ -10,8 +11,9 @@ namespace DrawCurve.Domen.Models.Core
         public string Title { get; set; }
 
         public List<TagRender> Tags { get; set; }
-
-        public uint FPS { get; set; }
+        [MinLength(1)]
+        public int FPS { get; set; }
+        [MinLength(1)]
         public float Time { get; set; }
 
         public float SpeedRender { get; set; }
@@ -30,9 +32,10 @@ namespace DrawCurve.Domen.Models.Core
                 indexSmooth = value;
             }
         }
-
-        public uint Width { get; set; }
-        public uint Height { get; set; }
+        [MinLength(100)]
+        public int Width { get; set; }
+        [MinLength(100)]
+        public int Height { get; set; }
 
         public List<ActionConfig> ActionsConfig { get; set; }
 

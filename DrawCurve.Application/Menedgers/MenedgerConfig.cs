@@ -1,5 +1,6 @@
 ﻿using DrawCurve.Core.Window;
 using DrawCurve.Domen.DTO.Models;
+using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Core.Objects;
 
 namespace DrawCurve.Application.Menedgers
@@ -8,38 +9,38 @@ namespace DrawCurve.Application.Menedgers
     {
         public MenedgerConfig() { }
 
-        public List<string> GetInfoRenders()
+        public Domen.Models.Core.RenderConfig GetDefaultConfig(RenderType nameRender)
         {
-            return new List<string>
+            switch (nameRender)
             {
-                "CurveRender",
-            };
+                case RenderType.RenderCurve:
+                    Render render = new CurveRender();
+                    return render.GetDefaultRenderConfig().Transfer();
+
+                default:
+                    throw new NotImplementedException($"Type {nameRender} is not implemented in {GetType().FullName}");
+            }
+
         }
 
-        public Domen.Models.Core.RenderConfig GetDefaultConfig(string nameRender)
-        {
-            Render render = new CurveRender();
-            return render.GetDefaultRenderConfig().Transfer();
-        }
-
-        public Dictionary<string, Domen.Models.Core.Color> GetConfigColor(string nameRender)
+        public Dictionary<string, Domen.Models.Core.Color> GetConfigColor(RenderType nameRender)
         {
             return GetDefaultConfig(nameRender).Colors;
         }
 
-        public IEnumerable<Domen.Models.Core.ActionConfig> GetConfigActions(string nameRender)
+        public IEnumerable<Domen.Models.Core.ActionConfig> GetConfigActions(RenderType nameRender)
         {
             return GetDefaultConfig(nameRender).ActionsConfig;
         }
 
-        public IEnumerable<Domen.Models.Core.Enums.TagRender> GetConfigTags(string nameRender)
+        public IEnumerable<Domen.Models.Core.Enums.TagRender> GetConfigTags(RenderType nameRender)
         {
             return GetDefaultConfig(nameRender).Tags;
         }
 
-        public IEnumerable<Domen.Models.Core.Objects.ObjectRender> GetConfigObjects(string nameRender)
+        public IEnumerable<Domen.Models.Core.Objects.ObjectRender> GetConfigObjects(RenderType nameRender)
         {
-            if (nameRender == "CurveRender")
+            if (nameRender == RenderType.RenderCurve)
             {
                 return new List<Domen.Models.Core.Objects.ObjectRender>
                 {

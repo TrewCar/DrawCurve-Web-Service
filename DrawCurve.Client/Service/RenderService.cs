@@ -69,8 +69,13 @@ namespace DrawCurve.Client.Service
         public class ResponceRenderInfo
         {
             public string Name { get; set; }
-            public List<ObjectRender> Objects { get; set; }
-            public RenderConfig Config { get; set; }
+            public List<ObjectRender> obejcts { get; set; }
+            public RenderConfig config { get; set; }
+        }
+
+        public async Task<RenderConfig> GetDefaultData(RenderType type)
+        {
+
         }
     }
 }

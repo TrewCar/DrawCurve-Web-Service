@@ -17,14 +17,14 @@ namespace DrawCurve.Domen.DTO.Models
                     x.DataTransfer<TagRenderModel, TagRenderCore>()
                 ).ToList(),
 
-                FPS = cnf.FPS,
+                FPS = (uint)cnf.FPS,
                 Time = cnf.Time,
                 SpeedRender = 1,
 
                 IndexSmooth = cnf.IndexSmooth,
 
-                Width = cnf.Width,
-                Height = cnf.Height,
+                Width = (uint)cnf.Width,
+                Height = (uint)cnf.Height,
 
                 ActionsConfig = cnf.ActionsConfig.Select(x => x.Transfer()).ToList(),
 
@@ -41,14 +41,14 @@ namespace DrawCurve.Domen.DTO.Models
                     x.DataTransfer<TagRenderCore, TagRenderModel>()
                 ).ToList(),
 
-                FPS = cnf.FPS,
+                FPS = (int)cnf.FPS,
                 Time = cnf.Time,
                 SpeedRender = 1,
 
                 IndexSmooth = cnf.IndexSmooth,
 
-                Width = cnf.Width,
-                Height = cnf.Height,
+                Width = (int)cnf.Width,
+                Height = (int)cnf.Height,
 
                 ActionsConfig = cnf.ActionsConfig.Select(x => x.Transfer()).ToList(),
 

@@ -36,7 +36,7 @@ namespace DrawCurve.Application.Menedgers.Renders
                 string pathToFrame = DirectoryHelper.GetPathToSaveFrame(_key);
 
                 FFMpegUtils.ConcatFrames(
-                    FPS: render.RenderConfig.FPS,
+                    FPS: (uint)render.RenderConfig.FPS,
                     paternFrames: "frame_%06d.png",
                     pathToFrames: pathToFrame,
                     pathOutVideo: path,

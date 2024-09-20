@@ -1,0 +1,106 @@
+﻿@page "/render/gen"
+@using DrawCurve.Domen.Models.Core
+@using DrawCurve.Domen.Models.Core.Enums
+@using DrawCurve.Domen.Models.Core.Objects
+@using static DrawCurve.Client.Service.RenderService
+
+@code {
+    private ResponceRenderInfoCurve renderInfo = new ResponceRenderInfoCurve
+        {
+            Name = "Example",
+            config = new RenderConfig
+            {
+                Title = "Sample Config",
+                FPS = 60,
+                Time = 120.0f,
+                SpeedRender = 1.0f,
+                Width = 1920,
+                Height = 1080,
+                Tags = new List<TagRender>(),
+                ActionsConfig = new List<ActionConfig>(),
+                Colors = new Dictionary<string, Color>()
+            },
+            obejcts = new List<LineCurve>()
+        };
+
+    private void AddLineCurve()
+    {
+        renderInfo.obejcts.Add(new LineCurve(100, 45, 5));
+    }
+
+
+    private void RemoveObject(LineCurve obj)
+    {
+        renderInfo.obejcts.Remove(obj);
+    }
+
+    private void HandleValidSubmit()
+    {
+        // Обработка отправки данных формы
+    }
+    public class ResponceRenderInfoCurve
+    {
+        public string Name { get; set; }
+        public List<LineCurve> obejcts { get; set; }
+        public RenderConfig config { get; set; }
+    }
+}
+
+<EditForm Model="renderInfo" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <h3>Render Info</h3>
+
+    <div>
+        <label>Name: </label>
+        <InputText @bind-Value="renderInfo.Name" />
+    </div>
+
+    <h3>Render Config</h3>
+    <div>
+        <label>Title: </label>
+        <InputText @bind-Value="renderInfo.config.Title" />
+    </div>
+    <div>
+        <label>FPS: </label>
+        <InputNumber @bind-Value="renderInfo.config.FPS" />
+    </div>
+    <div>
+        <label>Time: </label>
+        <InputNumber @bind-Value="renderInfo.config.Time" />
+    </div>
+    <div>
+        <label>Speed Render: </label>
+        <InputNumber @bind-Value="renderInfo.config.SpeedRender" />
+    </div>
+    <div>
+        <label>Width: </label>
+        <InputNumber @bind-Value="renderInfo.config.Width" />
+    </div>
+    <div>
+        <label>Height: </label>
+        <InputNumber @bind-Value="renderInfo.config.Height" />
+    </div>
+
+    <h3>Objects</h3>
+    @foreach (var obj in renderInfo.obejcts)
+    {
+        <div>
+            <h4>Line Curve</h4>
+            <label>Angle: </label>
+            <InputNumber @bind-Value="obj.Angle" />
+            <label>Length: </label>
+            <InputNumber @bind-Value="obj.Length" />
+            <label>RPS: </label>
+            <InputNumber @bind-Value="obj.RPS" />
+            <button type="button" @onclick="() => RemoveObject(obj)">Remove LineCurve</button>
+        </div>
+    }
+
+    <div>
+        <button type="button" @onclick="AddLineCurve">Add LineCurve</button>
+    </div>
+
+    <button type="submit">Submit</button>
+</EditForm>
