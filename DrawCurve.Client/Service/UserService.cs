@@ -16,18 +16,8 @@ namespace DrawCurve.Client.Service
             _localStorage = localStorage;
         }
 
-        private async Task AddAuthorizationHeaderAsync()
-        {
-            var token = await _localStorage.GetItemAsync<string>("authToken");
-            if (token != null)
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-        }
-
         public async Task<User> GetUserInfoAsync()
         {
-            await AddAuthorizationHeaderAsync();
             return await _httpClient.GetFromJsonAsync<User>("api/user/info");
         }
     }

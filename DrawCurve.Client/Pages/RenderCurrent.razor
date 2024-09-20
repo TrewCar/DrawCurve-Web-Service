@@ -1,5 +1,6 @@
 ﻿@page "/render/info/{key}"
 @inject RenderService renderService
+@attribute [Authorize]
 
 <h3>Render Info for @key</h3>
 

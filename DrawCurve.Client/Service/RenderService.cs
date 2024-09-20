@@ -18,18 +18,8 @@ namespace DrawCurve.Client.Service
             _localStorage = localStorage;
         }
 
-        private async Task AddAuthorizationHeaderAsync()
-        {
-            var token = await _localStorage.GetItemAsync<string>("authToken");
-            if (token != null)
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-        }
-
         public async Task<List<RenderInfo>> GetRenderList()
         {
-            await AddAuthorizationHeaderAsync();
             var response = await _httpClient.GetAsync("api/Render/get/all/self");
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
@@ -42,7 +32,6 @@ namespace DrawCurve.Client.Service
 
         public async Task<RenderInfo> GetRenderCur(string Key)
         {
-            await AddAuthorizationHeaderAsync();
             var response = await _httpClient.GetAsync($"api/Render/get/{Key}");
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
@@ -55,7 +44,6 @@ namespace DrawCurve.Client.Service
 
         public async Task<string> StartRender(RenderType renderType, ResponceRenderInfo render)
         {
-            await AddAuthorizationHeaderAsync();
             var response = await _httpClient.PostAsJsonAsync($"api/Render/generate/{renderType}", render);
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
@@ -75,7 +63,6 @@ namespace DrawCurve.Client.Service
 
         public async Task<RenderConfig> GetDefaultData(RenderType type)
         {
-            await AddAuthorizationHeaderAsync();
             var response = await _httpClient.GetAsync($"api/Config/{type}/Default");
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
@@ -87,7 +74,6 @@ namespace DrawCurve.Client.Service
         }
         public async Task<List<ObjectRender>> GetDefaultObjects(RenderType type)
         {
-            await AddAuthorizationHeaderAsync();
             var response = await _httpClient.GetAsync($"api/Config/{type}/Objects");
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)

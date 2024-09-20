@@ -24,7 +24,7 @@
         try
         {
             var response = await AuthService.LoginAsync(loginModel);
-            Navigation.NavigateTo("/userinfo");
+            Navigation.NavigateTo("/userinfo", true);
         }
         catch
         {

@@ -19,15 +19,6 @@ namespace DrawCurve.Client.Service
             _authenticationStateProvider = authenticationStateProvider;
         }
 
-        private async Task AddAuthorizationHeaderAsync()
-        {
-            var token = await _localStorage.GetItemAsync<string>("authToken");
-            if (token != null)
-            {
-                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-            }
-        }
-
         public async Task<LoginResponse> LoginAsync(UserResource loginModel)
         {
             var response = await _httpClient.PostAsJsonAsync("api/Login/Login", loginModel);
