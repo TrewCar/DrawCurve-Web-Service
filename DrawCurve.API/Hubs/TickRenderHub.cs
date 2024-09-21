@@ -34,17 +34,15 @@ namespace DrawCurve.API.Hubs
             var connections = _connections.GetConnections(authorId) ?? new List<string>();
             foreach (var connectionId in connections)
             {
-                await Clients.Client(connectionId).SendAsync("SendTick", tick);
+                await Clients.Client(connectionId).SendAsync("tick", tick);
             }
         }
-
 
         private int? GetUserIdFromContext()
         {
             var userIdClaim = Context.User?.FindFirst("Id");
-
-            // Проверяем, если есть claim с userId, возвращаем его
             return userIdClaim != null ? int.Parse(userIdClaim.Value) : (int?)null;
         }
     }
+
 }

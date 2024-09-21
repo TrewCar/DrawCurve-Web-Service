@@ -8,28 +8,17 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.SignalR.Client;
 
-public static class Program
+public class Program
 {
-    private static async Task Main(string[] args)
+    public static async Task Main(string[] args)
     {
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
-        builder.RootComponents.Add<App>("#app");
-        builder.RootComponents.Add<HeadOutlet>("head::after");
 
-        builder.Services.AddAuthorizationCore();
-        builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+        // Используем Startup для конфигурации
+        var startup = new Startup();
+        startup.ConfigureServices(builder.Services);
+        startup.Configure(builder);
 
-        builder.Services.AddScoped<UserService>();
-        builder.Services.AddScoped<AuthService>();
-        builder.Services.AddScoped<RenderService>();
-        builder.Services.AddScoped<StateSignalRService>();
-        builder.Services.AddBlazoredLocalStorage();
-
-
-        builder.Services.AddScoped(sp => new HttpClient
-        {
-            BaseAddress = new Uri("http://localhost:5184")
-        });
         await builder.Build().RunAsync();
     }
 }

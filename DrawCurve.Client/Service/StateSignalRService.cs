@@ -3,46 +3,72 @@ using DrawCurve.Domen.Responces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
-namespace DrawCurve.Client.Service
+public class StateSignalRService
 {
-    public class StateSignalRService
+    private HubConnection? _hubConnection;
+    private HttpClient httpClient;
+    private ILocalStorageService _localStorage;
+    private NavigationManager navigation;
+    private ILogger<StateSignalRService> _logger;
+
+    public Action<RenderTick> Action { get; set; }
+
+    public StateSignalRService(HttpClient httpClient, ILocalStorageService localStorage, NavigationManager navigation, ILogger<StateSignalRService> logger)
     {
-        private HubConnection? _hubConnection;
-        private HttpClient httpClient;
-        private ILocalStorageService _localStorage;
-        private NavigationManager navigation;
+        this.httpClient = httpClient;
+        this._localStorage = localStorage;
+        this.navigation = navigation;
+        this._logger = logger;
 
-        public Action<RenderTick> Action { get; set; }
+        Init();
+    }
 
-        public StateSignalRService(HttpClient httpClient, ILocalStorageService localStorage, NavigationManager navigation)
+    private void Init()
+    {
+        this._hubConnection = new HubConnectionBuilder()
+            .WithUrl(navigation.ToAbsoluteUri(httpClient.BaseAddress + "_renderinfo"), options =>
+            {
+                options.AccessTokenProvider = async () => await _localStorage.GetItemAsync<string>("authToken");
+            })
+            .ConfigureLogging(logging =>
+            {
+                logging.SetMinimumLevel(LogLevel.Information);
+                //logging.AddConsole();
+            })
+            .Build();
+
+        _logger.LogInformation("Инициализация HubConnection завершена.");
+    }
+
+    public async Task Start()
+    {
+        if (this._hubConnection == null) { Init(); }
+
+        _hubConnection.On<RenderTick>("tick", (obj) =>
         {
-            this.httpClient = httpClient;
-            this._localStorage = localStorage;
-            this.navigation = navigation;
+            _logger.LogInformation("Получен тик: {TickData}", obj);
+            Action?.Invoke(obj);
+        });
 
-            Init();
-        }
-        private void Init()
+        _hubConnection.Closed += async (error) =>
         {
-            this._hubConnection = new HubConnectionBuilder()
-                .WithUrl(navigation.ToAbsoluteUri(httpClient.BaseAddress + "tickRender"), options =>
-                {
-                    // Убираем .Result и делаем вызов асинхронным
-                    options.AccessTokenProvider = async () => await _localStorage.GetItemAsync<string>("authToken");
-
-                }).Build();
-        }
-        public async Task Start()
-        {
-            if(this._hubConnection == null) { Init(); }
+            _logger.LogError("Соединение закрыто с ошибкой: {Error}", error?.Message);
+            await Task.Delay(5000); // Подождем 5 секунд перед повторным подключением
+            _logger.LogInformation("Повторное подключение...");
             await _hubConnection.StartAsync();
-            _hubConnection.On<RenderTick>("SendTick", (obj) => Action?.Invoke(obj));
-        }
-        public void Stop()
-        {
-            Action = null;
-            _hubConnection?.DisposeAsync();
-            _hubConnection = null;
-        }
+        };
+
+        await _hubConnection.StartAsync();
+        
+        _logger.LogInformation("SignalR соединение установлено.");
+    }
+
+    public void Stop()
+    {
+        _logger.LogInformation("Остановка SignalR соединения...");
+        Action = null;
+        _hubConnection?.DisposeAsync();
+        _hubConnection = null;
+        _logger.LogInformation("Соединение остановлено.");
     }
 }

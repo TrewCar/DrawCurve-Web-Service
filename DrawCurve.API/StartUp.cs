@@ -2,6 +2,7 @@
 using DrawCurve.API.Menedgers;
 using DrawCurve.Application;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -25,6 +26,16 @@ namespace DrawCurve.API
             services.AddSignalR();
 
             services.AddSwaggerGen();
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll",
+                    builder => builder
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .SetIsOriginAllowed(origin => true)
+                        .AllowCredentials());
+            });
 
             services.AddSession(options =>
             {
@@ -51,11 +62,13 @@ namespace DrawCurve.API
                     {
                         OnMessageReceived = context =>
                         {
+                            var path = context.HttpContext.Request.Path;
+                            if(!path.StartsWithSegments("/tickRender"))
+                                return Task.CompletedTask;
+
                             var accessToken = context.Request.Query["access_token"];
 
-                            // Если запрос идет к вашему хабу, передаем токен
-                            var path = context.HttpContext.Request.Path;
-                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/tickRender"))
+                            if (!string.IsNullOrEmpty(accessToken))
                             {
                                 context.Token = accessToken;
                             }
@@ -78,15 +91,20 @@ namespace DrawCurve.API
         {
             if (env.IsDevelopment())
             {
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
+            } else
+            {
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
             app.UseSession();
-
-            app.UseCors(p => 
-            {
-                p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-            });
+            app.UseCors("AllowAll");
+            //app.UseCors(p => 
+            //{
+            //    p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+            //});
 
             app.UseHttpsRedirection();
 
@@ -97,7 +115,7 @@ namespace DrawCurve.API
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<TickRenderHub>("/tickRender");
+                endpoints.MapHub<TickRenderHub>("/_renderinfo");
                 endpoints.MapControllers(); // Настройка маршрутизации контроллеров
             });
         }

@@ -104,19 +104,23 @@ namespace DrawCurve.Application.Menedgers.Renders
         private TypeStatus status = TypeStatus.Error;
         protected async Task SendTick(int authroId, RenderTick tick)
         {
-            if (status != tick.Status)
-            {
-                status = tick.Status;
-                CountSent = MaxSend;
-            }
-            if (CountSent >= MaxSend)
-            {
-                var _resiveMsg = _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ISendTickRender>();
+            //if (status != tick.Status)
+            //{
+            //    status = tick.Status;
+            //    CountSent = MaxSend;
+            //}
+            //if (CountSent >= MaxSend)
+            //{
+            //    var _resiveMsg = _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ISendTickRender>();
 
-                _resiveMsg.SendTick(authroId, tick);
-                CountSent = 0;
-            }
-            CountSent++;
+            //    _resiveMsg.SendTick(authroId, tick);
+            //    CountSent = 0;
+            //}
+            //CountSent++;
+
+            var _resiveMsg = _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ISendTickRender>();
+
+            _resiveMsg.SendTick(authroId, tick);
         }
     }
 }
