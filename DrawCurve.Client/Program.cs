@@ -28,7 +28,7 @@ public static class Program
 
         builder.Services.AddScoped(sp => new HttpClient
         {
-            BaseAddress = new Uri("http://192.168.0.200:5184")
+            BaseAddress = new Uri("http://localhost:5184")
         });
         await builder.Build().RunAsync();
     }
