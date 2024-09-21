@@ -101,7 +101,7 @@ namespace DrawCurve.Application.Menedgers.Renders
             }
         }
         private int CountSent = 0;
-        private int MaxSend = 15;
+        private int MaxSend = 5;
         protected async Task SendTick(int authroId, RenderTick tick)
         {
             if (CountSent >= MaxSend || tick.Status != TypeStatus.ProccessRenderFrame)

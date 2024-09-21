@@ -24,7 +24,7 @@ else
             else
             {
                 <p><strong>Status:</strong> @renderInfo.Status</p>
-                <p><strong>FPS render:</strong> @currentRenderTick.FPS</p>
+                <p><strong>FPS render:</strong> @($"{currentRenderTick.FPS:f2} FPS")</p>
                 <p>
                     <strong>Progress:</strong>
                     <progress value="@currentRenderTick.CountFPS" max="@currentRenderTick.MaxCountFPS" />
