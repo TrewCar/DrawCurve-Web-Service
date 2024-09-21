@@ -3,11 +3,11 @@ using DrawCurve.Domen.Responces;
 using Microsoft.AspNetCore.SignalR;
 using SFML.Window;
 
-namespace DrawCurve.API.Hubs
+namespace DrawCurve.Application.Hubs
 {
     public class TickRenderHub : Hub, ISendTickRender
     {
-        private static readonly ConnectionMapping<int> _connections = new ConnectionMapping<int>();
+        public static readonly ConnectionMapping<int> _connections = new ConnectionMapping<int>();
 
         public override async Task OnConnectedAsync()
         {
@@ -29,12 +29,13 @@ namespace DrawCurve.API.Hubs
             await base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendTick(int authorId, RenderTick tick)
+        public void SendTick(int authorId, RenderTick tick)
         {
-            var connections = _connections.GetConnections(authorId) ?? new List<string>();
+            var connections = _connections.GetConnections(authorId).ToList();
             foreach (var connectionId in connections)
             {
-                await Clients.Client(connectionId).SendAsync("tick", tick);
+                //Clients.Client(connectionId).SendAsync("tick", (RenderTick)tick);
+                Clients.All.SendAsync("tick", tick);
             }
         }
 

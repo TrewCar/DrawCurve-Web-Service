@@ -9,6 +9,5 @@ namespace DrawCurve.Domen.Responces
         public float CountFPS { get; set; }
         public float MaxCountFPS { get; set; }
         public TypeStatus Status { get; set; }
-        public string Error { get; set; }
     }
 }

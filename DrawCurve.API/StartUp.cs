@@ -1,7 +1,8 @@
-﻿using DrawCurve.API.Hubs;
-using DrawCurve.API.Menedgers;
+﻿using DrawCurve.API.Menedgers;
 using DrawCurve.Application;
+using DrawCurve.Application.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -63,12 +64,10 @@ namespace DrawCurve.API
                         OnMessageReceived = context =>
                         {
                             var path = context.HttpContext.Request.Path;
-                            if(!path.StartsWithSegments("/tickRender"))
-                                return Task.CompletedTask;
 
                             var accessToken = context.Request.Query["access_token"];
 
-                            if (!string.IsNullOrEmpty(accessToken))
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/_renderinfo"))
                             {
                                 context.Token = accessToken;
                             }
@@ -83,12 +82,13 @@ namespace DrawCurve.API
 
             services.AddScoped<JwtManager>();
 
-            services.AddApplicationServices<TickRenderHub>(Configuration);
+            services.AddApplicationServices(Configuration);
         }
 
         // Метод для настройки HTTP-пайплайна
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHubContext<TickRenderHub> hubContext)
         {
+            HubHelper.Initialize(hubContext);
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

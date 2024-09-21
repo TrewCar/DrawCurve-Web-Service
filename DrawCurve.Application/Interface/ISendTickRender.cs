@@ -9,6 +9,6 @@ namespace DrawCurve.Application.Interface
 {
     public interface ISendTickRender
     {
-        public Task SendTick(int AuthorId, RenderTick tick);
+        public void SendTick(int AuthorId, RenderTick tick);
     }
 }

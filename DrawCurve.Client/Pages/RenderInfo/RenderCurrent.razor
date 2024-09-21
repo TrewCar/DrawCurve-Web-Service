@@ -25,7 +25,11 @@ else
             {
                 <p><strong>Status:</strong> @renderInfo.Status</p>
                 <p><strong>FPS render:</strong> @currentRenderTick.FPS</p>
-                <p><strong>Progress:</strong> @currentRenderTick.CountFPS / @currentRenderTick.MaxCountFPS</p>
+                <p>
+                    <strong>Progress:</strong>
+                    <progress value="@currentRenderTick.CountFPS" max="@currentRenderTick.MaxCountFPS" />
+                    <label>@($"{currentRenderTick.CountFPS / currentRenderTick.MaxCountFPS * 100f:f2}")%</label>
+                </p>
             }
             <p><strong>Date Created:</strong> @renderInfo.DateCreate.ToString("yyyy-MM-dd HH:mm:ss")</p>
         </div>
@@ -141,6 +145,8 @@ else
 
     private void Update(RenderTick renderTick)
     {
+        if (renderTick.KeyRender != renderInfo.KEY)
+            return;
         renderInfo.Status = renderTick.Status;
         currentRenderTick = renderTick;
         InvokeAsync(StateHasChanged); // Обновляем UI

@@ -1,4 +1,4 @@
-﻿namespace DrawCurve.API.Hubs
+﻿namespace DrawCurve.Application.Hubs
 {
     public class ConnectionMapping<T>
     {

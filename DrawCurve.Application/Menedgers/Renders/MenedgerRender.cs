@@ -1,4 +1,5 @@
-﻿using DrawCurve.Application.Interface;
+﻿using DrawCurve.Application.Hubs;
+using DrawCurve.Application.Interface;
 using DrawCurve.Core.Window;
 using DrawCurve.Domen.Models.Menedger;
 using DrawCurve.Domen.Responces;
@@ -100,27 +101,15 @@ namespace DrawCurve.Application.Menedgers.Renders
             }
         }
         private int CountSent = 0;
-        private int MaxSend = 100;
-        private TypeStatus status = TypeStatus.Error;
+        private int MaxSend = 15;
         protected async Task SendTick(int authroId, RenderTick tick)
         {
-            //if (status != tick.Status)
-            //{
-            //    status = tick.Status;
-            //    CountSent = MaxSend;
-            //}
-            //if (CountSent >= MaxSend)
-            //{
-            //    var _resiveMsg = _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ISendTickRender>();
-
-            //    _resiveMsg.SendTick(authroId, tick);
-            //    CountSent = 0;
-            //}
-            //CountSent++;
-
-            var _resiveMsg = _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ISendTickRender>();
-
-            _resiveMsg.SendTick(authroId, tick);
+            if (CountSent >= MaxSend || tick.Status != TypeStatus.ProccessRenderFrame)
+            {
+                HubHelper.SendTick(authroId, tick);
+                CountSent = 0;
+            }
+            CountSent++;
         }
     }
 }
