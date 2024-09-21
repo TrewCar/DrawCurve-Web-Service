@@ -3,7 +3,7 @@
 <div class="card">
     <div class="card-header">
         <h5>@Name</h5>
-        <div class="color-square" style="background-color: rgba(@Color.R, @Color.G, @Color.B, @((double)Color.A / 255));"></div>
+        <div class="color-square" style="background-color: rgba(@Color.R, @Color.G, @Color.B, @((Color.A / 255.0).ToString().Replace(',', '.')));"></div>
     </div>
     <div class="card-body">
         <div class="form-group">
