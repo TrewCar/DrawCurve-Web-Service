@@ -15,7 +15,8 @@ namespace DrawCurve.Application.Menedgers
             {
                 case RenderType.RenderCurve:
                     Render render = new CurveRender();
-                    return render.GetDefaultRenderConfig().Transfer();
+                    var item = render.GetDefaultRenderConfig().Transfer();
+                    return item;
 
                 default:
                     throw new NotImplementedException($"Type {nameRender} is not implemented in {GetType().FullName}");

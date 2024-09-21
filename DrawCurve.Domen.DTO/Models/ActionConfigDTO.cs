@@ -16,6 +16,9 @@ namespace DrawCurve.Domen.DTO.Models
 
                 Start = cnf.Start,
                 End = cnf.End,
+
+                MinValue = cnf.MinValue,
+                MaxValue = cnf.MaxValue,
             };
 
         public static ActionConfigModel Transfer(this ActionConfigCore cnf)
@@ -29,6 +32,9 @@ namespace DrawCurve.Domen.DTO.Models
 
                 Start = cnf.Start,
                 End = cnf.End,
+
+                MinValue = cnf.MinValue,
+                MaxValue = cnf.MaxValue,
             };
     }
 }
