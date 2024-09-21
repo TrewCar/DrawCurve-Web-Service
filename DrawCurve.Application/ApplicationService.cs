@@ -22,6 +22,7 @@ namespace DrawCurve.Application
             services.AddScoped<ILoginService, LoginService>();
             services.AddScoped<IRenderQueue, RenderService>();
             services.AddScoped<IRenderService, RenderService>();
+            services.AddScoped<IUserService, UserService>();
 
             services.AddSingleton<MenedgerConfig>();
 

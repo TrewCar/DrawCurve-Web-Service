@@ -1,0 +1,33 @@
+﻿@using DrawCurve.Domen.Models.Core
+<div class="card">
+    <div class="card-header">
+        <h5>@ActionConfig.Name</h5>
+    </div>
+    <div class="card-body">
+        <p>@ActionConfig.Description</p>
+        <div class="form-group">
+            <label>Скорость:</label>
+            <InputNumber class="form-control" min="1" step="0.01" @bind-Value="ActionConfig.Step" />
+        </div>
+        <div class="form-group">
+            <label>Начало действия (в процентах):</label>
+            <InputNumber class="form-control" min="0" max="1" step="0.01" @bind-Value="ActionConfig.Start" />
+        </div>
+        <div class="form-group">
+            <label>Конец действия (в процентах):</label>
+            <InputNumber class="form-control" min="0" max="1" step="0.01" @bind-Value="ActionConfig.End" />
+        </div>
+        <div class="form-group">
+            <label>Максимальное значение:</label>
+            <InputNumber class="form-control" @bind-Value="ActionConfig.MaxValue" />
+        </div>
+        <div class="form-group">
+            <label>Минимальное значение:</label>
+            <InputNumber class="form-control" @bind-Value="ActionConfig.MinValue" />
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public ActionConfig ActionConfig { get; set; }
+}

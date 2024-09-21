@@ -1,8 +1,6 @@
 ﻿using DrawCurve.Application.Menedgers;
 using DrawCurve.Domen.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
 
 namespace DrawCurve.API.Controllers
 {
@@ -14,8 +12,8 @@ namespace DrawCurve.API.Controllers
     public class ConfigController : ControllerBase
     {
         private MenedgerConfig config;
-        public ConfigController(MenedgerConfig config) 
-        { 
+        public ConfigController(MenedgerConfig config)
+        {
             this.config = config;
         }
 

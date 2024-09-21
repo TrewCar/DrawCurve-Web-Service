@@ -1,0 +1,34 @@
+﻿
+@using DrawCurve.Domen.Models.Core
+<div class="card">
+    <div class="card-header">
+        <h5>@Name</h5>
+        <div class="color-square" style="background-color: rgba(@Color.R, @Color.G, @Color.B, @((double)Color.A / 255));"></div>
+    </div>
+    <div class="card-body">
+        <div class="form-group">
+            <label>Red:</label>
+            <InputNumber class="form-control" min="0" max="255" @bind-Value="Color.R" />
+        </div>
+        <div class="form-group">
+            <label>Green:</label>
+            <InputNumber class="form-control" min="0" max="255" @bind-Value="Color.G" />
+        </div>
+        <div class="form-group">
+            <label>Blue:</label>
+            <InputNumber class="form-control" min="0" max="255" @bind-Value="Color.B" />
+        </div>
+        <div class="form-group">
+            <label>Alpha:</label>
+            <InputNumber class="form-control" min="0" max="255" @bind-Value="Color.A" />
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+
+    [Parameter]
+    public DrawCurve.Domen.Models.Core.Color Color { get; set; }
+}

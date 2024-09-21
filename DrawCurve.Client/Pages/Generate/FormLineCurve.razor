@@ -1,4 +1,5 @@
 ﻿@page "/render/gen/linecurve"
+@using DrawCurve.Client.Pages.Generate.Objects
 @using DrawCurve.Domen.Models.Core
 @using DrawCurve.Domen.Models.Core.Enums
 @using DrawCurve.Domen.Models.Core.Objects
@@ -9,6 +10,8 @@
 
 <h3>FormLineCurve</h3>
 
+<StyleForm/>
+
 <EditForm Model="renderInfo" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
@@ -18,84 +21,16 @@
         <p><em>Loading default config...</em></p>
     }
 
-    <div class="form-section">
-        <h4>Render Info</h4>
-        <div class="form-group">
-            <label>Name:</label>
-            <InputText class="form-control" @bind-Value="renderInfo.Name" />
-        </div>
-    </div>
+    <NameObject Name="@renderInfo.Name" />
 
-    <div class="form-section">
-        <h4>Render Config</h4>
-        <div class="card-grid">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Configuration Details</h5>
-                </div>
-                <div class="card-body">
-                    <div class="form-group">
-                        <label>Title:</label>
-                        <InputText class="form-control" @bind-Value="renderInfo.config.Title" />
-                    </div>
-                    <div class="form-group">
-                        <label>FPS:</label>
-                        <InputNumber class="form-control" @bind-Value="renderInfo.config.FPS" />
-                    </div>
-                    <div class="form-group">
-                        <label>Time:</label>
-                        <InputNumber class="form-control" @bind-Value="renderInfo.config.Time" />
-                    </div>
-                    <div class="form-group">
-                        <label>Speed Render:</label>
-                        <InputNumber class="form-control" @bind-Value="renderInfo.config.SpeedRender" />
-                    </div>
-                    <div class="form-group">
-                        <label>Width:</label>
-                        <InputNumber class="form-control" @bind-Value="renderInfo.config.Width" />
-                    </div>
-                    <div class="form-group">
-                        <label>Height:</label>
-                        <InputNumber class="form-control" @bind-Value="renderInfo.config.Height" />
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <CnfRenderObject Config="@renderInfo.config" />
 
     <div class="form-section">
         <h4>Action Config</h4>
         <div class="card-grid">
             @foreach (var obj in renderInfo.config.ActionsConfig)
             {
-                <div class="card">
-                    <div class="card-header">
-                        <h5>@obj.Name</h5>
-                    </div>
-                    <div class="card-body">
-                        <p>@obj.Description</p>
-                        <div class="form-group">
-                            <label>Скорость:</label>
-                            <InputNumber class="form-control" min="1" step="0.01" @bind-Value="obj.Step" />
-                        </div>
-                        <div class="form-group">
-                            <label>Начало действия (в процентах):</label>
-                            <InputNumber class="form-control" min="0" max="1" step="0.01" @bind-Value="obj.Start" />
-                        </div>
-                        <div class="form-group">
-                            <label>Конец действия (в процентах):</label>
-                            <InputNumber class="form-control" min="0" max="1" step="0.01" @bind-Value="obj.End" />
-                        </div>
-                        <div class="form-group">
-                            <label>Максимальное значение:</label>
-                            <InputNumber class="form-control" @bind-Value="obj.MaxValue" />
-                        </div>
-                        <div class="form-group">
-                            <label>Минимальное значение:</label>
-                            <InputNumber class="form-control" @bind-Value="obj.MinValue" />
-                        </div>
-                    </div>
-                </div>
+                <ActionCnfObject ActionConfig="@obj" />
             }
         </div>
     </div>
@@ -105,29 +40,7 @@
         <div class="card-grid">
             @foreach (var obj in renderInfo.config.Colors)
             {
-                <div class="card">
-                    <div class="card-header">
-                        <h5>@obj.Key</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Red:</label>
-                            <InputNumber class="form-control" min="0" max="255" @bind-Value="obj.Value.R" />
-                        </div>
-                        <div class="form-group">
-                            <label>Green:</label>
-                            <InputNumber class="form-control" min="0" max="255" @bind-Value="obj.Value.G" />
-                        </div>
-                        <div class="form-group">
-                            <label>Blue:</label>
-                            <InputNumber class="form-control" min="0" max="255" @bind-Value="obj.Value.B" />
-                        </div>
-                        <div class="form-group">
-                            <label>Alpha:</label>
-                            <InputNumber class="form-control" min="0" max="255" @bind-Value="obj.Value.A" />
-                        </div>
-                    </div>
-                </div>
+                <ColorObject Name="@obj.Key" Color="@obj.Value" />
             }
         </div>
     </div>
@@ -137,26 +50,7 @@
         <div class="card-grid">
             @foreach (var obj in renderInfo.obejcts)
             {
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Line Curve</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="form-group">
-                            <label>Angle:</label>
-                            <InputNumber class="form-control" @bind-Value="obj.Angle" />
-                        </div>
-                        <div class="form-group">
-                            <label>Length:</label>
-                            <InputNumber class="form-control" @bind-Value="obj.Length" />
-                        </div>
-                        <div class="form-group">
-                            <label>RPS:</label>
-                            <InputNumber class="form-control" @bind-Value="obj.RPS" />
-                        </div>
-                        <button type="button" class="btn btn-danger" @onclick="() => RemoveObject(obj)">Remove LineCurve</button>
-                    </div>
-                </div>
+                <LineCurveObject Line="@obj" RemoveObject="(obj) => RemoveObject(obj)" />
             }
         </div>
         <button type="button" class="btn btn-primary" @onclick="AddLineCurve">Add LineCurve</button>
@@ -167,85 +61,6 @@
     </div>
 </EditForm>
 
-<style>
-    .form-section {
-        margin-bottom: 20px; /* Отступ между секциями */
-    }
-
-    .card-grid {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px; /* Расстояние между карточками */
-    }
-
-    .card {
-        flex: 1 1 calc(33% - 20px); /* 3 карточки в ряд, с учетом отступов */
-        min-width: 250px; /* Минимальная ширина карточки */
-        border: 1px solid #ddd; /* Граница карточки */
-        border-radius: 5px; /* Скругленные углы */
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Тень для карточки */
-        background-color: #fff; /* Фон карточки */
-    }
-
-    .card-header {
-        background-color: #f7f7f9; /* Цвет фона заголовка карточки */
-        padding: 10px;
-        font-weight: bold;
-        border-bottom: 1px solid #ddd; /* Разделительная линия внизу заголовка */
-        border-top-left-radius: 5px; /* Скругление углов сверху */
-        border-top-right-radius: 5px;
-    }
-
-    .card-body {
-        padding: 15px; /* Отступы внутри карточки */
-    }
-
-    .form-group {
-        margin-bottom: 15px; /* Отступ между полями ввода */
-    }
-
-        .form-group label {
-            display: block; /* Метка над полем ввода */
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-
-        .form-group .form-control {
-            width: 100%; /* Поля ввода занимают всю ширину контейнера */
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-
-    .btn {
-        padding: 10px 15px;
-        border-radius: 4px;
-        border: none;
-        cursor: pointer;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .btn-success {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .form-actions {
-        margin-top: 20px;
-        display: flex;
-        justify-content: flex-end; /* Кнопка "Submit" будет справа */
-    }
-
-</style>
 
 @code {
     private ResponceRenderInfoCurve renderInfo = new ResponceRenderInfoCurve
@@ -303,6 +118,7 @@
     private void RemoveObject(LineCurve obj)
     {
         renderInfo.obejcts.Remove(obj);
+        StateHasChanged();
     }
 
     public class ResponceRenderInfoCurve

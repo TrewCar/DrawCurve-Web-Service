@@ -1,0 +1,12 @@
+﻿<div class="form-section">
+    <h4>Render Info</h4>
+    <div class="form-group">
+        <label>Name:</label>
+        <InputText class="form-control" @bind-Value="Name" />
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Name { get; set; }
+}

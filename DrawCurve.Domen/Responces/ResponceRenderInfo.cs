@@ -1,7 +1,7 @@
 ﻿using DrawCurve.Domen.Models.Core;
 using DrawCurve.Domen.Models.Core.Objects;
 
-namespace DrawCurve.API.Controllers.Responces
+namespace DrawCurve.Domen.Responces
 {
     public class ResponceRenderInfo
     {

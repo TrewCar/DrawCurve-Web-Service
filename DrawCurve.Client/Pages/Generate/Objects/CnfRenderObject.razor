@@ -1,0 +1,43 @@
+﻿@using DrawCurve.Domen.Models.Core
+
+<div class="form-section">
+    <h4>Render Config</h4>
+    <div class="card-grid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Configuration Details</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-group">
+                    <label>Title:</label>
+                    <InputText class="form-control" @bind-Value="Config.Title" />
+                </div>
+                <div class="form-group">
+                    <label>FPS:</label>
+                    <InputNumber class="form-control" @bind-Value="Config.FPS" />
+                </div>
+                <div class="form-group">
+                    <label>Time:</label>
+                    <InputNumber class="form-control" @bind-Value="Config.Time" />
+                </div>
+                <div class="form-group">
+                    <label>Speed Render:</label>
+                    <InputNumber class="form-control" @bind-Value="Config.SpeedRender" />
+                </div>
+                <div class="form-group">
+                    <label>Width:</label>
+                    <InputNumber class="form-control" @bind-Value="Config.Width" />
+                </div>
+                <div class="form-group">
+                    <label>Height:</label>
+                    <InputNumber class="form-control" @bind-Value="Config.Height" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public RenderConfig Config { get; set; }
+}

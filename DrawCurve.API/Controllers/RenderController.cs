@@ -1,4 +1,4 @@
-﻿using DrawCurve.API.Controllers.Responces;
+﻿using DrawCurve.Domen.Responces;
 using DrawCurve.API.Menedgers;
 using DrawCurve.Application.Interface;
 using DrawCurve.Domen.Models;

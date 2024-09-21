@@ -1,8 +1,9 @@
 ﻿using Blazored.LocalStorage;
-using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using Microsoft.AspNetCore.Components.Authorization;
 using DrawCurve.Client.Provider.DrawCurve.Client.Provider;
+using Microsoft.AspNetCore.Components.Authorization;
+using System.Net.Http.Json;
+using DrawCurve.Domen.Responces;
+using DrawCurve.Domen.Models;
 
 namespace DrawCurve.Client.Service
 {
@@ -42,11 +43,18 @@ namespace DrawCurve.Client.Service
             await ((CustomAuthenticationStateProvider)_authenticationStateProvider).MarkUserAsLoggedOut();
         }
 
-        public async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request)
+        public async Task<(bool Success, string Message)> RegisterAsync(ResponceRegistration request)
         {
             var response = await _httpClient.PostAsJsonAsync("api/Login/Registration", request);
-            response.EnsureSuccessStatusCode();
-            return await response.Content.ReadFromJsonAsync<RegistrationResponse>();
+
+            if (response.IsSuccessStatusCode)
+            {
+                return (true, "Registration successful");
+            }
+
+            var errorResponse = await response.Content.ReadFromJsonAsync<LoginResponse>();
+
+            return (false, errorResponse.Message);
         }
 
         public async Task<bool> IsUserAuthenticatedAsync()
@@ -54,29 +62,5 @@ namespace DrawCurve.Client.Service
             var token = await _localStorage.GetItemAsync<string>("authToken");
             return token != null;
         }
-    }
-
-    public class LoginResponse
-    {
-        public string Token { get; set; }
-    }
-
-    public class RegistrationRequest
-    {
-        public string Name { get; set; }
-        public string Login { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class UserResource
-    {
-        public string Login { get; set; }
-        public string Password { get; set; }
-    }
-
-    public class RegistrationResponse
-    {
-        public string Message { get; set; }
     }
 }

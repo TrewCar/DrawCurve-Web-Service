@@ -1,0 +1,82 @@
+﻿@page "/registration"
+@using DrawCurve.Client.Service
+@using DrawCurve.Domen.Responces
+@inject NavigationManager Navigation
+@inject AuthService AuthService
+@inject IJSRuntime JsRuntime
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="card-title mb-0">Регистрация</h3>
+                </div>
+                <div class="card-body">
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger">@errorMessage</div>
+                    }
+
+                    <EditForm Model="@registrationModel" OnValidSubmit="HandleRegister">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary class="text-danger" />
+
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Имя</label>
+                            <InputText id="name" class="form-control" @bind-Value="registrationModel.Name" placeholder="Введите ваше имя" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Логин</label>
+                            <InputText id="username" class="form-control" @bind-Value="registrationModel.Login" placeholder="Введите ваш логин" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <InputText id="email" class="form-control" @bind-Value="registrationModel.Email" placeholder="Введите ваш email" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Пароль</label>
+                            <InputText id="password" class="form-control" @bind-Value="registrationModel.Password" placeholder="Введите ваш пароль" type="password" />
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
+                    </EditForm>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private ResponceRegistration registrationModel = new();
+    private string errorMessage = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            Navigation.NavigateTo("/userinfo");
+        }
+    }
+
+    private async Task HandleRegister()
+    {
+        var (success, message) = await AuthService.RegisterAsync(registrationModel);
+        if (success)
+        {
+            Navigation.NavigateTo("/login", true);
+        }
+        else
+        {
+            errorMessage = message; // Отображаем сообщение об ошибке
+            registrationModel.Password = ""; // Очистка пароля для безопасности
+        }
+    }
+}

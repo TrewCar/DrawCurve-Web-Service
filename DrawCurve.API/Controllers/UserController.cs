@@ -1,4 +1,5 @@
 ﻿using DrawCurve.API.Menedgers;
+using DrawCurve.Application.Interface;
 using DrawCurve.Domen.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,10 +12,12 @@ namespace DrawCurve.API.Controllers
     public class UserController : ControllerBase
     {
         private readonly JwtManager menedgerSession;
+        private readonly IUserService userService;
 
-        public UserController(JwtManager sessionManager)
+        public UserController(JwtManager sessionManager, IUserService userService)
         {
             this.menedgerSession = sessionManager;
+            this.userService = userService;
         }
 
         [HttpGet]
@@ -28,7 +31,7 @@ namespace DrawCurve.API.Controllers
                 return Unauthorized(); // Возвращает 401 Unauthorized если пользователь не авторизован
             }
 
-            return Ok(res);
+            return Ok(userService.GetUser(res.Id));
         }
     }
 }

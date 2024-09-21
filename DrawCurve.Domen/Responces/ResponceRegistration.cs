@@ -1,6 +1,6 @@
 ﻿using DrawCurve.Domen.Models;
 
-namespace DrawCurve.API.Controllers.Responces
+namespace DrawCurve.Domen.Responces
 {
     public class ResponceRegistration
     {

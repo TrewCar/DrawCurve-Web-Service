@@ -1,12 +1,8 @@
-﻿using DrawCurve.API.Controllers.Responces;
+﻿using DrawCurve.API.Menedgers;
 using DrawCurve.Application.Interface;
 using DrawCurve.Domen.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using DrawCurve.Domen.Responces;
 
 namespace DrawCurve.API.Controllers
 {
@@ -16,11 +12,13 @@ namespace DrawCurve.API.Controllers
     {
         private readonly ILoginService loginService;
         private readonly IConfiguration configuration;
+        private readonly JwtManager jwtManager;
 
-        public LoginController(ILoginService loginService, IConfiguration configuration)
+        public LoginController(ILoginService loginService, IConfiguration configuration, JwtManager jwtManager)
         {
             this.loginService = loginService;
             this.configuration = configuration;
+            this.jwtManager = jwtManager;
         }
 
         [HttpPost]
@@ -31,32 +29,11 @@ namespace DrawCurve.API.Controllers
 
             if (user != null)
             {
-                var token = GenerateJwtToken(user);
-                return Ok(new { Token = token });
+                var token = jwtManager.GenerateJwtToken(user);
+                return Ok(new LoginResponse { Token = token });
             }
 
-            return BadRequest(new { Message = "Invalid username or password" });
-        }
-
-        private string GenerateJwtToken(User user)
-        {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(configuration["Jwt:Key"]);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.Id.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddHours(1),
-                Issuer = configuration["Jwt:Issuer"],
-                Audience = configuration["Jwt:Issuer"],
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
+            return BadRequest(new LoginResponse { Message = "Invalid username or password" });
         }
 
         [HttpPost]
@@ -64,13 +41,17 @@ namespace DrawCurve.API.Controllers
         public IActionResult Logout()
         {
             // С удалением сессии можно больше не заниматься, т.к. мы теперь используем JWT
-            return Ok(new { Message = "Logout successful" });
+            return Ok(new LoginResponse { Message = "Logout successful" });
         }
 
         [HttpPost]
         [Route("Registration")]
         public IActionResult Registration(ResponceRegistration userResponse)
         {
+            if (userResponse == null || string.IsNullOrWhiteSpace(userResponse.Login) || string.IsNullOrWhiteSpace(userResponse.Password))
+            {
+                return BadRequest(new { Message = "Invalid registration data" });
+            }
             User user = new User()
             {
                 Name = userResponse.Name,
@@ -90,16 +71,10 @@ namespace DrawCurve.API.Controllers
             if (string.IsNullOrEmpty(res))
             {
                 // Регистрация успешна, возвращаем сообщение
-                return Ok(new { Message = "Registration successful" });
+                return Ok(new LoginResponse { Message = "Registration successful" });
             }
 
-            return BadRequest(new { Message = res });
+            return BadRequest(new LoginResponse { Message = res });
         }
-    }
-
-    public class UserResource
-    {
-        public string Login { get; set; }
-        public string Password { get; set; }
     }
 }
