@@ -2,6 +2,7 @@
 using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Core;
 using DrawCurve.Domen.Models.Core.Objects;
+using DrawCurve.Domen.Responces;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 
@@ -42,6 +43,32 @@ namespace DrawCurve.Client.Service
             return await response.Content.ReadFromJsonAsync<RenderInfo>() ?? new RenderInfo();
         }
 
+        public async Task<Stream> GetRenderImage(string key)
+        {
+            var response = await _httpClient.GetAsync($"api/Render/get/{key}/frame");
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                // Возвращаем изображение по умолчанию
+                return null;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                throw new UnauthorizedAccessException("Unauthorized access.");
+            }
+            else if (response.IsSuccessStatusCode)
+            {
+                // Возвращаем FileStream
+                return await response.Content.ReadAsStreamAsync();
+            }
+            else
+            {
+                // Возвращаем null или выбрасываем исключение для других статусов
+                throw new Exception("Error fetching render image.");
+            }
+        }
+
+
         public async Task<string> StartRender(RenderType renderType, ResponceRenderInfo render)
         {
             var response = await _httpClient.PostAsJsonAsync($"api/Render/generate/{renderType}", render);
@@ -52,13 +79,6 @@ namespace DrawCurve.Client.Service
             }
 
             return await response.Content.ReadAsStringAsync();
-        }
-
-        public class ResponceRenderInfo
-        {
-            public string Name { get; set; }
-            public List<ObjectRender> obejcts { get; set; }
-            public RenderConfig config { get; set; }
         }
 
         public async Task<RenderConfig> GetDefaultData(RenderType type)

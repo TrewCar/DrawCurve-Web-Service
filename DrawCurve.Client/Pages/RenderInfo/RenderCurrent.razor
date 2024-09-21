@@ -1,5 +1,8 @@
 ﻿@page "/render/info/{key}"
+@using Blazored.LocalStorage
 @inject RenderService renderService
+@inject NavigationManager NavigationManager
+@inject StateSignalRService stateService
 @attribute [Authorize]
 
 <h3>Render Info for @key</h3>
@@ -10,11 +13,20 @@
 }
 else
 {
+    <button @onclick="OnInitializedAsync">Refresh</button>
     <div class="render-info">
         <div class="render-info-header">
             <p><strong>Name:</strong> @renderInfo.Name</p>
             <p><strong>Type:</strong> @renderInfo.Type</p>
-            <p><strong>Status:</strong> @renderInfo.Status</p>
+            @if(renderInfo.Status != Domen.Models.Menedger.TypeStatus.ProccessRenderFrame){
+                <p><strong>Status:</strong> @renderInfo.Status</p>
+            } 
+            else
+            {
+                <p><strong>Status:</strong> @renderInfo.Status</p>
+                <p><strong>FPS render:</strong> @currentRenderTick.FPS</p>
+                <p><strong>Progress:</strong> @currentRenderTick.CountFPS / @currentRenderTick.MaxCountFPS</p>
+            }
             <p><strong>Date Created:</strong> @renderInfo.DateCreate.ToString("yyyy-MM-dd HH:mm:ss")</p>
         </div>
 
@@ -28,30 +40,110 @@ else
                 <h4>Objects (JSON)</h4>
                 <pre>@FormatJson(renderInfo.ObjectsJSON)</pre>
             </div>
+
+            <div class="render-info-column">
+                <h4>Render Image</h4>
+                @if (imageStream != null)
+                {
+                    <img src="@imageSource" alt="Render Image" class="responsive-image" />
+                }
+                else
+                {
+                    <img src="/data/load.gif" alt="Default Image" class="responsive-image" />
+                }
+            </div>
         </div>
     </div>
 }
+<style>
+    .render-info-content {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px; /* Space between columns */
+    }
+
+    .render-info-column {
+        flex: 1; /* Flex-grow to fill space */
+        min-width: 0; /* Prevent overflow */
+        padding: 10px; /* Optional padding */
+        box-sizing: border-box; /* Include padding in width */
+    }
+
+    .responsive-image {
+        max-width: 100%; /* Ensure the image does not exceed the width of its container */
+        height: auto; /* Maintain aspect ratio */
+        display: block; /* Remove bottom space */
+        margin: 0 auto; /* Center the image */
+    }
+</style>
 
 @code {
     [Parameter]
     public string? key { get; set; }
 
     private RenderInfo? renderInfo;
+    private Stream? imageStream;
+    private string imageSource;
+
+    private HubConnection? hubConnection;
+    private RenderTick? currentRenderTick = new();
 
     protected override async Task OnInitializedAsync()
     {
+        await InitRenderInfo();
+        await InitHub();
+    }
+
+    private async Task InitRenderInfo()
+    {
+        renderInfo = null;
         if (!string.IsNullOrEmpty(key))
         {
             try
             {
                 renderInfo = await renderService.GetRenderCur(key);
+                imageStream = await renderService.GetRenderImage(key); // Получаем изображение
+
+                if (imageStream != null)
+                {
+                    // Получаем URL для изображения
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await imageStream.CopyToAsync(memoryStream);
+                        var base64Image = Convert.ToBase64String(memoryStream.ToArray());
+                        imageSource = $"data:image/jpeg;base64,{base64Image}"; // Замените на нужный MIME-тип
+                    }
+                }
+                else
+                {
+                    imageSource = "/data/load.gif"; // Путь к изображению по умолчанию
+                }
+            }
+            catch (UnauthorizedAccessException)
+            {
+                // Обработка ошибки авторизации
+                Console.WriteLine("Unauthorized access.");
             }
             catch (Exception ex)
             {
-                // Обработка ошибки при получении данных
+                // Обработка других ошибок
                 Console.WriteLine($"Error fetching render info: {ex.Message}");
             }
         }
+    } 
+
+    private async Task InitHub()
+    {
+        stateService.Stop();
+        stateService.Action += Update;
+        await stateService.Start();
+    }
+
+    private void Update(RenderTick renderTick)
+    {
+        renderInfo.Status = renderTick.Status;
+        currentRenderTick = renderTick;
+        InvokeAsync(StateHasChanged); // Обновляем UI
     }
 
     private string FormatJson(string json)

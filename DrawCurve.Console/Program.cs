@@ -5,7 +5,7 @@ using DrawCurve.Core.Window;
 using DrawCurve.Domen.DTO.Models;
 using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Core.Objects;
-using DrawCurve.Domen.Models.Menedger;
+using DrawCurve.Domen.Responces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -24,7 +24,7 @@ internal class Program
             })
            .ConfigureServices((context, services) =>
            {
-               services.AddApplicationServices(context.Configuration);
+               services.AddApplicationServices<TTT>(context.Configuration);
            })
            .Build();
 
@@ -76,5 +76,13 @@ internal class Program
         {
             return Console.Out.WriteLineAsync(tick.KeyRender + "\t" + tick.Status + "\t" + tick.CountFPS + "\\" + tick.MaxCountFPS + "\t\t" + tick.FPS);
         }
+    }
+}
+
+public class TTT : ISendTickRender
+{
+    public Task SendTick(int AuthorId, RenderTick tick)
+    {
+        return Task.CompletedTask;
     }
 }

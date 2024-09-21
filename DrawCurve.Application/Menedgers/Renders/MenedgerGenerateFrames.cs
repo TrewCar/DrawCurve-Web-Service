@@ -6,6 +6,7 @@ using DrawCurve.Domen.DTO.Models.Objects;
 using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Core.Objects;
 using DrawCurve.Domen.Models.Menedger;
+using DrawCurve.Domen.Responces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using SFML.Graphics;
@@ -65,6 +66,15 @@ namespace DrawCurve.Application.Menedgers.Renders
             var path = Path.Combine(DirectoryHelper.GetPathToSaveFrame(key), $"frame_{render.CountFrame:D6}.png");
 
             image.SaveToFile(path);
+
+            await SendTick(Renders[key].Author,new RenderTick
+            {
+                KeyRender = render.KEY,
+                FPS = (float)render.fpsCounter.FPS,
+                CountFPS = render.CountFrame,
+                MaxCountFPS = render.RenderConfig.FPS * render.RenderConfig.Time,
+                Status = proccess
+            });
 
             //Console.WriteLine($"{key} - {render.CountFrame}");
         }

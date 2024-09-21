@@ -1,7 +1,6 @@
-﻿
+﻿using DrawCurve.API.Hubs;
 using DrawCurve.API.Menedgers;
 using DrawCurve.Application;
-using DrawCurve.Application.Logger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -25,13 +24,7 @@ namespace DrawCurve.API
             services.AddEndpointsApiExplorer();
             services.AddSignalR();
 
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "Some API v1", Version = "v1" });
-                // here some other configurations maybe...
-                options.AddSignalRSwaggerGen();
-            });
-
+            services.AddSwaggerGen();
 
             services.AddSession(options =>
             {
@@ -54,6 +47,21 @@ namespace DrawCurve.API
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])),
                         ClockSkew = TimeSpan.Zero // убираем стандартное время отклонения (5 минут)
                     };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            var accessToken = context.Request.Query["access_token"];
+
+                            // Если запрос идет к вашему хабу, передаем токен
+                            var path = context.HttpContext.Request.Path;
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/tickRender"))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             services.AddDistributedMemoryCache();
@@ -62,8 +70,7 @@ namespace DrawCurve.API
 
             services.AddScoped<JwtManager>();
 
-            services.AddApplicationServices(Configuration);
-
+            services.AddApplicationServices<TickRenderHub>(Configuration);
         }
 
         // Метод для настройки HTTP-пайплайна
@@ -76,7 +83,10 @@ namespace DrawCurve.API
             }
             app.UseSession();
 
-            app.UseCors(p => p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+            app.UseCors(p => 
+            {
+                p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+            });
 
             app.UseHttpsRedirection();
 
@@ -87,6 +97,7 @@ namespace DrawCurve.API
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapHub<TickRenderHub>("/tickRender");
                 endpoints.MapControllers(); // Настройка маршрутизации контроллеров
             });
         }

@@ -1,4 +1,6 @@
-﻿namespace DrawCurve.Domen.Models.Menedger
+﻿using DrawCurve.Domen.Models.Menedger;
+
+namespace DrawCurve.Domen.Responces
 {
     public class RenderTick
     {

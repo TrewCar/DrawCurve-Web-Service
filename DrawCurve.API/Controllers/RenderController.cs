@@ -5,6 +5,7 @@ using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Menedger;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using DrawCurve.Application.Utils;
 
 namespace DrawCurve.API.Controllers
 {
@@ -43,6 +44,26 @@ namespace DrawCurve.API.Controllers
 
             this.Response.StatusCode = 401;
             return new RenderInfo();
+        }
+        [HttpGet]
+        [Route("get/{RenderKey}/frame")]
+        public ActionResult<FileStream> GetFrame(string RenderKey)
+        {
+            var path = DirectoryHelper.GetPathToSaveFrame(RenderKey);
+            var files = Directory.GetFiles(path);
+
+            // Проверяем, что файлов больше 100
+            if (files.Length < 100)
+            {
+                return NotFound(); // Или любое другое подходящее сообщение
+            }
+
+            var paths = files.OrderBy(x => x).ToList();
+            var pathToImage = paths[paths.Count - 20];
+
+            // Открываем файл для чтения
+            var stream = new FileStream(pathToImage, FileMode.Open, FileAccess.Read);
+            return File(stream, "image/jpeg"); // Замените "image/jpeg" на нужный вам MIME-тип
         }
 
         [HttpPost]

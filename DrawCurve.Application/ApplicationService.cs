@@ -14,7 +14,7 @@ namespace DrawCurve.Application
 {
     public static class ApplicationService
     {
-        public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddApplicationServices<THub>(this IServiceCollection services, IConfiguration configuration) where THub : class, ISendTickRender
         {
             services.AddDbContext<DrawCurveDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"))
@@ -23,6 +23,8 @@ namespace DrawCurve.Application
             services.AddScoped<IRenderQueue, RenderService>();
             services.AddScoped<IRenderService, RenderService>();
             services.AddScoped<IUserService, UserService>();
+
+            services.AddScoped<ISendTickRender, THub>();
 
             services.AddSingleton<MenedgerConfig>();
 

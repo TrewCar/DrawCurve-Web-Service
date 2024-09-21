@@ -1,8 +1,10 @@
 ﻿using DrawCurve.Application.Interface;
 using DrawCurve.Core.Window;
 using DrawCurve.Domen.Models.Menedger;
+using DrawCurve.Domen.Responces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 
 namespace DrawCurve.Application.Menedgers.Renders
 {
@@ -13,7 +15,6 @@ namespace DrawCurve.Application.Menedgers.Renders
         protected TypeStatus end;
         protected IServiceProvider _serviceProvider;
         protected ILogger _logger;
-        protected ISendTickRender _resiveMsg;
 
         public Dictionary<string, (int Author, TValDictionary Value)> Renders { get; protected set; } = new();
         protected List<string> KeyRenderByEnd = new();
@@ -62,6 +63,16 @@ namespace DrawCurve.Application.Menedgers.Renders
                     var renderInfo = queue.GetRender(key);
                     queue.UpdateState(renderInfo, end);
                     KeyRenderByEnd.Remove(key);
+
+
+                    await SendTick(renderInfo.AuthorId, new RenderTick
+                    {
+                        KeyRender = key,
+                        FPS = 0,
+                        CountFPS = 0,
+                        MaxCountFPS = 0,
+                        Status = end
+                    });
                 }
 
                 if (Renders.Count < 10)
@@ -73,16 +84,39 @@ namespace DrawCurve.Application.Menedgers.Renders
                         _logger.LogInformation($"START - {items[i].KEY}");
                         queue.UpdateState(items[i], proccess);
                         Add(items[i].AuthorId, items[i].KEY);
+
+                        await SendTick(items[i].AuthorId, new RenderTick
+                        {
+                            KeyRender = items[i].KEY,
+                            FPS = 0,
+                            CountFPS = 0,
+                            MaxCountFPS = 0,
+                            Status = proccess
+                        });
                     }
                 }
 
                 await Task.Delay(TimeSpan.FromMinutes(1)); // wait 1 minute to next iteration
             }
         }
-
-        public void SendTick(RenderTick tick)
+        private int CountSent = 0;
+        private int MaxSend = 100;
+        private TypeStatus status = TypeStatus.Error;
+        protected async Task SendTick(int authroId, RenderTick tick)
         {
+            if (status != tick.Status)
+            {
+                status = tick.Status;
+                CountSent = MaxSend;
+            }
+            if (CountSent >= MaxSend)
+            {
+                var _resiveMsg = _serviceProvider.CreateScope().ServiceProvider.GetRequiredService<ISendTickRender>();
 
+                _resiveMsg.SendTick(authroId, tick);
+                CountSent = 0;
+            }
+            CountSent++;
         }
     }
 }

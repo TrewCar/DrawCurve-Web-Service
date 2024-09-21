@@ -6,6 +6,7 @@ using DrawCurve.Client.Service;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.SignalR.Client;
 
 public static class Program
 {
@@ -21,11 +22,13 @@ public static class Program
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<AuthService>();
         builder.Services.AddScoped<RenderService>();
+        builder.Services.AddScoped<StateSignalRService>();
         builder.Services.AddBlazoredLocalStorage();
+
 
         builder.Services.AddScoped(sp => new HttpClient
         {
-            BaseAddress = new Uri("http://localhost:5184")
+            BaseAddress = new Uri("http://192.168.0.200:5184")
         });
         await builder.Build().RunAsync();
     }
