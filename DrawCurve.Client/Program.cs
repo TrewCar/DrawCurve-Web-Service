@@ -14,10 +14,27 @@ public class Program
     {
         var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-        // Используем Startup для конфигурации
-        var startup = new Startup();
-        startup.ConfigureServices(builder.Services);
-        startup.Configure(builder);
+        builder.Logging.SetMinimumLevel(LogLevel.Debug);
+
+        // Подключаем компоненты
+        builder.RootComponents.Add<App>("#app");
+        builder.RootComponents.Add<HeadOutlet>("head::after");
+
+        builder.Services.AddScoped(sp => new HttpClient
+        {
+            //BaseAddress = new Uri("http://localhost:5184")
+            BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+        });
+
+        builder.Services.AddAuthorizationCore();
+        builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
+
+        builder.Services.AddScoped<UserService>();
+        builder.Services.AddScoped<AuthService>();
+        builder.Services.AddScoped<RenderService>();
+        builder.Services.AddScoped<StateSignalRService>();
+
+        builder.Services.AddBlazoredLocalStorage();
 
         await builder.Build().RunAsync();
     }

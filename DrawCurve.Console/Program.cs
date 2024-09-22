@@ -72,17 +72,17 @@ internal class Program
 
     public class ResiveMsg : ISendTickRender
     {
-        public Task SendTick(int AuthorId, RenderTick tick)
+        public void SendTick(int AuthorId, RenderTick tick)
         {
-            return Console.Out.WriteLineAsync(tick.KeyRender + "\t" + tick.Status + "\t" + tick.CountFPS + "\\" + tick.MaxCountFPS + "\t\t" + tick.FPS);
+
         }
     }
 }
 
 public class TTT : ISendTickRender
 {
-    public Task SendTick(int AuthorId, RenderTick tick)
+    public void SendTick(int AuthorId, RenderTick tick)
     {
-        return Task.CompletedTask;
+
     }
 }
