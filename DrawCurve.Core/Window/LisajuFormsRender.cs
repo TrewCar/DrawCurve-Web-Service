@@ -22,7 +22,7 @@ namespace DrawCurve.Core.Window
         {
         }
         public override void Init()
-        { 
+        {
             base.Init();
             using (var reader = new AudioFileReader(RenderConfig.PathMusic))
             {
@@ -44,8 +44,6 @@ namespace DrawCurve.Core.Window
                 }
                 sampleRate = reader.WaveFormat.SampleRate;
                 RenderConfig.Time = (int)reader.TotalTime.TotalSeconds;
-
-
             }
 
             for (int i = 0; i < samplesLeft.Length; i++)
@@ -54,6 +52,7 @@ namespace DrawCurve.Core.Window
             }
 
             scale = Math.Min(window.Size.X, window.Size.Y) / 4.0f / maxAmplitude;
+
         }
         public override bool TickRender(float deltaTime)
         {

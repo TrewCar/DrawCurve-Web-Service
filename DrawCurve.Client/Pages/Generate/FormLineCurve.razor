@@ -6,9 +6,10 @@
 @using static DrawCurve.Client.Service.RenderService
 @inject NavigationManager Navigation
 @inject RenderService renderService
+@inject MusicService MusicService
 @attribute [Authorize]
 
-<h3>FormLineCurve</h3>
+<h3>Form Line Curve</h3>
 
 <StyleForm/>
 
@@ -24,6 +25,20 @@
     <NameObject Name="@renderInfo.Name" />
 
     <CnfRenderObject Config="@renderInfo.config" />
+
+    <div class="form-section">
+        <h4>Render Music</h4>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Music file:</label>
+                        <InputFile class="form-control" accept=".mp3,audio/*" OnChange="HandleFileSelected" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="form-section">
         <h4>Action Config</h4>
@@ -63,6 +78,13 @@
 
 
 @code {
+    private IBrowserFile selectedFile;
+
+    private async Task HandleFileSelected(InputFileChangeEventArgs e)
+    {
+        selectedFile = e.File;
+        // You can also read the file or perform other actions here
+    }
     private ResponceRenderInfoCurve renderInfo = new ResponceRenderInfoCurve
         {
             Name = "Example",
@@ -93,6 +115,18 @@
 
     private async Task HandleValidSubmit()
     {
+        var url = "";
+        try{
+            url = await MusicService.Save(selectedFile);
+            // Здесь можно обработать полученный URL, например, вывести его
+            Console.WriteLine("File uploaded successfully. URL: " + url);
+            renderInfo.config.PathMusic = url;
+        }
+        catch
+        {
+            return;
+        }
+
         ResponceRenderInfo render = new()
             {
                 Name = renderInfo.Name,

@@ -32,14 +32,6 @@
                     <label>Height:</label>
                     <InputNumber class="form-control" @bind-Value="Config.Height" />
                 </div>
-                <div class="form-group">
-                    <label>Path to music:</label>
-                    <InputText class="form-control" @bind-Value="Config.PathMusic" />
-                    @if (!string.IsNullOrEmpty(Config.PathMusic))
-                    {
-                        <p>Submitted URL: <a href="@Config.PathMusic" target="_blank">Проверьте ссылку</a></p>
-                    }
-                </div>
             </div>
         </div>
     </div>

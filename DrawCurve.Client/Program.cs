@@ -22,8 +22,8 @@ public class Program
 
         builder.Services.AddScoped(sp => new HttpClient
         {
-            //BaseAddress = new Uri("http://localhost:5184")
-            BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
+            BaseAddress = new Uri("http://localhost:5184")
+            //BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
         });
 
         builder.Services.AddAuthorizationCore();
@@ -32,6 +32,7 @@ public class Program
         builder.Services.AddScoped<UserService>();
         builder.Services.AddScoped<AuthService>();
         builder.Services.AddScoped<RenderService>();
+        builder.Services.AddScoped<MusicService>();
         builder.Services.AddScoped<StateSignalRService>();
 
         builder.Services.AddBlazoredLocalStorage();
