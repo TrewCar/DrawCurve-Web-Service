@@ -97,7 +97,7 @@ namespace DrawCurve.Application.Menedgers.Renders
                     }
                 }
 
-                await Task.Delay(TimeSpan.FromMinutes(1)); // wait 1 minute to next iteration
+                await Task.Delay(TimeSpan.FromSeconds(10)); // wait 1 minute to next iteration
             }
         }
         private int CountSent = 0;

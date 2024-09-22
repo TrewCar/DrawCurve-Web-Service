@@ -17,6 +17,8 @@ namespace DrawCurve.Core.Config
         public uint FPS;
         public float Time;
 
+        public string PathMusic = string.Empty;
+
         private int indexSmooth;
         public int IndexSmooth { 
             get => indexSmooth; 

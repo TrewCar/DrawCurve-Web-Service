@@ -105,6 +105,15 @@ namespace DrawCurve.Application.Menedgers.Renders
                 t.KEY = render.KEY;
                 return t;
             }
+            else if (render.Type == RenderType.LissajousFigures)
+            {
+                var t = new LisajuFormsRender(
+                    render.RenderConfig.Transfer(),
+                    render.Objects.Select(x => x.Transfer()).ToList()
+                );
+                t.KEY = render.KEY;
+                return t;
+            }
             else
             {
                 throw new NotImplementedException($"Type {render.Type} is not implemented in {GetType().FullName}");

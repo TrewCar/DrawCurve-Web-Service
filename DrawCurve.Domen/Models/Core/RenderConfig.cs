@@ -13,6 +13,7 @@ namespace DrawCurve.Domen.Models.Core
         public List<TagRender> Tags { get; set; }
         public int FPS { get; set; }
         public float Time { get; set; }
+        public string PathMusic { get; set; } = string.Empty;
 
         public float SpeedRender { get; set; }
 

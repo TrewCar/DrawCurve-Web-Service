@@ -1,5 +1,8 @@
-﻿using DrawCurve.Application.Utils;
+﻿using DrawCurve.Application.Interface;
+using DrawCurve.Application.Utils;
+using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Menedger;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace DrawCurve.Application.Menedgers.Renders
@@ -20,26 +23,26 @@ namespace DrawCurve.Application.Menedgers.Renders
                 string _key = (string)Key.Clone();
                 string path = DirectoryHelper.GetPathToSaveResult(_key);
 
+                using var scope = _serviceProvider.CreateScope();
+                var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
+                RenderInfo render = queue.GetRender(_key);
+
                 Renders.Add(Key, (AuthorId, _key));
-
-                if (Directory.Exists(path))
-                    Directory.Delete(path, true);
-                Directory.CreateDirectory(path);
-
 
                 string pathToVideo = Path.Combine(DirectoryHelper.GetPathToSaveVideo(_key), _key + ".mp4");
 
-                if (Directory.Exists(DirectoryHelper.PathToAudio()))
+                string pathToAudio = render.RenderConfig.PathMusic;
+                if (!string.IsNullOrEmpty(pathToAudio))
                 {
-                    var files = Directory.GetFiles(DirectoryHelper.PathToAudio());
-                    if (files.Length > 0)
-                    {
-                        FFMpegUtils.VideoConcatAudio(
-                            pathToVideo: pathToVideo,
-                            pathToAudio: "",
-                            pathOutVideo: path,
-                            outNameFile: _key);
-                    }
+                    FFMpegUtils.VideoConcatAudio(
+                        pathToVideo: pathToVideo,
+                        pathToAudio: render.RenderConfig.PathMusic,
+                        pathOutVideo: path,
+                        outNameFile: _key);
+                } 
+                else
+                {
+                    File.Copy(pathToVideo, Path.Combine(path, _key + ".mp4"), true);
                 }
 
                 KeyRenderByEnd.Add(Key);

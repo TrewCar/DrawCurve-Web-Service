@@ -5,10 +5,14 @@
 @inject RenderService renderService
 @attribute [Authorize]
 
-<NavLink href="/render/gen/linecurve">
-    Форма генерации динамических кривых
-</NavLink>
+<PageTitle>Генерация фигур и кривых</PageTitle>
+<h1 class="page-title">Генерация фигур и кривых</h1>
 
-@code {
-
-}
+<div class="nav-links">
+    <NavLink href="/render/gen/linecurve" class="nav-link">
+        Форма генерации динамических кривых
+    </NavLink>
+    <NavLink href="/render/gen/lissajousfigures" class="nav-link">
+        Форма генерации форм Лисауджу
+    </NavLink>
+</div>

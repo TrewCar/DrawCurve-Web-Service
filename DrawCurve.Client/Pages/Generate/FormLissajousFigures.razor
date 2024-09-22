@@ -1,0 +1,98 @@
+﻿@page "/render/gen/lissajousfigures"
+@using DrawCurve.Client.Pages.Generate.Objects
+@using DrawCurve.Domen.Models.Core
+@using DrawCurve.Domen.Models.Core.Enums
+@using DrawCurve.Domen.Models.Core.Objects
+@using static DrawCurve.Client.Service.RenderService
+@inject NavigationManager Navigation
+@inject RenderService renderService
+@attribute [Authorize]
+
+<h3>FormLineCurve</h3>
+
+<StyleForm />
+
+<EditForm Model="renderInfo" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    @if (wait)
+    {
+        <p><em>Loading default config...</em></p>
+    }
+
+    <NameObject Name="@renderInfo.Name" />
+
+    <CnfRenderObject Config="@renderInfo.config" />
+
+    <div class="form-section">
+        <h4>Colors</h4>
+        <div class="card-grid">
+            @foreach (var obj in renderInfo.config.Colors)
+            {
+                <ColorObject Name="@obj.Key" Color="@obj.Value" />
+            }
+        </div>
+    </div>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+</EditForm>
+
+
+@code {
+    private ResponceRenderLissajousFigures renderInfo = new ResponceRenderLissajousFigures
+        {
+            Name = "Example",
+            config = new()
+            {
+                ActionsConfig = new(),
+                Colors = new()
+            },
+            obejcts = new List<ObjectRender>(),
+        };
+
+    private bool wait = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        renderInfo.config = await renderService.GetDefaultData(RenderType.LissajousFigures);
+        var obj = await renderService.GetDefaultObjects(RenderType.LissajousFigures);
+
+        foreach (var item in obj)
+        {
+            if (item is LineCurve curve)
+            {
+                renderInfo.obejcts.Add(curve);
+            }
+        }
+        wait = false;
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        ResponceRenderInfo render = new()
+            {
+                Name = renderInfo.Name,
+                config = renderInfo.config,
+                obejcts = renderInfo.obejcts.Select(x => (ObjectRender)x).ToList()
+            };
+
+        var key = await renderService.StartRender(RenderType.LissajousFigures, render);
+
+        if (string.IsNullOrEmpty(key))
+        {
+            Console.WriteLine("ОШИБКА ПРИ НАЧАЛЕ РЕНЕДРА");
+            return;
+        }
+        Navigation.NavigateTo($"/render/info/{key}");
+    }
+
+    public class ResponceRenderLissajousFigures
+    {
+        public string Name { get; set; }
+        public List<ObjectRender> obejcts { get; set; }
+        public RenderConfig config { get; set; }
+    }
+}

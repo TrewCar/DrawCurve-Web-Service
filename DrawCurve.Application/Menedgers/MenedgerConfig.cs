@@ -14,10 +14,13 @@ namespace DrawCurve.Application.Menedgers
             switch (nameRender)
             {
                 case RenderType.RenderCurve:
-                    Render render = new CurveRender();
-                    var item = render.GetDefaultRenderConfig().Transfer();
-                    return item;
-
+                    Render render1 = new CurveRender();
+                    var item1 = render1.GetDefaultRenderConfig().Transfer();
+                    return item1;
+                case RenderType.LissajousFigures:
+                    Render render2 = new LisajuFormsRender();
+                    var item2 = render2.GetDefaultRenderConfig().Transfer();
+                    return item2;
                 default:
                     throw new NotImplementedException($"Type {nameRender} is not implemented in {GetType().FullName}");
             }
@@ -47,6 +50,10 @@ namespace DrawCurve.Application.Menedgers
                 {
                     new LineCurve(),
                 };
+            }
+            else if (nameRender == RenderType.LissajousFigures)
+            {
+                return new List<Domen.Models.Core.Objects.ObjectRender>();
             }
             return new List<ObjectRender>();
         }

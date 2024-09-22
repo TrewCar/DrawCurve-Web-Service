@@ -12,5 +12,6 @@ namespace DrawCurve.Domen.Models
     public enum RenderType
     {
         [EnumMember(Value = "RENDER_CURVE")] RenderCurve = 0,
+        [EnumMember(Value = "LISSAJOUS_FIGURES")] LissajousFigures = 1,
     }
 }

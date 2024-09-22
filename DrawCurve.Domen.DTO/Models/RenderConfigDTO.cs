@@ -13,13 +13,15 @@ namespace DrawCurve.Domen.DTO.Models
             => new RenderConfigCore()
             {
                 Title = cnf.Title,
-                Tags = cnf.Tags.Select(x=> 
+                Tags = cnf.Tags.Select(x =>
                     x.DataTransfer<TagRenderModel, TagRenderCore>()
                 ).ToList(),
 
                 FPS = (uint)cnf.FPS,
                 Time = cnf.Time,
                 SpeedRender = 1,
+
+                PathMusic = cnf.PathMusic,
 
                 IndexSmooth = cnf.IndexSmooth,
 
@@ -44,6 +46,8 @@ namespace DrawCurve.Domen.DTO.Models
                 FPS = (int)cnf.FPS,
                 Time = cnf.Time,
                 SpeedRender = 1,
+
+                PathMusic = cnf.PathMusic,
 
                 IndexSmooth = cnf.IndexSmooth,
 
