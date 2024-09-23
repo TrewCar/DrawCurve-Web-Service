@@ -1,6 +1,7 @@
 ﻿@page "/render/info/{key}"
 @using Blazored.LocalStorage
 @inject RenderService renderService
+@inject VideoService videoService
 @inject NavigationManager NavigationManager
 @inject StateSignalRService stateService
 @attribute [Authorize]
@@ -106,7 +107,7 @@ else
             try
             {
                 renderInfo = await renderService.GetRenderCur(key);
-                imageStream = await renderService.GetRenderImage(key); // Получаем изображение
+                imageStream = await videoService.GetRenderImage(key); // Получаем изображение
 
                 if (imageStream != null)
                 {

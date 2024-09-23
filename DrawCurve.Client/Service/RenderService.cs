@@ -21,7 +21,7 @@ namespace DrawCurve.Client.Service
 
         public async Task<List<RenderInfo>> GetRenderList()
         {
-            var response = await _httpClient.GetAsync("api/Render/get/all/self");
+            var response = await _httpClient.GetAsync("api/Render/all");
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
@@ -33,7 +33,7 @@ namespace DrawCurve.Client.Service
 
         public async Task<RenderInfo> GetRenderCur(string Key)
         {
-            var response = await _httpClient.GetAsync($"api/Render/get/{Key}");
+            var response = await _httpClient.GetAsync($"api/Render/{Key}");
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
@@ -43,35 +43,9 @@ namespace DrawCurve.Client.Service
             return await response.Content.ReadFromJsonAsync<RenderInfo>() ?? new RenderInfo();
         }
 
-        public async Task<Stream> GetRenderImage(string key)
-        {
-            var response = await _httpClient.GetAsync($"api/Render/get/{key}/frame");
-
-            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
-            {
-                // Возвращаем изображение по умолчанию
-                return null;
-            }
-            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
-            {
-                throw new UnauthorizedAccessException("Unauthorized access.");
-            }
-            else if (response.IsSuccessStatusCode)
-            {
-                // Возвращаем FileStream
-                return await response.Content.ReadAsStreamAsync();
-            }
-            else
-            {
-                // Возвращаем null или выбрасываем исключение для других статусов
-                throw new Exception("Error fetching render image.");
-            }
-        }
-
-
         public async Task<string> StartRender(RenderType renderType, ResponceRenderInfo render)
         {
-            var response = await _httpClient.PostAsJsonAsync($"api/Render/generate/{renderType}", render);
+            var response = await _httpClient.PostAsJsonAsync($"api/Render/{renderType}/Generate", render);
 
             if (response.StatusCode != System.Net.HttpStatusCode.OK)
             {
@@ -80,29 +54,5 @@ namespace DrawCurve.Client.Service
 
             return await response.Content.ReadAsStringAsync();
         }
-
-        public async Task<RenderConfig> GetDefaultData(RenderType type)
-        {
-            var response = await _httpClient.GetAsync($"api/Config/{type}/Default");
-
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new Exception();
-            }
-
-            return await response.Content.ReadFromJsonAsync<RenderConfig>();
-        }
-        public async Task<List<ObjectRender>> GetDefaultObjects(RenderType type)
-        {
-            var response = await _httpClient.GetAsync($"api/Config/{type}/Objects");
-
-            if (response.StatusCode != System.Net.HttpStatusCode.OK)
-            {
-                throw new Exception();
-            }
-
-            return await response.Content.ReadFromJsonAsync<List<ObjectRender>>();
-        }
-    
     }
 }

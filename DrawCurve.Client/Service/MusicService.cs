@@ -22,7 +22,7 @@ namespace DrawCurve.Client.Service
             fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
             content.Add(fileContent, "file", file.Name);
 
-            var response = await _httpClient.PostAsync("api/music/save", content);
+            var response = await _httpClient.PostAsync("api/music", content);
             response.EnsureSuccessStatusCode();
 
             var result = await response.Content.ReadAsStringAsync();
@@ -31,7 +31,7 @@ namespace DrawCurve.Client.Service
 
         public async Task<Stream> Get(string fileName)
         {
-            var response = await _httpClient.GetAsync($"api/music/get/{fileName}");
+            var response = await _httpClient.GetAsync($"api/music/{fileName}");
             response.EnsureSuccessStatusCode();
 
             return await response.Content.ReadAsStreamAsync();

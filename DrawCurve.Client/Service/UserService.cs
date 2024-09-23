@@ -18,7 +18,7 @@ namespace DrawCurve.Client.Service
 
         public async Task<User> GetUserInfoAsync()
         {
-            return await _httpClient.GetFromJsonAsync<User>("api/user/info");
+            return await _httpClient.GetFromJsonAsync<User>("api/user");
         }
     }
 }

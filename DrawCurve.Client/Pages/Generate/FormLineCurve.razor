@@ -6,6 +6,7 @@
 @using static DrawCurve.Client.Service.RenderService
 @inject NavigationManager Navigation
 @inject RenderService renderService
+@inject ConfigService configService
 @inject MusicService MusicService
 @attribute [Authorize]
 
@@ -100,8 +101,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        renderInfo.config = await renderService.GetDefaultData(RenderType.RenderCurve);
-        var obj = await renderService.GetDefaultObjects(RenderType.RenderCurve);
+        renderInfo.config = await configService.GetDefaultData(RenderType.RenderCurve);
+        var obj = await configService.GetDefaultObjects(RenderType.RenderCurve);
 
         foreach (var item in obj)
         {

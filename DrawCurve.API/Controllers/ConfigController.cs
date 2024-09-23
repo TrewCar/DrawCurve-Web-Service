@@ -19,14 +19,13 @@ namespace DrawCurve.API.Controllers
 
 
         [HttpGet]
-        [Route("Template")]
         public Domen.Models.Core.RenderConfig GetTemplate()
         {
             return new Domen.Models.Core.RenderConfig();
         }
 
         [HttpGet]
-        [Route("{RenderName}/Default")]
+        [Route("{RenderName}")]
         public Domen.Models.Core.RenderConfig GetConfig(RenderType RenderName)
         {
             return config.GetDefaultConfig(RenderName);
@@ -37,27 +36,6 @@ namespace DrawCurve.API.Controllers
         public IEnumerable<Domen.Models.Core.Objects.ObjectRender> GetConfigObjects(RenderType RenderName)
         {
             return config.GetConfigObjects(RenderName);
-        }
-
-        [HttpGet]
-        [Route("{RenderName}/Colors")]
-        public Dictionary<string, Domen.Models.Core.Color> GetConfigColor(RenderType RenderName)
-        {
-            return config.GetConfigColor(RenderName);
-        }
-
-        [HttpGet]
-        [Route("{RenderName}/Actions")]
-        public IEnumerable<Domen.Models.Core.ActionConfig> GetConfigActions(RenderType RenderName)
-        {
-            return config.GetConfigActions(RenderName);
-        }
-
-        [HttpGet]
-        [Route("{RenderName}/Tags")]
-        public IEnumerable<Domen.Models.Core.Enums.TagRender> GetConfigTags(RenderType RenderName)
-        {
-            return config.GetConfigTags(RenderName);
         }
     }
 }

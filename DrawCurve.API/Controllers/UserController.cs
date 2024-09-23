@@ -21,8 +21,7 @@ namespace DrawCurve.API.Controllers
         }
 
         [HttpGet]
-        [Route("Info")]
-        public ActionResult<User> GetInfo()
+        public ActionResult<User> Get()
         {
             var res = menedgerSession.GetUserSession(Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last());
 

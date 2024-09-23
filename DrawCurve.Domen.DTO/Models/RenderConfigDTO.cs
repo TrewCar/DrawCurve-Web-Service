@@ -12,7 +12,6 @@ namespace DrawCurve.Domen.DTO.Models
         public static RenderConfigCore Transfer(this RenderConfigModel cnf)
             => new RenderConfigCore()
             {
-                Title = cnf.Title,
                 Tags = cnf.Tags.Select(x =>
                     x.DataTransfer<TagRenderModel, TagRenderCore>()
                 ).ToList(),
@@ -38,7 +37,6 @@ namespace DrawCurve.Domen.DTO.Models
         public static RenderConfigModel Transfer(this RenderConfigCore cnf)
             => new RenderConfigModel()
             {
-                Title = cnf.Title,
                 Tags = cnf.Tags.Select(x =>
                     x.DataTransfer<TagRenderCore, TagRenderModel>()
                 ).ToList(),

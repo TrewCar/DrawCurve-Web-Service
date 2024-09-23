@@ -8,8 +8,6 @@ namespace DrawCurve.Domen.Models.Core
 {
     public class RenderConfig
     {
-        public string Title { get; set; }
-
         public List<TagRender> Tags { get; set; }
         public int FPS { get; set; }
         public float Time { get; set; }

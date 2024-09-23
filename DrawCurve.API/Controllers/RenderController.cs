@@ -23,7 +23,7 @@ namespace DrawCurve.API.Controllers
         }
 
         [HttpGet]
-        [Route("get/all/self")]
+        [Route("all")]
         public List<RenderInfo> GetRender()
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
@@ -35,7 +35,7 @@ namespace DrawCurve.API.Controllers
         }
 
         [HttpGet]
-        [Route("get/{RenderKey}")]
+        [Route("{RenderKey}")]
         public RenderInfo GetRender(string RenderKey)
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
@@ -45,36 +45,9 @@ namespace DrawCurve.API.Controllers
             this.Response.StatusCode = 401;
             return new RenderInfo();
         }
-        [HttpGet]
-        [Route("get/{RenderKey}/frame")]
-        public ActionResult<FileStream> GetFrame(string RenderKey)
-        {
-            try
-            {
-                var path = DirectoryHelper.GetPathToSaveFrame(RenderKey);
-                var files = Directory.GetFiles(path);
-
-                // Проверяем, что файлов больше 100
-                if (files.Length < 100)
-                {
-                    return NotFound(); // Или любое другое подходящее сообщение
-                }
-
-                var paths = files.OrderBy(x => x).ToList();
-                var pathToImage = paths[paths.Count - 20];
-
-                // Открываем файл для чтения
-                var stream = new FileStream(pathToImage, FileMode.Open, FileAccess.Read);
-                return File(stream, "image/jpeg"); // Замените "image/jpeg" на нужный вам MIME-тип
-            }
-            catch (Exception ex)
-            {
-                return NotFound();
-            }
-        }
 
         [HttpPost]
-        [Route("generate/{RenderType}")]
+        [Route("{RenderType}/Generate")]
         public string StartRender(RenderType RenderType, ResponceRenderInfo render)
         {
             var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();

@@ -21,7 +21,7 @@ namespace DrawCurve.API.Controllers
 
         // Метод для загрузки и сохранения файла
         [Authorize]
-        [HttpPost("save")]
+        [HttpPost]
         public async Task<IActionResult> Save([FromForm] IFormFile file)
         {
             if (file == null || file.Length == 0)
@@ -38,12 +38,12 @@ namespace DrawCurve.API.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            var fileUrl = $"{Request.Scheme}://{Request.Host}/api/music/get/{fileName}";
+            var fileUrl = $"{Request.Scheme}://{Request.Host}/api/music/{fileName}";
             return Ok(fileUrl);
         }
 
         // Метод для получения файла по его имени
-        [HttpGet("get/{fileName}")]
+        [HttpGet("{fileName}")]
         public IActionResult Get(string fileName)
         {
             var filePath = Path.Combine(_storagePath, fileName);

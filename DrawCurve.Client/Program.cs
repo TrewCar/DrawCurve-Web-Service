@@ -33,6 +33,9 @@ public class Program
         builder.Services.AddScoped<AuthService>();
         builder.Services.AddScoped<RenderService>();
         builder.Services.AddScoped<MusicService>();
+        builder.Services.AddScoped<VideoService>();
+        builder.Services.AddScoped<ConfigService>();
+
         builder.Services.AddScoped<StateSignalRService>();
 
         builder.Services.AddBlazoredLocalStorage();
