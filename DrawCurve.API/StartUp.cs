@@ -22,6 +22,8 @@ namespace DrawCurve.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddControllersWithViews();
+            services.AddRazorPages();
 
             services.AddEndpointsApiExplorer();
             services.AddSignalR();
@@ -91,6 +93,7 @@ namespace DrawCurve.API
             HubHelper.Initialize(hubContext);
             if (env.IsDevelopment())
             {
+                app.UseWebAssemblyDebugging();
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
@@ -101,12 +104,11 @@ namespace DrawCurve.API
             }
             app.UseSession();
             app.UseCors("AllowAll");
-            //app.UseCors(p => 
-            //{
-            //    p.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
-            //});
 
             app.UseHttpsRedirection();
+
+            app.UseBlazorFrameworkFiles();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -117,6 +119,7 @@ namespace DrawCurve.API
             {
                 endpoints.MapHub<TickRenderHub>("/_renderinfo");
                 endpoints.MapControllers(); // Настройка маршрутизации контроллеров
+                endpoints.MapFallbackToFile("index.html");
             });
         }
     }

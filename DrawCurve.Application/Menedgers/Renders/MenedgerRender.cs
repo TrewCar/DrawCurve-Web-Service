@@ -80,7 +80,7 @@ namespace DrawCurve.Application.Menedgers.Renders
                 {
                     var items = queue.GetQueue(search);
 
-                    for (int i = 0; i < items.Count - Renders.Count; i++)
+                    for (int i = 0; i < 10 - Renders.Count; i++)
                     {
                         _logger.LogInformation($"START - {items[i].KEY}");
                         queue.UpdateState(items[i], proccess);

@@ -10,7 +10,7 @@ namespace DrawCurve.Core.Window
     {
         public string KEY { get; set; }
 
-        public RenderWindow window { get; set; }
+        public RenderTexture window { get; set; }
 
         public List<ObjectRender> Objects = new();
 
@@ -57,13 +57,14 @@ namespace DrawCurve.Core.Window
         {
             this.SpeedRender = RenderConfig.SpeedRender;
 
-            this.window = new RenderWindow(new SFML.Window.VideoMode(RenderConfig.Width, RenderConfig.Height), KEY);
+            //this.window = new RenderWindow(new SFML.Window.VideoMode(RenderConfig.Width, RenderConfig.Height), KEY);
+            this.window = new RenderTexture(RenderConfig.Width, RenderConfig.Height);
 
             this.active.ForEach(X => X.SetConfig(RenderConfig));
 
             this.frameSmooth = RenderConfig.IndexSmooth;
 
-            this.window.SetVisible(true);
+            //this.window.SetVisible(true);
         }
 
         public void Start()
@@ -89,7 +90,7 @@ namespace DrawCurve.Core.Window
                 frameSmooth++;
 
             }
-            window.Close();
+            //window.Close();
             OnCompliteRender?.Invoke(KEY);
         }
 

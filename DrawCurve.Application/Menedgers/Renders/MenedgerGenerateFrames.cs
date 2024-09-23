@@ -62,7 +62,7 @@ namespace DrawCurve.Application.Menedgers.Renders
                 return;
 
             var render = Renders[key].Value;
-            var image = render.window.Capture();
+            var image = render.window.Texture.CopyToImage();
             var path = Path.Combine(DirectoryHelper.GetPathToSaveFrame(key), $"frame_{render.CountFrame:D6}.png");
 
             image.SaveToFile(path);
