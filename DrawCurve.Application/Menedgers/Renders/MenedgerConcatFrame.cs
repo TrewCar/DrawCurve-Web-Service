@@ -43,6 +43,9 @@ namespace DrawCurve.Application.Menedgers.Renders
                     outNameFile: _key);
 
                 KeyRenderByEnd.Add(Key);
+
+
+                Directory.Delete(DirectoryHelper.GetPathToSaveFrame(_key), true);
             });
 
             return Key;

@@ -1,0 +1,73 @@
+﻿@page "/video/{Key}/publish"
+@inject VideoService videoService
+@inject NavigationManager NavigationManadger
+@attribute [Authorize]
+<h3>Publish</h3>
+<EditForm Model="video" OnValidSubmit="HandleValidSubmit">
+    <div class="form-section">
+        <h4>Setting to publish</h4>
+        <div class="render-info-content">
+            <div class="render-info-column">
+                <h4>Render Image</h4>
+                <img src="/api/Video/@Key/Frame" alt="Default Image" class="responsive-image" />
+            </div>
+        </div>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Name:</label>
+                        <InputText class="form-control" @bind-Value="video.Name" />
+                    </div>
+                    <div class="form-group">
+                        <label>Description:</label>
+                        <InputTextArea class="form-control" @bind-Value="video.Description" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-success">Submit</button>
+    </div>
+</EditForm>
+
+@code {
+    [Parameter]
+    public string Key { get; set; }
+
+    private VideoResponce video;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var videoInfo = await videoService.GetVideoInfo(Key);
+
+            if (videoInfo != null)
+            {
+                NavigationManadger.NavigateTo($"/video/{Key}", true);
+            }
+        }
+        catch
+        {
+            video = new VideoResponce
+            {
+                RenderCnfId = Key
+            };
+        }
+    }
+
+    public async Task HandleValidSubmit()
+    {
+        try
+        {
+            await videoService.Publish(video);
+            NavigationManadger.NavigateTo($"/video/{Key}", true);
+        }
+        catch
+        {
+            
+        }
+    }
+}

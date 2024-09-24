@@ -33,6 +33,14 @@ else
                     <td>@render.Status</td>
                     <td>@render.DateCreate</td>
                     <td>
+                        @if (render.Status == Domen.Models.Menedger.TypeStatus.ProccessEnd)
+                        {
+                            <button @onclick="() => NavigateToPublish(render.KEY)">Publish</button>
+                        }
+                        else if (render.Status == Domen.Models.Menedger.TypeStatus.Publish)
+                        {
+                            <button @onclick="() => NavigateToVideo(render.KEY)">Show video</button>
+                        }
                         <button @onclick="() => NavigateToInfo(render.KEY)">Show Info</button>
                     </td>
                 </tr>
@@ -67,8 +75,9 @@ else
         await LoadRendersAsync();
     }
 
-    private void NavigateToInfo(string key)
-    {
-        Navigation.NavigateTo($"/render/info/{key}");
-    }
+    private void NavigateToInfo(string key) => Navigation.NavigateTo($"/render/info/{key}");
+    
+    private void NavigateToPublish(string key) => Navigation.NavigateTo($"/video/{key}/publish");
+
+    private void NavigateToVideo(string key) => Navigation.NavigateTo($"/video/{key}");
 }

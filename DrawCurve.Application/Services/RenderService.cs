@@ -17,10 +17,10 @@ namespace DrawCurve.Application.Services
         {
             this.context = context;
         }
-        public List<RenderInfo> GetRenderList(User user)
+        public List<RenderInfo> GetRenderList(int id)
         {
             return this.context.RenderInfo
-                .Where(x => x.AuthorId == user.Id)
+                .Where(x => x.AuthorId == id)
                 .OrderByDescending(x => x.DateCreate)
                 .ToList();
         }

@@ -27,6 +27,7 @@ namespace DrawCurve.Application
             services.AddScoped<IRenderQueue, RenderService>();
             services.AddScoped<IRenderService, RenderService>();
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IVideoService, VideoService>();
 
             services.AddScoped<ISendTickRender, THub>();
 

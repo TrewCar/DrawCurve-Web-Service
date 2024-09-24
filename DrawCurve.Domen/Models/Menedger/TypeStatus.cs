@@ -15,5 +15,7 @@ namespace DrawCurve.Domen.Models.Menedger
         [EnumMember(Value = "PROCCESS_END")] ProccessEnd = 5,
         [EnumMember(Value = "PROCCESS_ERROR")] Error = 6,
         [EnumMember(Value = "PROCCESS_IN_QUEUE")] ProccessInQueue = 7,
+
+        [EnumMember(Value = "PUBLISH")] Publish = 8,
     }
 }

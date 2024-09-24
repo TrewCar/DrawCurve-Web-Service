@@ -46,7 +46,6 @@ public class StateSignalRService
 
         _hubConnection.On<RenderTick>("tick", (obj) =>
         {
-            _logger.LogInformation("Получен тик: {TickData}", obj);
             Action?.Invoke(obj);
         });
 

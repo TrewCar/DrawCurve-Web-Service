@@ -6,62 +6,46 @@ using DrawCurve.Domen.Models.Menedger;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using DrawCurve.Application.Utils;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DrawCurve.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class RenderController : ControllerBase
     {
-        private JwtManager Session { get; set; }
         private IRenderService Queue { get; set; }
 
-        public RenderController(IRenderService queue, JwtManager session)
+        public RenderController(IRenderService queue)
         {
-            this.Session = session;
             this.Queue = queue;
         }
 
-        [HttpGet]
-        [Route("all")]
+        [HttpGet("all")]
         public List<RenderInfo> GetRender()
         {
-            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            if (Session.GetUserSession(token) != null)
-                return Queue.GetRenderList(Session.GetUserSession(token));
+            var user = ControllerContext.HttpContext.User;
 
-            this.Response.StatusCode = 401;
-            return new List<RenderInfo>();
+            return Queue.GetRenderList(int.Parse(user.FindFirst("Id").Value)) ?? new List<RenderInfo>();
         }
 
-        [HttpGet]
-        [Route("{RenderKey}")]
+        [HttpGet("{RenderKey}")]
         public RenderInfo GetRender(string RenderKey)
         {
-            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            if (Session.GetUserSession(token) != null)
-                return Queue.GetRender(RenderKey);
-
-            this.Response.StatusCode = 401;
-            return new RenderInfo();
+            return Queue.GetRender(RenderKey) ?? new RenderInfo();
         }
 
-        [HttpPost]
-        [Route("{RenderType}/Generate")]
+        [HttpPost("{RenderType}/Generate")]
         public string StartRender(RenderType RenderType, ResponceRenderInfo render)
         {
-            var token = Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            if (Session.GetUserSession(token) == null)
-            {
-                this.Response.StatusCode = 401;
-                return "Not faund session";
-            }
+            var user = ControllerContext.HttpContext.User;
 
             string key = Guid.NewGuid().ToString();
             RenderInfo info = new RenderInfo()
             {
                 KEY = key,
-                AuthorId = this.Session.GetUserSession(token).Id,
+                AuthorId = int.Parse(user.FindFirst("Id").Value),
                 Type = RenderType,
                 Status = TypeStatus.ProccessInQueue,
                 Name = render.Name,

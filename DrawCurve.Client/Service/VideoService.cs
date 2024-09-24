@@ -1,4 +1,8 @@
 ﻿using Blazored.LocalStorage;
+using DrawCurve.Domen.Models;
+using DrawCurve.Domen.Responces;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Net.Http.Json;
 
 namespace DrawCurve.Client.Service
 {
@@ -11,6 +15,15 @@ namespace DrawCurve.Client.Service
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
+        }
+
+        public async Task<VideoInfo> GetVideoInfo(string key)
+        {
+            var response = await _httpClient.GetAsync($"api/Video/{key}/Info");
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<VideoInfo>() ?? null;
         }
 
         public async Task<Stream> GetRenderImage(string key)
@@ -36,6 +49,11 @@ namespace DrawCurve.Client.Service
                 // Возвращаем null или выбрасываем исключение для других статусов
                 throw new Exception("Error fetching render image.");
             }
+        }
+
+        public async Task Publish(VideoResponce video)
+        {
+            var response = await _httpClient.PostAsJsonAsync($"api/Video/Publish", video);
         }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using DrawCurve.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace DrawCurve.Infrastructure.Migrations
 {
     [DbContext(typeof(DrawCurveDbContext))]
-    partial class DrawCurveDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240924051514_EditPrimaryKey")]
+    partial class EditPrimaryKey
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,9 +115,6 @@ namespace DrawCurve.Infrastructure.Migrations
 
                     b.Property<int>("AuthorId")
                         .HasColumnType("integer");
-
-                    b.Property<DateTime>("DatePublish")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .IsRequired()

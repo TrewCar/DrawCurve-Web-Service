@@ -13,15 +13,16 @@ namespace DrawCurve.Domen.Models
     public class VideoInfo
     {
         [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int ID {  get; set; }
-        [ForeignKey(nameof(User))]
-        public int AuthorId {  get; set; }
         [ForeignKey(nameof(RenderInfo))]
         public string RenderCnfId { get; set; }
+
+        [ForeignKey(nameof(User))]
+        public int AuthorId {  get; set; }
+
         public string Name {  get; set; }
         public string Description { get; set; }
         public int Time {  get; set; }
+        public DateTime DatePublish { get; set; } = DateTime.Now;
 
         // Навигационное свойство
         [JsonIgnore]

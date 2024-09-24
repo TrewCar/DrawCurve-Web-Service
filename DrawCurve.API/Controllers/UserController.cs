@@ -23,14 +23,9 @@ namespace DrawCurve.API.Controllers
         [HttpGet]
         public ActionResult<User> Get()
         {
-            var res = menedgerSession.GetUserSession(Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last());
+            var user = ControllerContext.HttpContext.User;
 
-            if (res == null)
-            {
-                return Unauthorized(); // Возвращает 401 Unauthorized если пользователь не авторизован
-            }
-
-            return Ok(userService.GetUser(res.Id));
+            return Ok(userService.GetUser(int.Parse(user.FindFirst("Id").Value)));
         }
     }
 }

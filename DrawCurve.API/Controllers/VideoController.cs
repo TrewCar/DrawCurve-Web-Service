@@ -1,5 +1,7 @@
 ﻿using DrawCurve.Application.Interface;
 using DrawCurve.Application.Utils;
+using DrawCurve.Domen.Models;
+using DrawCurve.Domen.Responces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -11,21 +13,37 @@ namespace DrawCurve.API.Controllers
     public class VideoController : ControllerBase
     {
         private IRenderService renderService;
+        private IVideoService videoService;
 
-        public VideoController(IRenderService renderService)
+        public VideoController(IRenderService renderService, IVideoService videoService)
         { 
             this.renderService = renderService;
+            this.videoService = videoService;
         }
         [HttpGet("{renderId}")]
-        public void Get(string renderId)
+        public IActionResult Get(string renderId)
         {
+            var path = videoService.GetVideo(renderId);
 
+            if (!System.IO.File.Exists(path))
+            {
+                return NotFound();
+            }
+
+            var stream = new FileStream(path, FileMode.Open, FileAccess.Read);
+            var result = new FileStreamResult(stream, "video/mp4") // Укажите нужный MIME-тип
+            {
+                EnableRangeProcessing = true // Позволяет перематывать
+            };
+
+            return result;
         }
 
-        [HttpGet("{renderId}/Info")]
-        public void Info(string renderId)
-        {
 
+        [HttpGet("{renderId}/Info")]
+        public VideoInfo Info(string renderId)
+        {
+            return videoService.GetInfo(renderId);
         }
 
         [HttpGet("{RenderKey}/Frame")]
@@ -58,10 +76,11 @@ namespace DrawCurve.API.Controllers
         }
 
         [Authorize]
-        [HttpPost("{renderId}/Publish")]
-        public void Publish(string renderId)
+        [HttpPost("Publish")]
+        public void Publish(VideoResponce video)
         {
             var user = ControllerContext.HttpContext.User;
+            videoService.Publish(video, int.Parse(user.FindFirst("Id").Value));
         }
     }
 }

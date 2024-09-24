@@ -46,6 +46,8 @@ namespace DrawCurve.Application.Menedgers.Renders
                 }
 
                 KeyRenderByEnd.Add(Key);
+
+                Directory.Delete(DirectoryHelper.GetPathToSaveVideo(_key), true);
             });
 
             return Key;

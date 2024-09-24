@@ -3,7 +3,6 @@ using DrawCurve.Application;
 using DrawCurve.Application.Hubs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -29,6 +28,31 @@ namespace DrawCurve.API
             services.AddSignalR();
 
             services.AddSwaggerGen();
+
+            services.ConfigureSwaggerGen(options =>
+            {
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    In = ParameterLocation.Header,
+                    Description = "Введите токен в формате 'Bearer {token}'",
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey
+                });
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                        new OpenApiSecurityScheme
+                        {
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+            });
 
             services.AddCors(options =>
             {
@@ -97,7 +121,8 @@ namespace DrawCurve.API
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI();
-            } else
+            }
+            else
             {
                 app.UseExceptionHandler("/Error");
                 app.UseHsts();
