@@ -25,7 +25,6 @@ namespace DrawCurve.Domen.Models
         public DateTime DatePublish { get; set; } = DateTime.Now;
 
         // Навигационное свойство
-        [JsonIgnore]
         public User User { get; set; }
         [JsonIgnore]
         public RenderInfo RenderInfo { get; set; }

@@ -55,5 +55,14 @@ namespace DrawCurve.Client.Service
         {
             var response = await _httpClient.PostAsJsonAsync($"api/Video/Publish", video);
         }
+
+        public async Task<IEnumerable<VideoInfo>> GetVideoInfos(int? page = 1, bool shafle = false)
+        {
+            var response = await _httpClient.GetAsync($"api/Video/Page/{page}?Shafle={shafle}");
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadFromJsonAsync<IEnumerable<VideoInfo>>() ?? Enumerable.Empty<VideoInfo>();
+        }
     }
 }

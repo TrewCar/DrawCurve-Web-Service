@@ -20,6 +20,13 @@ namespace DrawCurve.API.Controllers
             this.renderService = renderService;
             this.videoService = videoService;
         }
+        [HttpGet("Page/{i?}")]
+        public IEnumerable<VideoInfo> GetVideoInfo(int? i, bool Shafle)
+        {
+            int pageNumber = i ?? 1;
+            if (pageNumber < 1) pageNumber = 1;
+            return videoService.GetVideoInfos(pageNumber, Shafle);
+        }
         [HttpGet("{renderId}")]
         public IActionResult Get(string renderId)
         {
@@ -57,13 +64,13 @@ namespace DrawCurve.API.Controllers
                 var files = Directory.GetFiles(path);
 
                 // Проверяем, что файлов больше 100
-                if (files.Length < 100)
+                if (files.Length < 100 && files.Length != 1)
                 {
                     return NotFound(); // Или любое другое подходящее сообщение
                 }
 
                 var paths = files.OrderBy(x => x).ToList();
-                var pathToImage = render?.Status != Domen.Models.Menedger.TypeStatus.ProccessEnd ? paths[paths.Count - 20] : paths[(int)(paths.Count / 2)];
+                var pathToImage = render?.Status < Domen.Models.Menedger.TypeStatus.ProccessConcatFrame ? paths[paths.Count - 20] : paths.First();
 
                 // Открываем файл для чтения
                 var stream = new FileStream(pathToImage, FileMode.Open, FileAccess.Read);

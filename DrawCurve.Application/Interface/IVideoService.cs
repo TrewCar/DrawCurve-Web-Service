@@ -13,6 +13,8 @@ namespace DrawCurve.Application.Interface
     {
         public string GetVideo(string Key);
 
+        public IEnumerable<VideoInfo> GetVideoInfos(int page, bool Shafle);
+
         public VideoInfo? GetInfo(string Key);
 
         public VideoInfo? Publish(VideoResponce responce, int AuthorId);

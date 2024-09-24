@@ -1,7 +1,6 @@
 ﻿@page "/video/{Key}"
+@using DrawCurve.Client.Pages.Video.Objects
 @inject VideoService videoService
-
-<h3>Video</h3>
 
 @if (video == null)
 {
@@ -11,25 +10,68 @@
 else
 {
     <PageTitle>@video.Name</PageTitle>
-    <div class="row">
-        <div class="col-md-8">
-            <div class="video-container" style="position: relative; padding-top: 56.25%;">
-                <video id="videoPlayer" controls style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
-                    <source src="/api/video/@video.RenderCnfId" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="video-container" style="position: relative; padding-top: 56.25%;">
+                    <video poster="/api/video/@video.RenderCnfId/Frame" id="videoPlayer" controls style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;">
+                        <source src="/api/video/@video.RenderCnfId" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="video-details mt-3">
+                    <h5 class="video-title">@video.Name</h5>
+                    <p class="video-description">@video.Description</p>
+                    <p class="text-muted">Опубликовано @video.DatePublish.ToString("MMMM dd, yyyy")</p>
+                </div>
+                <div class="related-videos mt-4">
+                    <h5>Похожие видео</h5>
+                    <ListVideo Page="1" CountColumn="1" Shuffle="true" />
+                </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card mt-3">
-                <div class="card-body">
-                    <h5 class="card-title">@video.Name</h5>
-                    <p class="card-text">@video.Description</p>
-                    <p class="card-text"><small class="text-muted">Published on @video.DatePublish.ToString("MMMM dd, yyyy")</small></p>
+
+            <div class="col-md-4">
+                <div class="comments-container mt-3">
+                    <h5>Комментарии</h5>
+                    <div class="comments-list">
+                        <!-- Пример комментария -->
+                        <div class="comment">
+                            <p><strong>Пользователь 1:</strong> Отличное видео!</p>
+                        </div>
+                        <div class="comment">
+                            <p><strong>Пользователь 2:</strong> Спасибо за информацию!</p>
+                        </div>
+                    </div>
+                    <div class="comment-form mt-3">
+                        <textarea class="form-control" rows="3" placeholder="Добавьте комментарий..."></textarea>
+                        <button class="btn btn-primary mt-2">Отправить</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <style>
+        .video-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .video-description {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .comments-container {
+            border-top: 1px solid #ddd;
+            padding-top: 1rem;
+        }
+
+        .comment {
+            border-bottom: 1px solid #eee;
+            padding: 0.5rem 0;
+        }
+    </style>
 }
 
 @code {
@@ -43,9 +85,3 @@ else
         video = await videoService.GetVideoInfo(Key);
     }
 }
-
-<style>
-    .video-container {
-        overflow: hidden;
-    }
-</style>

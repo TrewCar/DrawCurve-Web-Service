@@ -42,10 +42,22 @@ namespace DrawCurve.Application.Menedgers.Renders
                     pathOutVideo: path,
                     outNameFile: _key);
 
+
+
+                var directoryPath = DirectoryHelper.GetPathToSaveFrame(_key);
+                var files = Directory.GetFiles(directoryPath, "frame_*.png").OrderBy(f => f).ToList();
+                if (files.Count > 0)
+                {
+                    var middleIndex = files.Count / 2;
+                    for (int i = 0; i < files.Count; i++)
+                    {
+                        if (i != middleIndex)
+                        {
+                            File.Delete(files[i]);
+                        }
+                    }
+                }
                 KeyRenderByEnd.Add(Key);
-
-
-                Directory.Delete(DirectoryHelper.GetPathToSaveFrame(_key), true);
             });
 
             return Key;

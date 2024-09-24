@@ -1,0 +1,83 @@
+﻿@inject VideoService videoService
+
+<div class="video-container" style="display: grid; grid-template-columns: repeat(@CountColumn, 1fr); gap: 16px; padding: 16px;">
+    @if (videos == null)
+    {
+        <p>Загрузка...</p>
+    }
+    else
+    {
+        foreach (var video in videos)
+        {
+            <NavLink href="@($"/video/{video.RenderCnfId}")" class="video-card">
+                <img src=$"/api/video/@video.RenderCnfId/Frame" alt="@video.Name" class="video-thumbnail" />
+                <h3 class="video-title">@video.Name</h3>
+                <p class="video-description">@video.Description</p>
+                <p class="video-author">Автор: @video.User?.Name</p>
+                <p class="video-date">Дата публикации: @video.DatePublish.ToString("dd.MM.yyyy")</p>
+            </NavLink>
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public int Page { get; set; } = 1;
+
+    [Parameter]
+    public bool Shuffle { get; set; } = false;
+
+    [Parameter]
+    public int CountColumn { get; set; } = 5;
+
+    private IEnumerable<VideoInfo> videos;
+
+    protected override async Task OnInitializedAsync()
+    {
+        videos = await videoService.GetVideoInfos(Page, Shuffle);
+    }
+}
+
+<style>
+    .video-container {
+        padding: 16px;
+    }
+
+    .video-card {
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.2s;
+    }
+
+    .video-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .video-thumbnail {
+        width: 100%;
+        height: auto;
+        max-height: 150px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .video-title {
+        font-size: 1.2rem;
+        margin: 0.5rem 0;
+    }
+
+    .video-description {
+        font-size: 0.9rem;
+        color: #555;
+    }
+
+    .video-author,
+    .video-date {
+        font-size: 0.8rem;
+        color: #777;
+    }
+</style>
