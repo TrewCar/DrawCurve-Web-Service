@@ -1,7 +1,6 @@
 using Blazored.LocalStorage;
 using DrawCurve.Client;
 using DrawCurve.Client.Provider;
-using DrawCurve.Client.Provider.DrawCurve.Client.Provider;
 using DrawCurve.Client.Service;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;

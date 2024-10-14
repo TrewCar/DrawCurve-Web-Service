@@ -21,11 +21,11 @@ namespace DrawCurve.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<User> Get()
+        public User Get()
         {
             var user = ControllerContext.HttpContext.User;
 
-            return Ok(userService.GetUser(int.Parse(user.FindFirst("Id").Value)));
+            return userService.GetUser(int.Parse(user.FindFirst("Id").Value));
         }
     }
 }

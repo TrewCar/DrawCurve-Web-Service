@@ -33,5 +33,17 @@
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="mkdir &quot;$(ProjectDir)$(OutDir)Utils&quot;&#xD;&#xA;xcopy /y &quot;$(ProjectDir)Utils&quot;  &quot;$(ProjectDir)$(OutDir)Utils&quot; /E /H /C /I&#xD;&#xA;powershell Expand-Archive -Path &quot;$(ProjectDir)Utils\ffmpeg.zip&quot; -DestinationPath &quot;$(ProjectDir)$(OutDir)Utils&quot;" />
   </Target>
+	<Target Name="PostPublish" AfterTargets="Publish">
+		<!-- Создаем папку -->
+		<MakeDir Directories="$(PublishDir)Utils" />
+
+		<!-- Копируем файлы из Utils -->
+		<Copy SourceFiles="@(UtilsFiles)" DestinationFolder="$(PublishDir)Utils" />
+
+		<!-- Распаковываем архив -->
+		<Exec Command="powershell Expand-Archive -Path '$(ProjectDir)Utils\ffmpeg.zip' -DestinationPath '$(PublishDir)Utils'" />
+	</Target>
+
+
 
 </Project>

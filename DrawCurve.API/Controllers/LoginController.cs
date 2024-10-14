@@ -3,6 +3,7 @@ using DrawCurve.Application.Interface;
 using DrawCurve.Domen.Models;
 using Microsoft.AspNetCore.Mvc;
 using DrawCurve.Domen.Responces;
+using Microsoft.EntityFrameworkCore;
 
 namespace DrawCurve.API.Controllers
 {
@@ -13,12 +14,14 @@ namespace DrawCurve.API.Controllers
         private readonly ILoginService loginService;
         private readonly IConfiguration configuration;
         private readonly JwtManager jwtManager;
+        private readonly IUserService userService;
 
-        public LoginController(ILoginService loginService, IConfiguration configuration, JwtManager jwtManager)
+        public LoginController(ILoginService loginService, IUserService userService, IConfiguration configuration, JwtManager jwtManager)
         {
             this.loginService = loginService;
             this.configuration = configuration;
             this.jwtManager = jwtManager;
+            this.userService = userService;
         }
 
         [HttpPost]
@@ -75,6 +78,28 @@ namespace DrawCurve.API.Controllers
             }
 
             return BadRequest(new LoginResponse { Message = res });
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken()
+        {
+            // Извлечение текущего пользователя по токену
+            var userIdClaim = User.FindFirst("Id")?.Value;
+            if (string.IsNullOrEmpty(userIdClaim))
+            {
+                return Unauthorized();
+            }
+
+            var user = userService.GetUser(int.Parse(userIdClaim));
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // Генерация нового токена
+            var newToken = jwtManager.GenerateJwtToken(user);
+
+            return Ok(new { Token = newToken });
         }
     }
 }
