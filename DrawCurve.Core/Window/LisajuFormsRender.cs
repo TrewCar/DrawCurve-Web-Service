@@ -35,11 +35,18 @@ namespace DrawCurve.Core.Window
 
                 while ((samplesRead = reader.Read(buffer, 0, buffer.Length)) > 0)
                 {
-                    for (int i = 0; i < samplesRead; i += 2) // Чтение по 2 канала
+                    try
                     {
-                        samplesLeft[bufferIndex] = buffer[i]; // Левый канал
-                        samplesRight[bufferIndex] = buffer[i + 1]; // Правый канал
-                        bufferIndex++;
+                        for (int i = 0; i < samplesRead; i += 2) // Чтение по 2 канала
+                        {
+                            samplesLeft[bufferIndex] = buffer[i]; // Левый канал
+                            samplesRight[bufferIndex] = buffer[i + 1]; // Правый канал
+                            bufferIndex++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        break;
                     }
                 }
                 sampleRate = reader.WaveFormat.SampleRate;
