@@ -1,4 +1,4 @@
-﻿@page "/render/gen/linecurve"
+﻿@page "/render/gen/svglinecurve"
 @using DrawCurve.Client.Pages.Generate.Objects
 @using DrawCurve.Domen.Models.Core
 @using DrawCurve.Domen.Models.Core.Enums
@@ -12,7 +12,7 @@
 
 <h3>Form Line Curve</h3>
 
-<StyleForm/>
+<StyleForm />
 
 <EditForm Model="renderInfo" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
@@ -48,6 +48,23 @@
     </div>
 
     <div class="form-section">
+        <h4>Objects</h4>
+        <div class="card-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>SVG</h5>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Svg Body:</label>
+                        <InputText class="form-control" @bind-Value="renderInfo.obejct.SvgValue" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-section">
         <h4>Action Config</h4>
         <div class="card-grid">
             @foreach (var obj in renderInfo.config.ActionsConfig)
@@ -67,16 +84,7 @@
         </div>
     </div>
 
-    <div class="form-section">
-        <h4>Objects</h4>
-        <div class="card-grid">
-            @foreach (var obj in renderInfo.obejcts)
-            {
-                <LineCurveObject Line="@obj" RemoveObject="(obj) => RemoveObject(obj)" />
-            }
-        </div>
-        <button type="button" class="btn btn-primary" @onclick="AddLineCurve">Add LineCurve</button>
-    </div>
+
 
     <div class="form-actions">
         <button type="submit" class="btn btn-success">Submit</button>
@@ -92,7 +100,7 @@
         selectedFile = e.File;
         // You can also read the file or perform other actions here
     }
-    private ResponceRenderInfoCurve renderInfo = new ResponceRenderInfoCurve
+    private ResponceRenderInfoSvgCurve renderInfo = new ResponceRenderInfoSvgCurve
         {
             Name = "Example",
             config = new()
@@ -100,21 +108,22 @@
                 ActionsConfig = new(),
                 Colors = new()
             },
-            obejcts = new List<LineCurve>(),
+            obejct = new SvgCurve(),
         };
 
     private bool wait = true;
 
     protected override async Task OnInitializedAsync()
     {
-        renderInfo.config = await configService.GetDefaultData(RenderType.RenderCurve);
-        var obj = await configService.GetDefaultObjects(RenderType.RenderCurve);
+        renderInfo.config = await configService.GetDefaultData(RenderType.SvgRenderCurve);
+        var obj = await configService.GetDefaultObjects(RenderType.SvgRenderCurve);
 
         foreach (var item in obj)
         {
-            if (item is LineCurve curve)
+            if (item is SvgCurve curve)
             {
-                renderInfo.obejcts.Add(curve);
+                renderInfo.obejct = curve;
+                break;
             }
         }
         wait = false;
@@ -123,7 +132,8 @@
     private async Task HandleValidSubmit()
     {
         var url = "";
-        try{
+        try
+        {
             url = await MusicService.Save(selectedFile);
             // Здесь можно обработать полученный URL, например, вывести его
             Console.WriteLine("File uploaded successfully. URL: " + url);
@@ -138,10 +148,10 @@
             {
                 Name = renderInfo.Name,
                 config = renderInfo.config,
-                obejcts = renderInfo.obejcts.Select(x => (ObjectRender)x).ToList()
+                obejcts = new List<ObjectRender> { renderInfo.obejct }, //renderInfo.obejcts.Select(x => (ObjectRender)x).ToList()
             };
 
-        var key = await renderService.StartRender(RenderType.RenderCurve, render);
+        var key = await renderService.StartRender(RenderType.SvgRenderCurve, render);
 
         if (string.IsNullOrEmpty(key))
         {
@@ -151,21 +161,11 @@
         Navigation.NavigateTo($"/render/info/{key}");
     }
 
-    private void AddLineCurve()
-    {
-        renderInfo.obejcts.Add(new LineCurve(100, 45, 5));
-    }
 
-    private void RemoveObject(LineCurve obj)
-    {
-        renderInfo.obejcts.Remove(obj);
-        StateHasChanged();
-    }
-
-    public class ResponceRenderInfoCurve
+    public class ResponceRenderInfoSvgCurve
     {
         public string Name { get; set; }
-        public List<LineCurve> obejcts { get; set; }
+        public SvgCurve obejct { get; set; }
         public RenderConfig config { get; set; }
     }
 }

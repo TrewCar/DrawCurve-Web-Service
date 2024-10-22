@@ -33,6 +33,15 @@ namespace DrawCurve.Core.Objects
             this.RPS = RPS;
         }
 
+        public LineCurve(double Lenght, double Angle, double RPS)
+        {
+            this.Radian = (float)Angle;
+
+
+            this.Length = (float)Lenght;
+            this.RPS = (float)((RPS * 360.0f) * Math.PI / 180d);
+        }
+
         public LineCurve() { }
 
         public override void Update(float deltaTime)

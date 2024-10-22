@@ -23,7 +23,13 @@
         <p><em>Loading default config...</em></p>
     }
 
-    <NameObject Name="@renderInfo.Name" />
+    <div class="form-section">
+        <h4>Render Info</h4>
+        <div class="form-group">
+            <label>Name:</label>
+            <InputText class="form-control" @bind-Value="@renderInfo.Name" />
+        </div>
+    </div>
 
     <CnfRenderObject Config="@renderInfo.config" />
 

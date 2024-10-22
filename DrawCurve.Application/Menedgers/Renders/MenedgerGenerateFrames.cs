@@ -4,13 +4,10 @@ using DrawCurve.Core.Window;
 using DrawCurve.Domen.DTO.Models;
 using DrawCurve.Domen.DTO.Models.Objects;
 using DrawCurve.Domen.Models;
-using DrawCurve.Domen.Models.Core.Objects;
 using DrawCurve.Domen.Models.Menedger;
 using DrawCurve.Domen.Responces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using SFML.Graphics;
-using System.Text.Json;
 
 namespace DrawCurve.Application.Menedgers.Renders
 {
@@ -27,30 +24,37 @@ namespace DrawCurve.Application.Menedgers.Renders
         {
             _ = Task.Run(async () =>
             {
-                var render = InitRender(key);
-
-                render.KEY = key;
-
-                render.OnCompliteRender += OnCompliteRender;
-                render.OnDoneFrame += OnDoneFrame;
-                Renders.Add(render.KEY, (AuthorId, render));
-
-                Directory.CreateDirectory(DirectoryHelper.GetPathToSaveFrame(render.KEY));
-
-                render.Init();
-                render.window.SetActive(false);
-
-                string path = DirectoryHelper.GetPathToSaveFrame(render.KEY);
-                if (Directory.Exists(path))
+                try
                 {
-                    Directory.Delete(path, true);
-                }
+                    var render = InitRender(key);
 
-                Directory.CreateDirectory(path);
-                render.window.SetActive(true);
-                render.Start();
-                render.window.SetActive(false);
-                render.Dispose();
+                    render.KEY = key;
+
+                    render.OnCompliteRender += OnCompliteRender;
+                    render.OnDoneFrame += OnDoneFrame;
+                    Renders.Add(render.KEY, (AuthorId, render));
+
+                    Directory.CreateDirectory(DirectoryHelper.GetPathToSaveFrame(render.KEY));
+
+                    render.Init();
+                    render.window.SetActive(false);
+
+                    string path = DirectoryHelper.GetPathToSaveFrame(render.KEY);
+                    if (Directory.Exists(path))
+                    {
+                        Directory.Delete(path, true);
+                    }
+
+                    Directory.CreateDirectory(path);
+                    render.window.SetActive(true);
+                    render.Start();
+                    render.window.SetActive(false);
+                    render.Dispose();
+                }
+                catch (Exception ex)
+                {
+                    Error.Add((key, ex.Message));
+                }
             });
 
             return key;
@@ -67,7 +71,7 @@ namespace DrawCurve.Application.Menedgers.Renders
 
             image.SaveToFile(path);
 
-            await SendTick(Renders[key].Author,new RenderTick
+            await SendTick(Renders[key].Author, new RenderTick
             {
                 KeyRender = render.KEY,
                 FPS = (float)render.fpsCounter.FPS,
@@ -108,6 +112,15 @@ namespace DrawCurve.Application.Menedgers.Renders
             else if (render.Type == RenderType.LissajousFigures)
             {
                 var t = new LisajuFormsRender(
+                    render.RenderConfig.Transfer(),
+                    render.Objects.Select(x => x.Transfer()).ToList()
+                );
+                t.KEY = render.KEY;
+                return t;
+            }
+            else if (render.Type == RenderType.SvgRenderCurve)
+            {
+                var t = new SvgCurveRender(
                     render.RenderConfig.Transfer(),
                     render.Objects.Select(x => x.Transfer()).ToList()
                 );

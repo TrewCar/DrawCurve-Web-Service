@@ -7,6 +7,9 @@ using LineCurveModel = DrawCurve.Domen.Models.Core.Objects.LineCurve;
 using MusicObjectCore = DrawCurve.Core.Objects.MusicObject;
 using MusicObjectModel = DrawCurve.Domen.Models.Core.Objects.MusicObject;
 
+using SvgCurveCore = DrawCurve.Core.Objects.SvgCurve;
+using SvgCurveModel = DrawCurve.Domen.Models.Core.Objects.SvgCurve;
+
 namespace DrawCurve.Domen.DTO.Models.Objects
 {
     public static class ObjectRenderDTO
@@ -20,6 +23,10 @@ namespace DrawCurve.Domen.DTO.Models.Objects
             else if (cnf is MusicObjectModel obj1)
             {
                 return obj1.Transfer();
+            }
+            else if (cnf is SvgCurveModel obj2)
+            {
+                return obj2.Transfer();
             }
             else
             {
@@ -35,6 +42,10 @@ namespace DrawCurve.Domen.DTO.Models.Objects
             else if (cnf is MusicObjectCore obj1)
             {
                 return obj1.Transfer();
+            }
+            else if (cnf is SvgCurveCore obj2)
+            {
+                return obj2.Transfer();
             }
             else
             {

@@ -1,4 +1,5 @@
 ﻿@inject VideoService videoService
+@inject NavigationManager Navigation
 
 <div class="video-container" style="display: grid; grid-template-columns: repeat(@CountColumn, 1fr); gap: 16px; padding: 16px;">
     @if (videos == null)
@@ -9,13 +10,13 @@
     {
         foreach (var video in videos)
         {
-            <NavLink href="@($"/video/{video.RenderCnfId}")" class="video-card">
+            <a href="javascript:void(0)" @onclick="() => RedirectTo(video.RenderCnfId)" class="video-card">
                 <img src=$"/api/video/@video.RenderCnfId/Frame" alt="@video.Name" class="video-thumbnail" />
                 <h3 class="video-title">@video.Name</h3>
                 <p class="video-description">@video.Description</p>
                 <p class="video-author">Автор: @video.User?.Name</p>
                 <p class="video-date">Дата публикации: @video.DatePublish.ToString("dd.MM.yyyy")</p>
-            </NavLink>
+            </a>
         }
     }
 </div>
@@ -35,6 +36,11 @@
     protected override async Task OnInitializedAsync()
     {
         videos = await videoService.GetVideoInfos(Page, Shuffle);
+    }
+
+    protected async Task RedirectTo(string cnfId)
+    {
+        Navigation.NavigateTo($"/video/{cnfId}", true);
     }
 }
 

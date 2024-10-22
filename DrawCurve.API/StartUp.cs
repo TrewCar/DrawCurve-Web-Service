@@ -135,7 +135,7 @@ namespace DrawCurve.API
 
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();
-
+            app.UseResponseCaching();
             app.UseRouting();
 
             app.UseAuthentication(); // Включение аутентификации

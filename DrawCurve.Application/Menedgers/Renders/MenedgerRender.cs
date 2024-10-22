@@ -19,6 +19,7 @@ namespace DrawCurve.Application.Menedgers.Renders
 
         public Dictionary<string, (int Author, TValDictionary Value)> Renders { get; protected set; } = new();
         protected List<string> KeyRenderByEnd = new();
+        protected List<(string, string)> Error = new();
 
         public MenedgerRender(IServiceProvider serviceProvider, ILogger logger,
             TypeStatus search, TypeStatus proccess, TypeStatus end)
@@ -73,6 +74,31 @@ namespace DrawCurve.Application.Menedgers.Renders
                         CountFPS = 0,
                         MaxCountFPS = 0,
                         Status = end
+                    });
+                }
+
+                var temp2List = Error.ToList();
+
+                foreach (var key in temp2List)
+                {
+                    _logger.LogInformation($"ERROR - {key.Item1}\n\t\t{key.Item2}");
+                    var render = Renders[key.Item1];
+
+                    // No need to call thread.Join(), the task should have already completed
+                    Renders.Remove(key.Item1);
+
+                    var renderInfo = queue.GetRender(key.Item1); 
+                    queue.UpdateState(renderInfo, TypeStatus.Error);
+                    Error.Remove(key);
+
+
+                    await SendTick(renderInfo.AuthorId, new RenderTick
+                    {
+                        KeyRender = key.Item1,
+                        FPS = 0,
+                        CountFPS = 0,
+                        MaxCountFPS = 0,
+                        Status = TypeStatus.Error,
                     });
                 }
 

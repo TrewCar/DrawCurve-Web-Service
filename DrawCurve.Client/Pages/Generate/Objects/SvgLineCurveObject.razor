@@ -1,0 +1,16 @@
+﻿@using DrawCurve.Domen.Models.Core.Objects;
+<div class="card">
+    <div class="card-header">
+        <h5>SVG</h5>
+    </div>
+    <div class="card-body">
+        <div class="form-group">
+            <label>Svg Body:</label>
+            <InputNumber class="form-control" @bind-Value="Svg.SvgValue" />
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public SvgCurve Svg { get; set; }
+}

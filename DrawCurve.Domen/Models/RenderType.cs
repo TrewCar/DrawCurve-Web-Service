@@ -13,5 +13,6 @@ namespace DrawCurve.Domen.Models
     {
         [EnumMember(Value = "RENDER_CURVE")] RenderCurve = 0,
         [EnumMember(Value = "LISSAJOUS_FIGURES")] LissajousFigures = 1,
+        [EnumMember(Value = "SVG_RENDER_CURVE")] SvgRenderCurve = 2,
     }
 }

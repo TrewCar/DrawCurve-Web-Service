@@ -10,6 +10,7 @@ namespace DrawCurve.Domen.Models.Core.Objects
     [JsonPolymorphic(UnknownDerivedTypeHandling = JsonUnknownDerivedTypeHandling.FallBackToNearestAncestor)]
     [JsonDerivedType(typeof(ObjectRender), typeDiscriminator: "base")]
     [JsonDerivedType(typeof(LineCurve), typeDiscriminator: "LineCurve")]
+    [JsonDerivedType(typeof(SvgCurve), typeDiscriminator: "SvgCurve")]
     public class ObjectRender
     {
     }

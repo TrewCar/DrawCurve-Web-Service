@@ -21,6 +21,10 @@ namespace DrawCurve.Application.Menedgers
                     Render render2 = new LisajuFormsRender();
                     var item2 = render2.GetDefaultRenderConfig().Transfer();
                     return item2;
+                case RenderType.SvgRenderCurve:
+                    Render render3 = new SvgCurveRender();
+                    var item3 = render3.GetDefaultRenderConfig().Transfer();
+                    return item3;
                 default:
                     throw new NotImplementedException($"Type {nameRender} is not implemented in {GetType().FullName}");
             }
@@ -54,6 +58,13 @@ namespace DrawCurve.Application.Menedgers
             else if (nameRender == RenderType.LissajousFigures)
             {
                 return new List<Domen.Models.Core.Objects.ObjectRender>();
+            } 
+            else if(nameRender == RenderType.SvgRenderCurve)
+            {
+                return new List<Domen.Models.Core.Objects.ObjectRender>
+                {
+                    new SvgCurve(),
+                };
             }
             return new List<ObjectRender>();
         }

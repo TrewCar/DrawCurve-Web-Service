@@ -1,6 +1,6 @@
 {
-  "name": "DrawCurve.Client",
-  "short_name": "DrawCurve.Client",
+  "name": "Gen-Video",
+  "short_name": "Gen-Video",
   "id": "./",
   "start_url": "./",
   "display": "standalone",
