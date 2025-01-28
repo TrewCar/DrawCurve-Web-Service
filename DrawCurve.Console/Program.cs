@@ -24,7 +24,7 @@ internal class Program
             })
            .ConfigureServices((context, services) =>
            {
-               services.AddApplicationServices<TTT>(context.Configuration);
+               services.AddRenderServices<TTT>(context.Configuration);
            })
            .Build();
 
