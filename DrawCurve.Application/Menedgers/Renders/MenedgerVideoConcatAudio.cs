@@ -26,21 +26,25 @@ namespace DrawCurve.Application.Menedgers.Renders
                 using var scope = _serviceProvider.CreateScope();
                 var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
                 RenderInfo render = queue.GetRender(_key);
-
-                Renders.Add(Key, (AuthorId, _key));
-
                 string pathToVideo = Path.Combine(DirectoryHelper.GetPathToSaveVideo(_key), _key + ".mp4");
-
-                string pathToAudio = render.RenderConfig.PathMusic;
-                if (!string.IsNullOrEmpty(pathToAudio))
+                Renders.Add(Key, (AuthorId, _key));
+                try
                 {
-                    FFMpegUtils.VideoConcatAudio(
-                        pathToVideo: pathToVideo,
-                        pathToAudio: render.RenderConfig.PathMusic,
-                        pathOutVideo: path,
-                        outNameFile: _key);
-                } 
-                else
+                    string pathToAudio = render.RenderConfig.PathMusic;
+                    if (!string.IsNullOrEmpty(pathToAudio))
+                    {
+                        FFMpegUtils.VideoConcatAudio(
+                            pathToVideo: pathToVideo,
+                            pathToAudio: render.RenderConfig.PathMusic,
+                            pathOutVideo: path,
+                            outNameFile: _key);
+                    }
+                    else
+                    {
+                        File.Copy(pathToVideo, Path.Combine(path, _key + ".mp4"), true);
+                    }
+                }
+                catch (Exception ex)
                 {
                     File.Copy(pathToVideo, Path.Combine(path, _key + ".mp4"), true);
                 }
