@@ -11,7 +11,7 @@
         foreach (var video in videos)
         {
             <a href="javascript:void(0)" @onclick="() => RedirectTo(video.RenderCnfId)" class="video-card">
-                <img src=$"/api/video/@video.RenderCnfId/Frame" alt="@video.Name" class="video-thumbnail" />
+                <img src="/api/video/@video.RenderCnfId/Frame" alt="@video.Name" class="video-thumbnail" />
                 <h3 class="video-title">@video.Name</h3>
                 <p class="video-description">@video.Description</p>
                 <p class="video-author">Автор: @video.User?.Name</p>
