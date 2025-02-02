@@ -18,15 +18,15 @@
             <ValidationSummary class="text-danger" />
 
             <div class="inputs-wrap">
-                <div class="input-wrap">
+                <div class="input-wrap retro-border">
                     <!-- <label for="username" class="label">Username</label> -->
                     <img class="input-icon" src="images/ic_email.svg"/>
-                    <InputText id="username" class="input retro-border" @bind-Value="loginModel.Login" placeholder="Enter your username" />
+                    <InputText id="username" class="input" @bind-Value="loginModel.Login" placeholder="Enter your username" />
                 </div>
-                <div class="input-wrap">
+                <div class="input-wrap retro-border">
                     <!-- <label for="password" class="label">Password</label> -->
                     <img class="input-icon" src="images/ic_password.svg"/>
-                    <InputText id="password" class="input retro-border" @bind-Value="loginModel.Password" placeholder="Enter your password" type="password" />
+                    <InputText id="password" class="input" @bind-Value="loginModel.Password" placeholder="Enter your password" type="password" />
                 </div>
                 <button type="submit" class="button retro-border">Login</button>
             </div>
@@ -44,6 +44,7 @@
 
     .login {
         display: flex;
+        align-items: center;
         column-gap: 30px;
         max-width: 60vw;
         overflow: hidden;
@@ -52,7 +53,11 @@
     }
 
     .banner {
+        align-self: stretch;
+        display: flex;
+        align-items: center;
         width: 35%;
+        height: auto%;
         background: linear-gradient(#E54C91, #F48B7B, #F7AD50);
         border-radius: 50px;
         box-shadow: 5px 0 40px 10px #00000042;
@@ -60,14 +65,13 @@
 
     .image {
         width: 150%;
-        max-width: 150%;
+        max-width: 130%;
     }
 
     .form {
         flex-grow: 1;
         display: flex;
-        flex-direction: column;
-        row-gap: 30px;
+        flex-direction: column; 
         width: auto;
         padding: 35px;
     }
@@ -78,25 +82,22 @@
     }
 
     .inputs-wrap {
-        align-self: flex-end;
         display: flex;
         flex-direction: column;
         row-gap: 50px;
-        width: 80%;
     }
 
     .input-wrap {
-        align-self: flex-end;
         position: relative;
         display: flex;
         align-items: center;
-        width: max-content;
     }
 
     .input {
         font-size: 2em;
         background-color: transparent;
         padding: 15px 2.6rem 15px 10px;
+        width: 100%;
     }
 
     .input::placeholder {
@@ -111,14 +112,19 @@
 
     .button {
         font-size: 2em;
-        align-self: flex-end;
         padding: 10px 40px;
     }
 
     .retro-border {
         border: 2px black solid;
-        box-shadow: 4px 8px 0 8px black;
+        box-shadow: 3px 3px 0 3px black;
         border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .retro-border:hover {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 2px black;
     }
 
     .gradient-text {
