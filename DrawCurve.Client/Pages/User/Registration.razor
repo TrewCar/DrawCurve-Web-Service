@@ -6,50 +6,146 @@
 @inject IJSRuntime JsRuntime
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow">
-                <div class="card-header bg-primary text-white">
-                    <h3 class="card-title mb-0">Регистрация</h3>
-                </div>
-                <div class="card-body">
-                    @if (!string.IsNullOrEmpty(errorMessage))
-                    {
-                        <div class="alert alert-danger">@errorMessage</div>
-                    }
-
-                    <EditForm Model="@registrationModel" OnValidSubmit="HandleRegister">
-                        <DataAnnotationsValidator />
-                        <ValidationSummary class="text-danger" />
-
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Имя</label>
-                            <InputText id="name" class="form-control" @bind-Value="registrationModel.Name" placeholder="Введите ваше имя" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Логин</label>
-                            <InputText id="username" class="form-control" @bind-Value="registrationModel.Login" placeholder="Введите ваш логин" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
-                            <InputText id="email" class="form-control" @bind-Value="registrationModel.Email" placeholder="Введите ваш email" />
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Пароль</label>
-                            <InputText id="password" class="form-control" @bind-Value="registrationModel.Password" placeholder="Введите ваш пароль" type="password" />
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">Зарегистрироваться</button>
-                    </EditForm>
-                </div>
-            </div>
+<div class="page-container">
+    <section class="signup">
+        <div class="banner">
+            <img class="image" src="images/Saly-13.png" />
         </div>
-    </div>
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="alert alert-danger">@errorMessage</div>
+        }
+
+        <EditForm class="form" Model="@registrationModel" OnValidSubmit="HandleRegister">
+            <h3 class="title">Welcome to <span class="gradient-text">Gen-Video</span></h3>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="text-danger" />
+
+            <div class="inputs-wrap">
+                <div class="input-wrap retro-border">
+                    <img class="input-icon" src="images/ic_user.svg"/>
+                    <InputText id="name" class="input" @bind-Value="registrationModel.Name" placeholder="Enter your name" />
+                </div>
+
+                <div class="input-wrap retro-border">
+                     <img class="input-icon" src="images/ic_user.svg"/>
+                    <InputText id="username" class="input" @bind-Value="registrationModel.Login" placeholder="Enter your username" />
+                </div>
+
+                <div class="input-wrap retro-border">
+                     <img class="input-icon" src="images/ic_email.svg"/>
+                    <InputText id="email" class="input" @bind-Value="registrationModel.Email" placeholder="Enter your email" />
+                </div>
+
+                <div class="input-wrap retro-border">
+                    <img class="input-icon" src="images/ic_password.svg"/>
+                    <InputText id="password" class="input" @bind-Value="registrationModel.Password" placeholder="Enter your password" type="password" />
+                </div>
+                <button type="submit" class="button retro-border">Registration</button>
+            </div>
+        </EditForm>
+    </section>
 </div>
+
+<style>
+    .page-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
+    .signup {
+        display: flex;
+        align-items: center;
+        column-gap: 30px;
+        max-width: 60vw;
+        overflow: hidden;
+        background: radial-gradient(#e54c9181, #f48b7b3d);
+        border-radius: 50px;
+    }
+
+    .banner {
+        align-self: stretch;
+        display: flex;
+        align-items: center;
+        width: 35%;
+        height: auto%;
+        background: linear-gradient(#E54C91, #F48B7B, #F7AD50);
+        border-radius: 50px;
+        box-shadow: 5px 0 40px 10px #00000042;
+    }
+
+    .image {
+        width: 150%;
+        max-width: 130%;
+    }
+
+    .form {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column; 
+        width: auto;
+        padding: 35px;
+    }
+
+    .title {
+        font-weight: 700;
+        font-size: 3em;
+    }
+
+    .inputs-wrap {
+        display: flex;
+        flex-direction: column;
+        row-gap: 50px;
+    }
+
+    .input-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .input {
+        font-size: 2em;
+        background-color: transparent;
+        padding: 15px 2.6rem 15px 10px;
+        width: 100%;
+    }
+
+    .input::placeholder {
+        color: #4f4f4f;
+    }
+
+    .input-icon {
+        position: absolute;
+        right: 10px;
+        width: 2rem;
+    }
+
+    .button {
+        font-size: 2em;
+        padding: 10px 40px;
+    }
+
+    .retro-border {
+        border: 2px black solid;
+        box-shadow: 3px 3px 0 3px black;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .retro-border:hover {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0 2px black;
+    }
+
+    .gradient-text {
+         background: linear-gradient(45deg, #F7AD50, #EB4335);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+</style>
 
 @code {
     private ResponceRegistration registrationModel = new();
