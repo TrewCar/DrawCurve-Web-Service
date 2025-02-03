@@ -1,4 +1,5 @@
-﻿using DrawCurve.Application.Interface;
+﻿using DrawCurve.Application.Config;
+using DrawCurve.Application.Interface;
 using DrawCurve.Application.Utils;
 using DrawCurve.Core.Window;
 using DrawCurve.Domen.DTO.Models;
@@ -8,13 +9,15 @@ using DrawCurve.Domen.Models.Menedger;
 using DrawCurve.Domen.Responces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DrawCurve.Application.Menedgers.Renders
 {
     public class MenedgerGenerateFrames : MenedgerRender<Render>
     {
-        public MenedgerGenerateFrames(IServiceProvider serviceProvider, ILogger<MenedgerGenerateFrames> logger)
+        public MenedgerGenerateFrames(IServiceProvider serviceProvider, ILogger<MenedgerGenerateFrames> logger, IOptions<RenderApplicationConfig> cnf)
             : base(serviceProvider, logger,
+                  maxQueue: cnf.Value.QueueOptions.MaxProccessRenderFrames,
                   search: TypeStatus.ProccessInQueue,
                   proccess: TypeStatus.ProccessRenderFrame,
                   end: TypeStatus.ProccessRenderFrameEnd)

@@ -1,20 +1,27 @@
-﻿using DrawCurve.Application.Interface;
+﻿using DrawCurve.Application.Config;
+using DrawCurve.Application.Interface;
+using DrawCurve.Application.Services;
 using DrawCurve.Application.Utils;
 using DrawCurve.Domen.Models.Menedger;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Net.NetworkInformation;
 
 namespace DrawCurve.Application.Menedgers.Renders
 {
     public class MenedgerConcatFrame : MenedgerRender<string>
     {
-        public MenedgerConcatFrame(IServiceProvider serviceProvider, ILogger<MenedgerConcatFrame> logger)
-            : base(serviceProvider, logger,
+        private readonly FFMpegService FFMpegService;
+        public MenedgerConcatFrame(IServiceProvider serviceProvider, ILogger<MenedgerConcatFrame> logger, IOptions<RenderApplicationConfig> cnf, FFMpegService FFMpegService)
+            : base(serviceProvider, logger, 
+                  maxQueue: cnf.Value.QueueOptions.MaxProccessConcatFrames,
                   search: TypeStatus.ProccessRenderFrameEnd,
                   proccess: TypeStatus.ProccessConcatFrame,
                   end: TypeStatus.ProccessConcatFrameEnd)
-        { }
+        { 
+            this.FFMpegService = FFMpegService;
+        }
         public override string Add(int AuthorId, string Key)
         {
             _ = Task.Run(async () =>
@@ -37,9 +44,9 @@ namespace DrawCurve.Application.Menedgers.Renders
 
                     string pathToFrame = DirectoryHelper.GetPathToSaveFrame(_key);
 
-                    FFMpegUtils.ConcatFrames(
+                    await FFMpegService.ConcatFrames(
                         FPS: (uint)render.RenderConfig.FPS,
-                        paternFrames: "frame_%06d.png",
+                        patternFrames: "frame_%06d.png",
                         pathToFrames: pathToFrame,
                         pathOutVideo: path,
                         outNameFile: _key);

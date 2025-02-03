@@ -1,4 +1,5 @@
-﻿using DrawCurve.Application.Hubs;
+﻿using DrawCurve.Application.Config;
+using DrawCurve.Application.Hubs;
 using DrawCurve.Application.Interface;
 using DrawCurve.Application.Logger;
 using DrawCurve.Application.Menedgers;
@@ -16,11 +17,6 @@ namespace DrawCurve.Application
 {
     public static class ApplicationService
     {
-        public static readonly string KeyConfig = "RenderConfig";
-        public static readonly string KeyFFMpegPath = "FFMpegPath";
-        public static readonly string KeyRenderSvg = "RenderSVG";
-        public static readonly string KeyRenderSvg_Segments = "CountSegments";
-        public static readonly string KeyRenderSvg_IndexError = "IndexError";
         public static IServiceCollection AddRenderServices(this IServiceCollection services, IConfiguration configuration)
         {
             return services.AddRenderServices<TickRenderHub>(configuration);
@@ -35,6 +31,9 @@ namespace DrawCurve.Application
             services.AddScoped<IRenderService, RenderService>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IVideoService, VideoService>();
+
+            services.AddScoped<CheckLiminters>();
+            services.AddScoped<FFMpegService>();
 
             services.AddScoped<ISendTickRender, THub>();
 
@@ -55,43 +54,19 @@ namespace DrawCurve.Application
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
 
-            services.ConfigurePathFFMpeg(configuration);
-            services.ConfigureRenderSVG(configuration);
+            services.Configure<RenderApplicationConfig>(options =>
+                configuration.GetSection("RenderApplicationConfig"));
+
+            configuration.ConfigureCore();
 
             return services;
         }
-        /// <summary>
-        /// Задание параметра для пути
-        /// </summary>
-        /// <param name="configuration">Path to start FFMpeg or only FFMpeg 
-        /// <br/> If not use this function -> default code gen
-        /// <code>Path.Combine(Directory.GetParent(Environment.ProcessPath).FullName, "Utils", "ffmpeg.exe");</code>
-        /// <br/>
-        ///  Or use "default" to use default gen
-        ///  <br/>
-        ///  Key = RenderConfig__FFMpegPath</param>
-        public static void ConfigurePathFFMpeg(this IServiceCollection services, IConfiguration configuration)
+
+        private static void ConfigureCore(this IConfiguration cnf)
         {
-            string? path = configuration.GetSection(KeyConfig).GetSection(KeyFFMpegPath).Value ?? null;
-
-            if (string.IsNullOrWhiteSpace(path) || path.ToLower() == "default")
-                return;
-
-            FFMpegUtils.PathToFFMpeg = path;
+            SvgCurveRender.Step = int.Parse(cnf.GetSection("RenderApplicationConfig:RenderSVG:IndexError").Value ?? SvgCurveRender.Step.ToString());
+            SvgCurveRender.Components = int.Parse(cnf.GetSection("RenderApplicationConfig:RenderSVG:CountSegments").Value ?? SvgCurveRender.Components.ToString());
         }
 
-        public static void ConfigureRenderSVG(this IServiceCollection services, IConfiguration configuration)
-        {
-            var cnfRenderSvg = configuration.GetSection(KeyConfig).GetSection(KeyRenderSvg);
-
-            int CountSegment = int.Parse(cnfRenderSvg.GetSection(KeyRenderSvg_Segments).Value ?? "-1");
-            double IndexError = double.Parse(cnfRenderSvg.GetSection(KeyRenderSvg_IndexError).Value ?? "-1");
-
-            if (CountSegment > 0)
-                SvgCurveRender.Components = CountSegment;
-
-            if(IndexError > 0)
-                SvgCurveRender.Step = IndexError;
-        }
     }
 }

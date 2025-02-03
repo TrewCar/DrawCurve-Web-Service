@@ -1,44 +1,73 @@
-﻿using System;
+﻿using DrawCurve.Application.Config;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using System.Diagnostics;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
+using System.Threading.Channels;
 
-namespace DrawCurve.Application.Utils
+namespace DrawCurve.Application.Services
 {
-    public class FFMpegUtils
+    public class FFMpegService : BackgroundService
     {
-        public static string PathToFFMpeg = Path.Combine(Directory.GetParent(Environment.ProcessPath).FullName, "Utils", "ffmpeg.exe");
+        private readonly Channel<string> _taskQueue;
+        private readonly ILogger<FFMpegService> _logger;
+        private readonly FFMpegConfig _config;
+        private readonly string _ffmpegPath;
 
-        public static void ConcatFrames(uint FPS, string paternFrames, string pathToFrames, string pathOutVideo, string outNameFile)
+        public FFMpegService(ILogger<FFMpegService> logger, IOptions<RenderApplicationConfig> config)
         {
-            if (!Directory.Exists(pathOutVideo))
-                Directory.CreateDirectory(pathOutVideo);
+            _logger = logger;
+            _taskQueue = Channel.CreateUnbounded<string>();
+            _config = config.Value.FFMpegConf;
 
-            pathOutVideo = Path.Combine(pathOutVideo, outNameFile + ".mp4");
+            _ffmpegPath = _config.Path.ToLower() != "default"
+                ? _config.Path
+                : Path.Combine(AppContext.BaseDirectory, "Utils", "ffmpeg.exe");
 
-            string arguments = $"-framerate {FPS} -i \"{Path.Combine(pathToFrames, paternFrames)}\" -c:v libx264 -crf 20 -pix_fmt yuv420p \"{pathOutVideo}\"";
-
-            RunFFMpeg(arguments);
+            _logger.LogInformation($"FFMpeg path set to: {_ffmpegPath}");
         }
 
-        public static void VideoConcatAudio(string pathToVideo, string pathToAudio, string pathOutVideo, string outNameFile)
+        public Task QueueFFMpegTask(string arguments)
         {
-            if (!Directory.Exists(pathOutVideo))
-                Directory.CreateDirectory(pathOutVideo);
-
-            pathOutVideo = Path.Combine(pathOutVideo, outNameFile + ".mp4");
-
-            string arguments = $"-i \"{pathToVideo}\" -i \"{pathToAudio}\" -shortest -c:v libx264 -crf 20 -pix_fmt yuv420p -b:a 192k \"{pathOutVideo}\"";
-
-            RunFFMpeg(arguments);
+            return _taskQueue.Writer.WriteAsync(arguments).AsTask();
         }
 
-        private static void RunFFMpeg(string arguments)
+        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        {
+            await foreach (var arguments in _taskQueue.Reader.ReadAllAsync(stoppingToken))
+            {
+                await RunFFMpegAsync(arguments, stoppingToken);
+            }
+        }
+
+        public async Task ConcatFrames(uint FPS, string patternFrames, string pathToFrames, string pathOutVideo, string outNameFile)
+        {
+            Directory.CreateDirectory(pathOutVideo);
+            string outputPath = Path.Combine(pathOutVideo, $"{outNameFile}.mp4");
+
+            string arguments = $"-framerate {FPS} -i \"{Path.Combine(pathToFrames, patternFrames)}\" " +
+                               $"-c:v {_config.VideoCodec} -crf {_config.CRF} -pix_fmt {_config.PixelFormat} \"{outputPath}\"";
+
+            await QueueFFMpegTask(arguments);
+        }
+
+        public async Task VideoConcatAudio(string pathToVideo, string pathToAudio, string pathOutVideo, string outNameFile)
+        {
+            Directory.CreateDirectory(pathOutVideo);
+            string outputPath = Path.Combine(pathOutVideo, $"{outNameFile}.mp4");
+
+            string arguments = $"-i \"{pathToVideo}\" -i \"{pathToAudio}\" -shortest " +
+                               $"-c:v {_config.VideoCodec} -crf {_config.CRF} -pix_fmt {_config.PixelFormat} " +
+                               $"-b:a {_config.AudioBitrate} \"{outputPath}\"";
+
+            await QueueFFMpegTask(arguments);
+        }
+
+        private async Task RunFFMpegAsync(string arguments, CancellationToken token)
         {
             try
             {
-                ProcessStartInfo startInfo = new ProcessStartInfo(PathToFFMpeg, arguments)
+                var startInfo = new ProcessStartInfo(_ffmpegPath, arguments)
                 {
                     CreateNoWindow = true,
                     UseShellExecute = false,
@@ -46,28 +75,25 @@ namespace DrawCurve.Application.Utils
                     RedirectStandardOutput = true
                 };
 
-                using (Process process = Process.Start(startInfo))
+                using var process = Process.Start(startInfo);
+                if (process != null)
                 {
-                    if (process != null)
+                    string output = await process.StandardOutput.ReadToEndAsync();
+                    string error = await process.StandardError.ReadToEndAsync();
+
+                    await process.WaitForExitAsync(token);
+
+                    if (!string.IsNullOrEmpty(error))
                     {
-                        process.WaitForExit();
-
-                        // Optionally, you can handle the output and errors here
-                        string output = process.StandardOutput.ReadToEnd();
-                        string error = process.StandardError.ReadToEnd();
-
-                        if (!string.IsNullOrEmpty(error))
-                        {
-                            Console.WriteLine($"FFMpeg Error: {error}");
-                        }
-
-                        Console.WriteLine($"FFMpeg Output: {output}");
+                        _logger.LogError($"FFMpeg Error: {error}");
                     }
+
+                    _logger.LogInformation($"FFMpeg Output: {output}");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error executing FFMpeg: {ex.Message}");
+                _logger.LogError(ex, "Error executing FFMpeg");
             }
         }
     }
