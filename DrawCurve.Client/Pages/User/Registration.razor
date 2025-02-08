@@ -11,13 +11,13 @@
         <div class="banner">
             <img class="image" src="images/Saly-13.png" />
         </div>
-        @if (!string.IsNullOrEmpty(errorMessage))
-        {
-            <div class="alert alert-danger">@errorMessage</div>
-        }
 
         <EditForm class="form" Model="@registrationModel" OnValidSubmit="HandleRegister">
             <h3 class="title">Welcome to <span class="gradient-text">Gen-Video</span></h3>
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-danger">@errorMessage</div>
+            }
             <DataAnnotationsValidator />
             <ValidationSummary class="text-danger" />
 

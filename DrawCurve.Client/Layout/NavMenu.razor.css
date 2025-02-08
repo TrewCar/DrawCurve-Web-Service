@@ -1,3 +1,55 @@
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    position: relative;
+    top: 0;
+    background: rgba(255, 218, 191, 0.3);
+    overflow: hidden;
+}
+
+.sidebar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("images/bc_sidebar.png");
+    background-position: center;
+    filter: blur(25px);
+    transform: scale(1.5);
+    z-index: -1;
+    animation: move-left-right 8s ease-in-out infinite alternate;
+}
+
+.nav-logo {
+    margin: 10px;
+    padding: 0.5rem 1rem 0.5rem 1rem;
+    text-align: center;
+    background-color: white;
+    border-radius: 1rem;
+}
+
+     .nav-logo ::deep a {
+         font-size: 2rem;
+         font-weight: 600;
+     }
+
+.gradient-text {
+    background: linear-gradient(45deg, #F7AD50, #EB4335);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@keyframes move-left-right {
+    0% {
+        background-position-x: 20%;
+    }
+
+    100% {
+        background-position-x: 80%;
+    }
+}
+
+/*—низу что было здесь до этого*/
+
 .navbar-toggler {
     background-color: rgba(255, 255, 255, 0.1);
 }
@@ -34,7 +86,7 @@
 }
 
 .nav-item {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     padding-bottom: 0.5rem;
 }
 
@@ -47,7 +99,7 @@
     }
 
     .nav-item ::deep a {
-        color: #d7d7d7;
+        color: white;
         border-radius: 4px;
         height: 3rem;
         display: flex;
@@ -55,15 +107,14 @@
         line-height: 3rem;
     }
 
-.nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.37);
-    color: white;
-}
+    .nav-item ::deep a.active {
+        background-color: rgba(255,255,255,0.25);
+        margin: 10px;
+    }
 
-.nav-item ::deep a:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
-}
+    .nav-item ::deep a:hover {
+        background-color: rgba(255,255,255,0.1);
+    }
 
 @media (min-width: 641px) {
     .navbar-toggler {
@@ -81,3 +132,4 @@
         overflow-y: auto;
     }
 }
+
