@@ -6,16 +6,44 @@
 @attribute [Authorize]
 
 <PageTitle>Генерация фигур и кривых</PageTitle>
-<h1 class="page-title">Генерация фигур и кривых</h1>
 
-<div class="nav-links">
-    <NavLink href="/render/gen/linecurve" class="nav-link">
-        Форма генерации динамических кривых
-    </NavLink>
-    <NavLink href="/render/gen/svglinecurve" class="nav-link">
-        Форма генерации динамических кривых по SVG изображению
-    </NavLink>
-    <NavLink href="/render/gen/lissajousfigures" class="nav-link">
-        Форма генерации форм Лисауджу
-    </NavLink>
+<div class="title">
+    <svg class="title__icon" id="Layer_1" viewBox="0 0 511.994 511.994" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <linearGradient id="myGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" style="stop-color:#E54C91;" />
+                <stop offset="50%" style="stop-color:#F48B7B;" />
+                <stop offset="100%" style="stop-color:#F7AD50;" />
+            </linearGradient>
+        </defs>
+        <path d="m446.513 169.743c-2.363-5.511-7.785-9.083-13.781-9.083h-104.262l69.479-138.952c2.324-4.648 2.076-10.172-.656-14.594-2.733-4.423-7.564-7.114-12.763-7.114l-208.867.012c-6.133 0-11.648 3.734-13.926 9.429l-96.4 240.981c-1.849 4.621-1.285 9.859 1.506 13.98 2.79 4.122 7.443 6.591 12.421 6.591h122.446l-88.172 220.429c-2.672 6.68-.227 14.315 5.831 18.198 2.487 1.597 5.298 2.373 8.09 2.373 4 0 7.963-1.597 10.881-4.669l305.267-321.334c4.128-4.347 5.273-10.737 2.906-16.247z" fill="url(#myGradient)" />
+    </svg>
+    <h1 class="page-title">Генерация фигур и кривых</h1>
 </div>
+
+<ul class="options">
+   <li class="option">
+    <NavLink href="/render/gen/linecurve" class="nav-link">
+        <img src="images/figure_dinamic.jpg" class="option__image" />
+        <div class="strip"></div>
+        <h2 class="option__name">Создай свою волну – генерация видео по математическим формулам!</h2>
+        <p class="option__description">Преобразуй числа в захватывающую анимацию! Введи свою волну, настрой параметры – и наблюдай, как алгоритм превращает её в завораживающее движение.</p>
+    </NavLink>
+   </li>
+   <li class="option">
+    <NavLink href="/render/gen/svglinecurve" class="nav-link">
+        <img src="images/figure_svg.jpg" class="option__image" />
+        <div class="strip"></div>
+        <h2 class="option__name">Оживи геометрию – генерация видео из SVG через ряды Фурье!</h2>
+        <p class="option__description">Смотри, как простой контур превращается в сложный путь, созданный из вращающихся кругов! Ряды Фурье анализируют изображение и строят его заново, показывая магию математики в действии.</p>
+    </NavLink>
+    </li>
+    <li class="option">
+    <NavLink href="/render/gen/lissajousfigures" class="nav-link">
+        <img src="images/figure_lisagu.png" class="option__image" />
+        <div class="strip"></div>
+        <h2 class="option__name">Музыка в картинках!</h2>
+        <p class="option__description">Погрузись в ритм: твой голос, музыка или любой звук превращаются в живые волны, вибрации и абстрактные узоры, создавая уникальное видео на основе аудиосигнала!</p>
+    </NavLink>
+    </li>
+</ul>
