@@ -1,20 +1,27 @@
-﻿using DrawCurve.Application.Interface;
+﻿using DrawCurve.Application.Config;
+using DrawCurve.Application.Interface;
+using DrawCurve.Application.Services;
 using DrawCurve.Application.Utils;
 using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Menedger;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 namespace DrawCurve.Application.Menedgers.Renders
 {
     public class MenedgerVideoConcatAudio : MenedgerRender<string>
     {
-        public MenedgerVideoConcatAudio(IServiceProvider serviceProvider, ILogger<MenedgerVideoConcatAudio> logger)
+        private readonly FFMpegService FFMpegService;
+        public MenedgerVideoConcatAudio(IServiceProvider serviceProvider, ILogger<MenedgerGenerateFrames> logger, IOptions<RenderApplicationConfig> cnf, FFMpegService FFMpegService)
             : base(serviceProvider, logger,
+                  maxQueue: cnf.Value.QueueOptions.MaxProccessConcatAudio,
                   search: TypeStatus.ProccessConcatFrameEnd,
                   proccess: TypeStatus.ProccessConcatAudio,
                   end: TypeStatus.ProccessEnd)
-        { }
+        {
+            this.FFMpegService = FFMpegService;
+        }
 
         public override string Add(int AuthorId, string Key)
         {
@@ -33,7 +40,7 @@ namespace DrawCurve.Application.Menedgers.Renders
                     string pathToAudio = render.RenderConfig.PathMusic;
                     if (!string.IsNullOrEmpty(pathToAudio))
                     {
-                        FFMpegUtils.VideoConcatAudio(
+                        await FFMpegService.VideoConcatAudio(
                             pathToVideo: pathToVideo,
                             pathToAudio: render.RenderConfig.PathMusic,
                             pathOutVideo: path,

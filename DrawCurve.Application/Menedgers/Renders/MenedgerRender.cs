@@ -1,11 +1,9 @@
 ﻿using DrawCurve.Application.Hubs;
 using DrawCurve.Application.Interface;
-using DrawCurve.Core.Window;
 using DrawCurve.Domen.Models.Menedger;
 using DrawCurve.Domen.Responces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 
 namespace DrawCurve.Application.Menedgers.Renders
 {
@@ -21,7 +19,9 @@ namespace DrawCurve.Application.Menedgers.Renders
         protected List<string> KeyRenderByEnd = new();
         protected List<(string, string)> Error = new();
 
-        public MenedgerRender(IServiceProvider serviceProvider, ILogger logger,
+        protected readonly int maxQueue = 10;
+
+        public MenedgerRender(IServiceProvider serviceProvider, ILogger logger, int maxQueue,
             TypeStatus search, TypeStatus proccess, TypeStatus end)
         {
             this._serviceProvider = serviceProvider;
@@ -31,6 +31,8 @@ namespace DrawCurve.Application.Menedgers.Renders
             this.search = search;
             this.proccess = proccess;
             this.end = end;
+
+            this.maxQueue = maxQueue;
 
             using var scope = _serviceProvider.CreateScope();
             var queue = scope.ServiceProvider.GetRequiredService<IRenderQueue>();
@@ -87,7 +89,7 @@ namespace DrawCurve.Application.Menedgers.Renders
                     // No need to call thread.Join(), the task should have already completed
                     Renders.Remove(key.Item1);
 
-                    var renderInfo = queue.GetRender(key.Item1); 
+                    var renderInfo = queue.GetRender(key.Item1);
                     queue.UpdateState(renderInfo, TypeStatus.Error);
                     Error.Remove(key);
 
@@ -102,11 +104,11 @@ namespace DrawCurve.Application.Menedgers.Renders
                     });
                 }
 
-                if (Renders.Count < 10)
+                if (Renders.Count < this.maxQueue)
                 {
                     var items = queue.GetQueue(search);
 
-                    int searchI = 10 - Renders.Count < items.Count() ? 10 - Renders.Count : items.Count();
+                    int searchI = this.maxQueue - Renders.Count < items.Count() ? this.maxQueue - Renders.Count : items.Count();
 
                     for (int i = 0; i < searchI; i++)
                     {

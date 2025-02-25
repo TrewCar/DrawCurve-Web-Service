@@ -109,7 +109,7 @@ namespace DrawCurve.API
 
             services.AddScoped<JwtManager>();
 
-            services.AddApplicationServices(Configuration);
+            services.AddRenderServices(Configuration);
         }
 
         // Метод для настройки HTTP-пайплайна

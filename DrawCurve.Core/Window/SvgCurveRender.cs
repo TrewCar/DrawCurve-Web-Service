@@ -12,8 +12,8 @@ namespace DrawCurve.Core.Window
 {
     public class SvgCurveRender : CurveRender
     {
-        private static int Components = 1000;
-        private static double Step = 0.001;
+        public static int Components = 1000;
+        public static double Step = 0.001;
         public SvgCurveRender() { }
         public SvgCurveRender(RenderConfig config, List<ObjectRender> Objects) : base(config, Objects)
         {

@@ -1,4 +1,5 @@
 ﻿using DrawCurve.Application.Interface;
+using DrawCurve.Application.Menedgers;
 using DrawCurve.Domen.Models;
 using DrawCurve.Domen.Models.Menedger;
 using DrawCurve.Infrastructure;
@@ -13,9 +14,11 @@ namespace DrawCurve.Application.Services
     public class RenderService : IRenderService, IRenderQueue
     {
         private readonly DrawCurveDbContext context;
-        public RenderService(DrawCurveDbContext context)
+        private CheckLiminters limiter;
+        public RenderService(DrawCurveDbContext context, CheckLiminters limiter)
         {
             this.context = context;
+            this.limiter = limiter;
         }
         public List<RenderInfo> GetRenderList(int id)
         {
@@ -31,6 +34,8 @@ namespace DrawCurve.Application.Services
 
         public void Queue(RenderInfo queue)
         {
+            var listSets = limiter.CheckConfig(ref queue);
+
             context.RenderInfo.Add(queue);
 
             context.SaveChanges();
