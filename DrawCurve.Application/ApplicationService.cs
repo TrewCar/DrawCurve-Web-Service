@@ -33,7 +33,7 @@ namespace DrawCurve.Application
             services.AddScoped<IVideoService, VideoService>();
 
             services.AddScoped<CheckLiminters>();
-            services.AddScoped<FFMpegService>();
+            services.AddSingleton<FFMpegService>();
 
             services.AddScoped<ISendTickRender, THub>();
 
@@ -45,11 +45,11 @@ namespace DrawCurve.Application
 
             services.AddHostedService<MenedgerRenderHostedService>();
 
-            services.AddLogging(loggingBuilder =>
-            {
-                loggingBuilder.ClearProviders();
-                loggingBuilder.AddProvider(new CustomLoggerProvider(new CustomLoggerConfiguration()));
-            });
+            //services.AddLogging(loggingBuilder =>
+            //{
+            //    loggingBuilder.ClearProviders();
+            //    loggingBuilder.AddProvider(new CustomLoggerProvider(new CustomLoggerConfiguration()));
+            //});
 
             AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
             AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
@@ -64,7 +64,7 @@ namespace DrawCurve.Application
 
         private static void ConfigureCore(this IConfiguration cnf)
         {
-            SvgCurveRender.Step = int.Parse(cnf.GetSection("RenderApplicationConfig:RenderSVG:IndexError").Value ?? SvgCurveRender.Step.ToString());
+            SvgCurveRender.Step = double.Parse(cnf.GetSection("RenderApplicationConfig:RenderSVG:IndexError").Value ?? SvgCurveRender.Step.ToString());
             SvgCurveRender.Components = int.Parse(cnf.GetSection("RenderApplicationConfig:RenderSVG:CountSegments").Value ?? SvgCurveRender.Components.ToString());
         }
 
