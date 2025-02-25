@@ -1,23 +1,21 @@
 ﻿@inherits LayoutComponentBase
 @inject AuthService authService
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
+    <NavMenu />
 
     <main>
-        <div class="top-row px-4">
+        <div class="header">
             <AuthorizeView>
                 <NotAuthorized>
-                    <NavLink class="btn btn-outline-info me-2" href="Login">
+                    <NavLink class="header__button gradient-text" href="Login">
                         <i class="bi bi-box-arrow-in-right"></i> Login
                     </NavLink>
-                    <NavLink class="btn btn-outline-info" href="Registration">
+                    <NavLink class="header__button gradient-text" href="Registration">
                         <i class="bi bi-person-plus"></i> Registration
                     </NavLink>
                 </NotAuthorized>
                 <Authorized>
-                    <button class="btn btn-outline-info" @onclick="logOut">
+                    <button class="header__button gradient-text" @onclick="logOut">
                         <i class="bi bi-box-arrow-right"></i> Log Out
                     </button>
                 </Authorized>

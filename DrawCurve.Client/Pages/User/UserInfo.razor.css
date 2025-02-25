@@ -1,0 +1,53 @@
+﻿.user-info {
+    margin-top: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.avatar-wrap {
+    position: relative;
+    width: 187px;
+    height: 187px;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 50%;
+}
+
+.circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    overflow: visible;
+    transform: translate(-50%, -50%);
+    transform-origin: center;
+    filter: drop-shadow(0 0 16px #000);
+    animation: rotate 6s linear infinite;
+    z-index: 1;
+}
+
+.text {
+    font-size: 2em;
+}
+
+.gradient-text {
+    background: linear-gradient(45deg, #F7AD50, #EB4335);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@keyframes rotate {
+    0% {
+        transform: translate(-50%, -50%) rotate(0deg); 
+    }
+
+    100% {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
