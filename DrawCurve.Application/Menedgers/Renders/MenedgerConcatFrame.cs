@@ -44,7 +44,7 @@ namespace DrawCurve.Application.Menedgers.Renders
 
                     string pathToFrame = DirectoryHelper.GetPathToSaveFrame(_key);
 
-                    await FFMpegService.ConcatFrames(
+                    FFMpegService.ConcatFrames(
                         FPS: (uint)render.RenderConfig.FPS,
                         patternFrames: "frame_%06d.png",
                         pathToFrames: pathToFrame,
@@ -70,6 +70,7 @@ namespace DrawCurve.Application.Menedgers.Renders
                 }
                 catch (Exception ex)
                 {
+                    await Console.Out.WriteLineAsync(ex.Message);
                     Error.Add((Key, ex.Message));
                 }
             });

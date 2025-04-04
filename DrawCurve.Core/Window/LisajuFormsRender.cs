@@ -58,9 +58,54 @@ namespace DrawCurve.Core.Window
                 maxAmplitude = Math.Max(maxAmplitude, Math.Max(samplesLeft[i], samplesRight[i]));
             }
 
-            scale = Math.Min(window.Size.X, window.Size.Y) / 4.0f / maxAmplitude;
+            DenoiseAudio(samplesLeft);
+            DenoiseAudio(samplesRight);
 
+            scale = Math.Min(window.Size.X, window.Size.Y) / 4.0f / maxAmplitude;
         }
+
+        public void DenoiseAudio(float[] samples, int windowSize = 5, float noiseThreshold = 0.02f)
+        {
+            float[] smoothedSamples = new float[samples.Length];
+
+            // Применение фильтра скользящего среднего
+            for (int i = 0; i < samples.Length; i++)
+            {
+                float sum = 0;
+                int count = 0;
+
+                for (int j = -windowSize / 2; j <= windowSize / 2; j++)
+                {
+                    int index = i + j;
+                    if (index >= 0 && index < samples.Length)
+                    {
+                        sum += samples[index];
+                        count++;
+                    }
+                }
+                smoothedSamples[i] = sum / count;
+            }
+
+            // Подавление шума по порогу
+            for (int i = 0; i < samples.Length; i++)
+            {
+                if (Math.Abs(smoothedSamples[i]) < noiseThreshold)
+                    smoothedSamples[i] = 0;
+            }
+
+            // Дополнительное сглаживание для резких изменений (фильтр Гаусса)
+            float[] finalSmoothedSamples = new float[samples.Length];
+            for (int i = 1; i < samples.Length - 1; i++)
+            {
+                finalSmoothedSamples[i] = (smoothedSamples[i - 1] + smoothedSamples[i] * 2 + smoothedSamples[i + 1]) / 4;
+            }
+            finalSmoothedSamples[0] = smoothedSamples[0];
+            finalSmoothedSamples[samples.Length - 1] = smoothedSamples[samples.Length - 1];
+
+            // Копирование обработанных данных обратно в массив
+            Array.Copy(finalSmoothedSamples, samples, samples.Length);
+        }
+
         public override bool TickRender(float deltaTime)
         {
             var background = new RectangleShape(new Vector2f(window.Size.X, window.Size.Y));

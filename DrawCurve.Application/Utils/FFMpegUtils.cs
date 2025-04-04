@@ -7,9 +7,8 @@ using System.Threading.Channels;
 
 namespace DrawCurve.Application.Services
 {
-    public class FFMpegService : BackgroundService
+    public class FFMpegService
     {
-        private readonly Channel<string> _taskQueue;
         private readonly ILogger<FFMpegService> _logger;
         private readonly FFMpegConfig _config;
         private readonly string _ffmpegPath;
@@ -17,7 +16,7 @@ namespace DrawCurve.Application.Services
         public FFMpegService(ILogger<FFMpegService> logger, IOptions<RenderApplicationConfig> config)
         {
             _logger = logger;
-            _taskQueue = Channel.CreateUnbounded<string>();
+            //_taskQueue = Channel.CreateUnbounded<string>();
             _config = config.Value.FFMpegConf;
 
             _ffmpegPath = _config.Path.ToLower() != "default"
@@ -27,20 +26,13 @@ namespace DrawCurve.Application.Services
             _logger.LogInformation($"FFMpeg path set to: {_ffmpegPath}");
         }
 
-        public Task QueueFFMpegTask(string arguments)
+        public void QueueFFMpegTask(string arguments)
         {
-            return _taskQueue.Writer.WriteAsync(arguments).AsTask();
+            using var process = Process.Start( _ffmpegPath, arguments);
+            process.WaitForExit();
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            await foreach (var arguments in _taskQueue.Reader.ReadAllAsync(stoppingToken))
-            {
-                await RunFFMpegAsync(arguments, stoppingToken);
-            }
-        }
-
-        public async Task ConcatFrames(uint FPS, string patternFrames, string pathToFrames, string pathOutVideo, string outNameFile)
+        public void ConcatFrames(uint FPS, string patternFrames, string pathToFrames, string pathOutVideo, string outNameFile)
         {
             Directory.CreateDirectory(pathOutVideo);
             string outputPath = Path.Combine(pathOutVideo, $"{outNameFile}.mp4");
@@ -48,10 +40,10 @@ namespace DrawCurve.Application.Services
             string arguments = $"-framerate {FPS} -i \"{Path.Combine(pathToFrames, patternFrames)}\" " +
                                $"-c:v {_config.VideoCodec} -crf {_config.CRF} -pix_fmt {_config.PixelFormat} \"{outputPath}\"";
 
-            await QueueFFMpegTask(arguments);
+            QueueFFMpegTask(arguments);
         }
 
-        public async Task VideoConcatAudio(string pathToVideo, string pathToAudio, string pathOutVideo, string outNameFile)
+        public void VideoConcatAudio(string pathToVideo, string pathToAudio, string pathOutVideo, string outNameFile)
         {
             Directory.CreateDirectory(pathOutVideo);
             string outputPath = Path.Combine(pathOutVideo, $"{outNameFile}.mp4");
@@ -60,7 +52,7 @@ namespace DrawCurve.Application.Services
                                $"-c:v {_config.VideoCodec} -crf {_config.CRF} -pix_fmt {_config.PixelFormat} " +
                                $"-b:a {_config.AudioBitrate} \"{outputPath}\"";
 
-            await QueueFFMpegTask(arguments);
+            QueueFFMpegTask(arguments);
         }
 
         private async Task RunFFMpegAsync(string arguments, CancellationToken token)
